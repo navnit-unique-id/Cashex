@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "561908835041",
+    "firebase_url": "https://columbus-mobile.firebaseio.com",
+    "project_id": "columbus-mobile",
+    "storage_bucket": "columbus-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561908835041:android:a0477232d3c525df",
+        "android_client_info": {
+          "package_name": "com.crisprupee.cashex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561908835041-3jbfhdgmeevvj77jkcq90h0dv07qknej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crisprupee.cashex",
+            "certificate_hash": "7966212f3d13825228713fc9b556cf625d1c298e"
+          }
+        },
+        {
+          "client_id": "561908835041-jdheiq2g17hdimeeqqf08fn0e7eib19t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIyxz-uVIaZbbv0yX_3xxJU48ioGcG-NA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561908835041-jdheiq2g17hdimeeqqf08fn0e7eib19t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
