@@ -22,6 +22,13 @@ public class CashRequest  implements Serializable {
     String lndrPaymentMode;
     String rcvrPaymentMode;
     double payableAmout;
+    double incentive;
+    double lndrLat;
+    double lndrLng;
+    double rcvrLat;
+    double rcvrLng;
+    User requestor;
+    User lender;
 
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
@@ -66,6 +73,22 @@ public class CashRequest  implements Serializable {
     public CashRequest(long id) {
         super();
         this.id = id;
+    }
+
+    public double getIncentive() {
+        return incentive;
+    }
+
+    public void setIncentive(double incentive) {
+        this.incentive = incentive;
+    }
+
+    public User getLender() {
+        return lender;
+    }
+
+    public void setLender(User lender) {
+        this.lender = lender;
     }
 
     public CashRequest(long id, double amount, Long requesterId, double payableAmout, int status,
@@ -196,5 +219,45 @@ public class CashRequest  implements Serializable {
     }
     public void setLenderId(Long lenderId) {
         this.lenderId = lenderId;
+    }
+
+    public User getRequestor() {
+        return requestor;
+    }
+
+    public void setRequestor(User requestor) {
+        this.requestor = requestor;
+    }
+
+    public double getLndrLat() {
+        return lndrLat;
+    }
+
+    public void setLndrLat(double lndrLat) {
+        this.lndrLat = lndrLat;
+    }
+
+    public double getLndrLng() {
+        return lndrLng;
+    }
+
+    public void setLndrLng(double lndrLng) {
+        this.lndrLng = lndrLng;
+    }
+
+    public double getRcvrLat() {
+        return rcvrLat;
+    }
+
+    public void setRcvrLat(double rcvrLat) {
+        this.rcvrLat = rcvrLat;
+    }
+
+    public double getRcvrLng() {
+        return rcvrLng;
+    }
+
+    public void setRcvrLng(double rcvrLng) {
+        this.rcvrLng = rcvrLng;
     }
 }

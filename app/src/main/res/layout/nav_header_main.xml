@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:gravity="bottom"
+    android:gravity="top"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -15,9 +15,11 @@
     <TextView
         android:id="@+id/user_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/nav_header_vertical_spacing"
         android:background="@color/colorPrimary"
+        android:paddingTop="@dimen/nav_header_height"
         android:text="User 1"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp" />
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 </LinearLayout>

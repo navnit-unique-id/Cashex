@@ -1,31 +1,38 @@
 package com.crisprupee.cashex;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+//import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +47,7 @@ public class ICCashListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView.Adapter adapter;
     ArrayList cashRequests = new ArrayList();
+    User user;
 
     @Nullable
     @Override
@@ -50,17 +58,44 @@ public class ICCashListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
+        String json = pref.getString("user", "");
+        user = (new Gson()).fromJson(json, User.class);
         getActivity().setTitle("Home");
         showICList();
+        showFloatingButton();
+        IntentFilter filter = new IntentFilter("1");
+        filter.addAction("4");
+       /*  filter.addAction("1002");
+        filter.addAction("1003");
+        filter.addAction("2");
+        filter.addAction("12");
+        filter.addAction("17");*/
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
+
+    }
+
+    private void showFloatingButton() {
+        FloatingActionButton fab = getActivity().findViewById(R.id.addCashRequest);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new NewCashRequestFragment();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+            }
+        });
     }
 
 
-    private void showICList(){
+    private void showICList() {
         //  setContentView(R.layout.fragment_ic_cash_list);
-        TabLayout tabLayout=(TabLayout)getActivity().findViewById(R.id.tabLayout);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Cash Request"));
         tabLayout.addTab(tabLayout.newTab().setText("Accepted Request"));
-     //   tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        //   tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mList = getActivity().findViewById(R.id.ic_cash_list);
         cashRequests = new ArrayList<>();
         adapter = new RequestListAdapter(getContext(), cashRequests);
@@ -69,15 +104,16 @@ public class ICCashListFragment extends Fragment {
         mList.setHasFixedSize(true);
         mList.setLayoutManager(linearLayoutManager);
         mList.setAdapter(adapter);
-        getData(false,1);
+        getData(false, 1);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition()==1){
-                    getData(false,1);
-                } if (tab.getPosition()==2){
-                    getData(false,3);
+                if (tab.getPosition() == 0) {
+                    getData(false, 1);
+                }
+                if (tab.getPosition() == 1) {
+                    getData(false, 2);
                 }
             }
 
@@ -96,56 +132,30 @@ public class ICCashListFragment extends Fragment {
     }
 
     public void getData(boolean silent, int type) {
-        String resource="";
+        String resource = "";
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Fetching Cash Requests...");
-        if(!silent){
+        if (!silent) {
             progressDialog.show();
         }
         cashRequests.clear();
         //   JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/rest/devices?username="+user.getEmail(), new Response.Listener<JSONArray>() {
-        if(type==1){
-            resource="CashRequests";
+        if (type == 1) {
+            resource = "OGCashRequests/generated";
         }
-        if(type==2){
-            resource="CashRequests";
+        if (type == 2) {
+            resource = "OGCashRequests/accepted";
         }
-        if(type==3){
-            resource="CashRequests";
+        if (type == 3) {
+            resource = "OGCashRequests/myrequests";
         }
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" +resource+"?username="+"estelarconsultancy@gmail.com", new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" + resource + "?id=" + user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        CashRequest cashRequest  = new CashRequest();
-                        cashRequest.setAmount(Double.parseDouble(getStringFromJson(jsonObject, "amount")));
-                        cashRequest.setId(Long.parseLong(getStringFromJson(jsonObject, "id")));
-                        try{
-                            cashRequest.setRequestDate((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")).parse(getStringFromJson(jsonObject, "requestDate")));
-                        }catch (Exception e){
-                        }
-                        try{
-                            cashRequest.setAcceptanceDate((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")).parse(getStringFromJson(jsonObject, "acceptanceDate")));
-                        }catch (Exception e){
-                        }
-                        try{
-                            cashRequest.setCompletionDate((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")).parse(getStringFromJson(jsonObject, "completionDate")));
-                        }catch (Exception e){
-                        }
-
-
-                        //   cashRequest.setLenderDistance(Double.parseDouble(getStringFromJson(jsonObject, "lenderDistance")));
-                        //   cashRequest.setLndrTransactionId(getStringFromJson(jsonObject, "lndrTransactionId"));
-                        cashRequest.setPayableAmout(Double.parseDouble(getStringFromJson(jsonObject, "payableAmout")));
-                        cashRequest.setLndrPaymentMode(getStringFromJson(jsonObject, "lndrPaymentMode"));
-                        cashRequest.setLndrTransactionId(getStringFromJson(jsonObject, "lndrTransactionId"));
-                        cashRequest.setPaymentSlot(getStringFromJson(jsonObject, "paymentSlot"));
-                        cashRequest.setPreferredPaymentMode(getStringFromJson(jsonObject, "preferredPaymentMode"));
-                        //   cashRequest.setRcvTransactionId(getStringFromJson(jsonObject, "rcvTransactionId"));
-                        cashRequest.setRequesterId(Long.parseLong(getStringFromJson(jsonObject, "requesterId")));
-                        cashRequest.setStatus(Integer.parseInt(getStringFromJson(jsonObject, "status")));
+                        CashRequest cashRequest = (new Gson()).fromJson(jsonObject.toString(), CashRequest.class);
                         cashRequests.add(cashRequest);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -163,11 +173,18 @@ public class ICCashListFragment extends Fragment {
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
-                Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
-                toast.show();
+              //  Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
+             //   toast.show();
+                Snackbar snackbar = Snackbar
+                        .make(getView(), UIMessage, Snackbar.LENGTH_LONG);
+                snackbar.show();
                 progressDialog.dismiss();
             }
         });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
@@ -180,6 +197,23 @@ public class ICCashListFragment extends Fragment {
         }
         return result;
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (isAdded()) {
+                String code = intent.getStringExtra("code");
+                TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabLayout);
+                int selectedTab = tabLayout.getSelectedTabPosition();
+                if (selectedTab == 0) {
+                    getData(true, 1);
+                }
+                if (selectedTab == 1) {
+                    getData(true, 2);
+                }
+            }
+        }
+    };
 
 }
 

@@ -1,7 +1,12 @@
 package com.crisprupee.cashex;
 
+import android.content.SharedPreferences;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -44,6 +49,12 @@ public class Util implements Serializable {
         statusTable.put(10,"Cancelled");
         statusTable.put(11,"Expired");
 
+    }
+
+    public static void  updateSharedPref(SharedPreferences pref, JSONObject response ){
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("user", response.toString());
+        editor.commit();
     }
 
     public static String getGMTDateTime(String localDateTime, TimeZone localTimeZone) {

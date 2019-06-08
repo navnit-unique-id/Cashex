@@ -4,30 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/grp1" android:checkableBehavior="single">
         <item
             android:id="@+id/ic_cash_requests"
+            android:checkable="true"
+            android:checked="true"
             android:title="Home" />
+    </group>
+    <group android:id="@+id/grp2" >
         <item
             android:id="@+id/og_cash_requests"
             android:title="My Requests" />
+    </group>
+<!--    <group android:id="@+id/grp3" >
         <item
             android:id="@+id/nav_notifications"
-            android:title="Help"/>
+            android:title="Help" />
+    </group>-->
+    <group android:id="@+id/grp4" android:checkableBehavior="single">
         <item
             android:id="@+id/logout"
             android:title="Logout" />
     </group>
 
-<!--    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:title="Contact Us" />
-        </menu>
-    </item>-->
+    <!--    <item android:title="Communicate">
+            <menu>
+                <item
+                    android:id="@+id/nav_share"
+                    android:title="Share" />
+                <item
+                    android:id="@+id/nav_send"
+                    android:title="Contact Us" />
+            </menu>
+        </item>-->
 
 </menu>

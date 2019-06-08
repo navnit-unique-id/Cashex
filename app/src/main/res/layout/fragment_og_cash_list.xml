@@ -13,11 +13,12 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:fabCustomSize="@android:dimen/notification_large_icon_height"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:maxImageSize="86dp"
+        app:srcCompat="@mipmap/ic_add_new_fg" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/og_cash_requests"
@@ -25,7 +26,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/background_light"
         android:clipChildren="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,11 +21,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.crisprupee.cashex.MainActivity;
 import com.crisprupee.cashex.R;
+import com.crisprupee.cashex.User;
 import com.crisprupee.cashex.Util;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -44,20 +47,23 @@ public class MessageService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
+            int code = 0;
             Map data = remoteMessage.getData();
-            int code = Integer.parseInt(data.get("code") + "");
+            try {
+                code = Integer.parseInt(data.get("code") + "");
+            } catch (Exception e) {
+
+            }
             String message = data.get("message") + "";
             int priority = Integer.parseInt(data.get("priority") + "");
 
             ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
             List<ActivityManager.RunningTaskInfo> taskInfo = activityManager.getRunningTasks(1);
-            sendNotification(message);
-            if (code == 1003) {
-                Intent intent = new Intent("1003");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            }
+            sendNotification(message, priority, code);
+            Intent intent = new Intent(code+"");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
-     }
+    }
 
 
     /**
@@ -80,24 +86,26 @@ public class MessageService extends FirebaseMessagingService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
+        String json = pref.getString("user", "");
+        User user = (new Gson()).fromJson(json, User.class);
         JSONObject postData = new JSONObject();
         try {
-            postData.put("userId", MainActivity.user.getEmail());
+            postData.put("userId", user.getId());
             postData.put("registrationToken", token);
             postData.put("registrationTime", Util.getCurrentGMTTime(0));
             postData.put("valid", "true");
 
-            Log.d(TAG, "sendRegistrationToServer: " +postData.toString());
+            Log.d(TAG, "sendRegistrationToServer: " + postData.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url)+"/rest/installationinfo", postData, new Response.Listener<JSONObject>() {
-    //    JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8081/rest/installationinfo", postData, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.notification_ms_url) + "/installationinfo", postData, new Response.Listener<JSONObject>() {
+            //    JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8081/rest/installationinfo", postData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                 //  serverResp.setText("String Response : "+ response.toString());
+                //  serverResp.setText("String Response : "+ response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -118,8 +126,9 @@ public class MessageService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, int priority, int code) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("fragment",4);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

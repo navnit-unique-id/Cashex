@@ -1,25 +1,33 @@
 package com.crisprupee.cashex;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+//import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +48,8 @@ public class OGCashListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView.Adapter adapter;
     ArrayList cashRequests = new ArrayList();
+    User user;
+    ProgressDialog progressDialog ;
 
     @Nullable
     @Override
@@ -50,22 +60,21 @@ public class OGCashListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
+        String json = pref.getString("user", "");
+        user = (new Gson()).fromJson(json, User.class);
         getActivity().setTitle("My Requests");
         showOGList();
+        showFloatingButton();
+        IntentFilter filter = new IntentFilter("2");
+        filter.addAction("3");
+        filter.addAction("4");
+        filter.addAction("11");
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
+
     }
 
-
-    private void showOGList(){
-        mList = getActivity().findViewById(R.id.og_cash_requests);
-        cashRequests = new ArrayList<>();
-        adapter = new RequestListAdapter(getContext(), cashRequests);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mList.setHasFixedSize(true);
-        mList.setLayoutManager(linearLayoutManager);
-        mList.setAdapter(adapter);
-        getData(false,3);
-
+    private void showFloatingButton(){
         FloatingActionButton fab = getActivity().findViewById(R.id.addCashRequest);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,57 +83,66 @@ public class OGCashListFragment extends Fragment {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
                 ft.commit();
-
-/*
-                Intent intent = new Intent(getContext(), AddCashRequestActivity.class);
-                intent.putExtra("username", "HC Name");
-                startActivity(intent);*/
-           }
+            }
         });
     }
+    private void showOGList( ){
+        mList = getActivity().findViewById(R.id.og_cash_requests);
+        cashRequests = new ArrayList<>();
+        adapter = new RequestListAdapter(getContext(), cashRequests);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mList.setHasFixedSize(true);
+        mList.setLayoutManager(linearLayoutManager);
+        mList.setAdapter(adapter);
+        progressDialog = new ProgressDialog(getContext());
+        getData(false,3);
 
-    public void getData(boolean silent, int type) {
+/*        FloatingActionButton fab = getActivity().findViewById(R.id.addCashRequest);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new NewCashRequestFragment();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+
+           }
+        });*/
+    }
+
+    public void getData(final boolean  silent, int type) {
         String resource="";
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Fetching Cash Requests...");
+      //  final ProgressDialog progressDialog =null;
         if(!silent){
+        //    final ProgressDialog progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("Fetching Cash Requests...");
             progressDialog.show();
         }
         cashRequests.clear();
         //   JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/rest/devices?username="+user.getEmail(), new Response.Listener<JSONArray>() {
         if(type==1){
-            resource="CashRequests";
+            resource="OGCashRequests/generated";
         }
         if(type==2){
-            resource="CashRequests";
+            resource="OGCashRequests/accepted";
         }
         if(type==3){
-            resource="CashRequests";
+            resource="OGCashRequests/myrequests";
         }
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" +resource+"?username="+"estelarconsultancy@gmail.com", new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" +resource+"?id="+user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        CashRequest cashRequest  = new CashRequest();
-                        cashRequest.setAmount(Double.parseDouble(getStringFromJson(jsonObject, "amount")));
-                        cashRequest.setId(Long.parseLong(getStringFromJson(jsonObject, "id")));
-                        cashRequest.setRequestDate((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")).parse(getStringFromJson(jsonObject, "requestDate")));
-                        //   cashRequest.setLenderDistance(Double.parseDouble(getStringFromJson(jsonObject, "lenderDistance")));
-                        //   cashRequest.setLndrTransactionId(getStringFromJson(jsonObject, "lndrTransactionId"));
-                        cashRequest.setPayableAmout(Double.parseDouble(getStringFromJson(jsonObject, "payableAmout")));
-                        cashRequest.setLndrPaymentMode(getStringFromJson(jsonObject, "lndrPaymentMode"));
-                        cashRequest.setLndrTransactionId(getStringFromJson(jsonObject, "lndrTransactionId"));
-                        cashRequest.setPaymentSlot(getStringFromJson(jsonObject, "paymentSlot"));
-                        cashRequest.setPreferredPaymentMode(getStringFromJson(jsonObject, "preferredPaymentMode"));
-                        //   cashRequest.setRcvTransactionId(getStringFromJson(jsonObject, "rcvTransactionId"));
-                        cashRequest.setRequesterId(Long.parseLong(getStringFromJson(jsonObject, "requesterId")));
-                        cashRequest.setStatus(Integer.parseInt(getStringFromJson(jsonObject, "status")));
+                        CashRequest cashRequest = (new Gson()).fromJson(jsonObject.toString(), CashRequest.class);
                         cashRequests.add(cashRequest);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        progressDialog.dismiss();
+                        if(!silent){
+                            progressDialog.dismiss();
+                        }
                     }
                 }
                 ((RequestListAdapter) adapter).setRequests(cashRequests);
@@ -138,11 +156,21 @@ public class OGCashListFragment extends Fragment {
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
-                Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
-                toast.show();
-                progressDialog.dismiss();
+            //    Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
+             //   toast.show();
+                Snackbar
+                        .make(getView(), UIMessage, Snackbar.LENGTH_LONG).show();
+
+
+                if(!silent){
+                    progressDialog.dismiss();
+                }
             }
         });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
@@ -155,6 +183,16 @@ public class OGCashListFragment extends Fragment {
         }
         return result;
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String code = intent.getStringExtra("code");
+            if(isAdded()){
+                getData(true,3);
+            }
+        }
+    };
 
 }
 

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Columbus</string>
+    <string name="app_name">Kuber</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
-    <string name="notification_title">Kash Alert</string>
+    <string name="notification_title">Kuber Alert</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -12,12 +12,90 @@
     <string name="firebase_path" translatable="false">columbus-mobile</string>
     <string name="firebase_email" translatable="false">columbus-dev@gmail.com</string>
     <string name="firebase_password" translatable="false">testing@123</string>
-    <string name="columbus_ms_url" translatable="false">http://10.0.2.2:8080</string>
+   <!-- <string name="columbus_ms_url" translatable="false">http://10.0.2.2:8080</string>-->
+    <string name="columbus_ms_url" translatable="false">http://34.74.60.4:8080</string>
+    <string name="notification_ms_url" translatable="false">http://34.74.60.4:8090</string>
+
     <string name="title_activity_replay">Map</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCwaD6I_qCyeakDH5hASa7EruVUQHD7kIQ</string>
     <string-array name="timeSlot">
         <item>08:00 AM -09:00 AM</item>
         <item>09:00 AM -10:00 AM</item>
         <item>10:00 AM -11:00 AM</item>
+        <item>11:00 AM -12:00 PM</item>
+        <item>01:00 PM -02:00 PM</item>
+        <item>02:00 PM -03:00 PM</item>
+        <item>03:00 PM -04:00 PM</item>
+        <item>04:00 PM -05:00 PM</item>
+        <item>05:00 PM -06:00 PM</item>
+        <item>06:00 PM -07:00 PM</item>
+        <item>07:00 PM -08:00 PM</item>
+        <item>08:00 PM -09:00 PM</item>
+        <item>09:00 PM -10:00 PM</item>
+        <item>10:00 PM -11:00 PM</item>
+        <item>11:00 PM -12:00 AM</item>
+
     </string-array>
+    <string name="title_activity_login">Login</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="login_prompt_username">User Name</string>
+    <string name="login_prompt_password">Password</string>
+
+
+    <string name="registration1_prompt_username">Mobile Number (mandatory)</string>
+    <string name="registration1_prompt_password">Password (mandatory)</string>
+    <string name="registration1_prompt_retype_password">Re-type password</string>
+    <string name="registration1_prompt_mobile_number">Mobile Number (mandatory)</string>
+    <string name="registration1_next_button">Next</string>
+    <string name="registration1_title">Registration</string>
+    <string name="registration1_error_username_blank">Mobile number cannot blank</string>
+    <string name="registration1_error_username_alreadyTaken">Mobile number already registered</string>
+    <string name="registration1_error_password_blank">Password cannot blank</string>
+    <string name="registration1_error_password_notMatch">Retyped Password does not match</string>
+    <string name="registration1_error_mobile_invalid">Invalid mobile number</string>
+
+
+    <string name="registration2_title">OTP Validation</string>
+    <string name="registration2_progressbar_msg">Validating OTP</string>
+    <string name="registration2_progressbar_resendotp_msg">Resending OTP</string>
+
+    <string name="registration3_title">Details</string>
+    <string name="registration3_progressbar_msg">Updating details ..</string>
+    <string name="registration3_error_name_blank">Name cannot blank</string>
+    <string name="registration3_error_address_blank">Address cannot blank</string>
+    <string name="registration3_error_city_blank">City cannot blank</string>
+    <string name="registration3_error_pincode_blank">Pincode cannot blank</string>
+    <string name="registration3_error_state_blank">Invalid State</string>
+    <string name="registration3_error_email_invalid">Invalid email id</string>
+
+    <string name="registration4_title">Terms And Conditions</string>
+    <string name="registration4_progressbar_msg">Updating ..</string>
+
+
+    <string name="cr_details_title">Cash Requests</string>
+
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="error_invalid_email">This email address is to short</string>
+    <string name="error_invalid_amount">Invalid amount</string>
+    <string name="error_invalid_payment_option">Please select atleast one payment option</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <string name="register_btn">Update</string>
+    <string name="registerNextBtn"><![CDATA[Next >]]></string>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="tc1">1. The Terms and Conditions binds you not to involve in any manipulative activities, trade illegal goods, consume public funds and evade taxes as well as use methods that are used to conceal these crimes and the money derived from there.</string>
+    <string name="tc2">2. The application is only a platform to help a person who is need of cash, by providing him/her cash in return of online money transfer.</string>
+    <string name="tc3">3. The person himself/herself is liable for any misuse of the platform provided - not the company.</string>
+    <string name="tc4">4. The Terms and Condition binds you not to do any illegal activities through the app described under Government of India and Reserve Bank of India</string>
+    <string name="tc_heading">Terms and Conditons</string>
 </resources>

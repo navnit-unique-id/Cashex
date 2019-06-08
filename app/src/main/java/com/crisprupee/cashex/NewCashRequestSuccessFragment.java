@@ -47,7 +47,7 @@ public class NewCashRequestSuccessFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Request Cash");
+        getActivity().setTitle(R.string.cr_details_title);
         ((TextView)view.findViewById(R.id.txtMessage)).setText(message);
         Button reqBtn = (Button) getActivity().findViewById(R.id.homeLink);
         reqBtn.setOnClickListener(new View.OnClickListener() {
