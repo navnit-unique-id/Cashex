@@ -33,7 +33,7 @@
         android:ems="10"
         android:hint="Required Amount"
         android:inputType="numberDecimal"
-        android:text="Incentive"
+        android:text="Convenience Fee"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@+id/payableAmoutLabel"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,8 @@
         android:ems="10"
         android:hint="Total Payable"
         android:inputType="numberDecimal"
-        android:text="Total Amount"
+        android:text="Total Receivable"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incentive" />
@@ -62,9 +63,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="Mode Of Payment"
+        android:text="Mode Of Transfer"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/payment_modes"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Preferred Time"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,9 +110,9 @@
         android:id="@+id/acceptBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
+        android:background="@color/lightBG"
         android:text="Accept"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,9 +122,9 @@
         android:id="@+id/completeBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
+        android:background="@color/lightBG"
         android:text="Complete"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -134,9 +135,9 @@
         android:id="@+id/comfirmBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
-        android:text="Confirm"
-        android:textColor="@android:color/white"
+        android:background="@color/lightBG"
+        android:text="Complete"
+        android:textColor="@color/colorPrimary"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -154,6 +155,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="0"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/incentive"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
@@ -170,6 +172,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="0"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toEndOf="@+id/payableAmoutLabel"
@@ -185,8 +188,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="0"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.262"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toEndOf="@+id/payableAmoutLabel"
         app:layout_constraintTop_toBottomOf="@+id/incentive" />
 
@@ -246,7 +250,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Contact"
-                app:srcCompat="@mipmap/ic_location_fg" />
+                app:srcCompat="@mipmap/location" />
 
             <TextView
                 android:id="@+id/address"
@@ -318,7 +322,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ldrContact"
-                app:srcCompat="@mipmap/ic_location_fg" />
+                app:srcCompat="@mipmap/location" />
 
             <TextView
                 android:id="@+id/ldraddress"
@@ -338,7 +342,6 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -363,11 +366,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="Transaction Id"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ldrimageView2" />
 
             <TextView
                 android:id="@+id/tranId"

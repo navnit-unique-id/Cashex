@@ -12,7 +12,7 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.crisprupee.cashex"
+        applicationId "com.inspirado.kuber"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
@@ -61,5 +61,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
 
     implementation 'commons-beanutils:commons-beanutils:1.9.3'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

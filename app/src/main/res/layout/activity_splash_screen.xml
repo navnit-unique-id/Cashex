@@ -11,9 +11,10 @@
          TextureView, etc. -->
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/ic_splash_bg"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/splash" />
 
     <!-- This FrameLayout insets its children based on system windows using

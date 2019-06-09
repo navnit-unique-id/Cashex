@@ -20,7 +20,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name (mandatory)" />
+            android:hint="Name *" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -36,7 +36,7 @@
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Address (mandatory)" />
+            android:hint="Address *" />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:hint=" State (mandatory)"
+        android:hint=" State "
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout10"
         tools:layout_editor_absoluteX="16dp">
 
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:hint="City (mandatory)"
+        android:hint="City *"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout11"
         tools:layout_editor_absoluteX="16dp">
 
@@ -69,7 +69,7 @@
             android:id="@+id/city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionHint="City (mandatory)"
+            android:completionHint="City *"
             android:hint="City" />
 
     </android.support.design.widget.TextInputLayout>
@@ -88,7 +88,7 @@
             android:id="@+id/pincode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Pin Code (mandatory)" />
+            android:hint="Pin Code *" />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -162,9 +162,9 @@
         android:id="@+id/updateBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
-        android:text="Update"
-        android:textColor="@android:color/white"
+        android:background="@color/lightBG"
+        android:text="Next"
+        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

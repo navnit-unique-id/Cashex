@@ -14,16 +14,16 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        map:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        map:layout_constraintBottom_toTopOf="@+id/regBtn"
         map:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/regBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
+        android:background="@color/lightBG"
         android:text="Next"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

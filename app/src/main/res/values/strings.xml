@@ -43,8 +43,8 @@
     <string name="login_prompt_password">Password</string>
 
 
-    <string name="registration1_prompt_username">Mobile Number (mandatory)</string>
-    <string name="registration1_prompt_password">Password (mandatory)</string>
+    <string name="registration1_prompt_username">Mobile Number*</string>
+    <string name="registration1_prompt_password">Password*</string>
     <string name="registration1_prompt_retype_password">Re-type password</string>
     <string name="registration1_prompt_mobile_number">Mobile Number (mandatory)</string>
     <string name="registration1_next_button">Next</string>
@@ -56,11 +56,11 @@
     <string name="registration1_error_mobile_invalid">Invalid mobile number</string>
 
 
-    <string name="registration2_title">OTP Validation</string>
+    <string name="registration2_title">OTP Verification</string>
     <string name="registration2_progressbar_msg">Validating OTP</string>
     <string name="registration2_progressbar_resendotp_msg">Resending OTP</string>
 
-    <string name="registration3_title">Details</string>
+    <string name="registration3_title">Address</string>
     <string name="registration3_progressbar_msg">Updating details ..</string>
     <string name="registration3_error_name_blank">Name cannot blank</string>
     <string name="registration3_error_address_blank">Address cannot blank</string>
@@ -73,7 +73,8 @@
     <string name="registration4_progressbar_msg">Updating ..</string>
 
 
-    <string name="cr_details_title">Cash Requests</string>
+    <string name="cr_details_title">Cash Request</string>
+    <string name="cr_success_title"></string>
 
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Login</string>
@@ -98,4 +99,5 @@
     <string name="tc3">3. The person himself/herself is liable for any misuse of the platform provided - not the company.</string>
     <string name="tc4">4. The Terms and Condition binds you not to do any illegal activities through the app described under Government of India and Reserve Bank of India</string>
     <string name="tc_heading">Terms and Conditons</string>
+    <string name="label_transfer_mode"><u>Mode of Transfer*</u></string>
 </resources>

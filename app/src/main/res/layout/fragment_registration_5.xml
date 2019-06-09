@@ -98,9 +98,9 @@
         android:id="@+id/tcBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorTriadic"
+        android:background="@color/lightBG"
         android:text="Accept"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
