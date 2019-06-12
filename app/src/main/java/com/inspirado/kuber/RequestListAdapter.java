@@ -60,7 +60,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                    Fragment fragment = new CashRequestDetailsFragment();
                    ((CashRequestDetailsFragment) fragment).setCashRequest(holder.cashRequest);
                    FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                   ft.replace(R.id.content_frame, fragment);
+                   ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                    ft.commit();
                }
            });

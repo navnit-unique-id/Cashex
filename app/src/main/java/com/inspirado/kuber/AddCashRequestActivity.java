@@ -36,7 +36,7 @@ public class AddCashRequestActivity extends MainActivity  {
         ((TextInputEditText)findViewById(R.id.setting_engine_number)).setText(cashRequest.getLndrTransactionId());
         ((TextInputEditText)findViewById(R.id.setting_sim)).setText(cashRequest.getLndrTransactionId());
         setTitle(cashRequest.getLndrTransactionId());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
          Button submitButton = (Button) findViewById(R.id.setting_save);
         submitButton.setOnClickListener(new View.OnClickListener() {

@@ -39,6 +39,7 @@ public class NewRegistrationSuccessFragment extends Fragment {
 
     private void goHome() {
         Intent myIntent = new Intent(getContext(), MainActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(myIntent);
     }
 

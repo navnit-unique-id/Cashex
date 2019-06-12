@@ -42,7 +42,7 @@ public class NewCashRequestSuccessFragment extends Fragment {
     private void goHome() {
         Fragment   fragment = new ICCashListFragment();
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, fragment);
+        ft.replace(R.id.content_frame, fragment).addToBackStack(null);
         ft.commit();
     }
 

@@ -43,6 +43,7 @@ public class Registration1Fragment extends Fragment {
     private RecyclerView.Adapter adapter;
     ArrayList cashRequests = new ArrayList();
     User user;
+    ProgressDialog progressDialog =null;
 
     @Nullable
     @Override
@@ -56,13 +57,13 @@ public class Registration1Fragment extends Fragment {
         getActivity().setTitle(R.string.registration1_title);
         Button nextBtn = (Button) getActivity().findViewById(R.id.next1);
         EditText userName = (EditText) getActivity().findViewById(R.id.username2);
+        progressDialog = new ProgressDialog(getContext());
         userName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     User user = new User();
                     final EditText userName = ((EditText) v);
-                    final ProgressDialog progressDialog = new ProgressDialog(getContext());
                     progressDialog.setMessage("Checking Username...");
                     progressDialog.show();
                     JsonObjectRequest jsonObjectRequest = null;
@@ -120,7 +121,6 @@ public class Registration1Fragment extends Fragment {
                 }
 
                 User user = new User();
-                final ProgressDialog progressDialog = new ProgressDialog(getContext());
                 progressDialog.setMessage("Registering...");
                 progressDialog.show();
                 JsonObjectRequest jsonObjectRequest = null;
@@ -141,8 +141,8 @@ public class Registration1Fragment extends Fragment {
                                     try {
                                         Fragment fragment = new Registration2Fragment();
                                         ((Registration2Fragment) fragment).setUser((new Gson()).fromJson(responseObj.toString(), User.class));
-                                        FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
-                                        ft.replace(R.id.registration_frame, fragment);
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.registration_frame, fragment).addToBackStack(null);;
                                         ft.commit();
                                         Util.updateSharedPref(getContext().getSharedPreferences("pref", 0), responseObj);
                                     } catch (Exception e) {
@@ -203,9 +203,13 @@ public class Registration1Fragment extends Fragment {
             }
 
         });
-
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
+        super.onDestroy();
+    }
 }
 

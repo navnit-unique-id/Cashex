@@ -86,7 +86,7 @@ public class Registration5Fragment extends Fragment {
                                     //    ((NewRegistrationSuccessFragment) fragment).setUser((new Gson()).fromJson(responseObj.toString(), User.class));
                                         FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                                         //     fragment.getMapAsync(getActivity());
-                                        ft.replace(R.id.registration_frame, fragment);
+                                        ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
                                         ft.commit();
                                         Util.updateSharedPref(getContext().getSharedPreferences("pref", 0), responseObj);
                                     } catch (Exception e) {

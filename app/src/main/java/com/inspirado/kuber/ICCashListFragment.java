@@ -82,8 +82,8 @@ public class ICCashListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new NewCashRequestFragment();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, fragment);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                 ft.commit();
             }
         });

@@ -74,7 +74,8 @@ public class NewCashRequestFragment extends Fragment {
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-            }
+             }
+
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -84,9 +85,12 @@ public class NewCashRequestFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if (s.length() != 0)
-                    charges.setText((Double.parseDouble(s + "") * .01) + "");
-                payableAmount.setText((Double.parseDouble(s + "") * 1.01) + "");
+                if ((amount.getText().toString().equalsIgnoreCase(""))) {
+                    amount.setText("0");
+                }
+                charges.setText((Double.parseDouble(amount.getText().toString() + "") * .01) + "");
+                payableAmount.setText((Double.parseDouble(amount.getText().toString() + "") * 1.01) + "");
+
             }
         });
 
@@ -120,7 +124,8 @@ public class NewCashRequestFragment extends Fragment {
             }
             if (((CheckBox) getActivity().findViewById(R.id.isGpayPreferred)).isChecked()) {
                 paymentMode = paymentMode + "," + "4";
-            } if (((CheckBox) getActivity().findViewById(R.id.isBhimPreferred)).isChecked()) {
+            }
+            if (((CheckBox) getActivity().findViewById(R.id.isBhimPreferred)).isChecked()) {
                 paymentMode = paymentMode + "," + "5";
             }
             cashRequest.setPaymentSlot(paymentSlot.getSelectedItem().toString());
@@ -158,7 +163,7 @@ public class NewCashRequestFragment extends Fragment {
                                 Fragment fragment = new NewCashRequestSuccessFragment();
                                 ((NewCashRequestSuccessFragment) fragment).setMessage("Your cash request has been successfully created. Please wait for someone to accept your request.");
                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                ft.replace(R.id.content_frame, fragment);
+                                ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                                 ft.commit();
                             } catch (Exception e) {
                                 //   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();

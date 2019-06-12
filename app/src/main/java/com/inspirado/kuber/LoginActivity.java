@@ -11,6 +11,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -152,6 +155,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if ((drawer != null) && (drawer.isDrawerOpen(GravityCompat.START))) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            int count = getSupportFragmentManager().getBackStackEntryCount();
+            if (count == 0) {
+                super.onBackPressed();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
+
+
     private boolean isusernameValid(String username) {
         //TODO: Replace this with your own logic
         return username.length() > 1;
@@ -250,14 +269,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         user = (new Gson()).fromJson(response.toString(), User.class);
                         editor.commit();
                         int status = user.getStatus();
-                        if (status == 1) {
+                        if ((status == 1)||(status == 2)||(status == 3)||(status == 4)) {
                             Intent myIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
-                            startActivity(myIntent);
-                        } else if (status == 2) {
-                            Intent myIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP  | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(myIntent);
                         } else {
                             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(myIntent);
                         }
                         showProgress(false);

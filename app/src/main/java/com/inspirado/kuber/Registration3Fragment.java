@@ -101,7 +101,8 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     Fragment fragment = new Registration4Fragment();
                     ((Registration4Fragment) fragment).setUser(user);
                     FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.registration_frame, fragment);
+                    ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
+                    ;
                     ft.commit();
                     progressDialog.dismiss();
                 } catch (Exception e) {
@@ -118,21 +119,19 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             if (ContextCompat.checkSelfPermission(getContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-               /* buildGoogleApiClient();
+                buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
-                mMap.setOnMarkerDragListener(this);*/
+                mMap.setOnMarkerDragListener(this);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
             }
-        }/* else {
+        } else {
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
             mMap.setOnMarkerDragListener(this);
-        }*/
-        buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
-        mMap.setOnMarkerDragListener(this);
+        }
+
 
     }
 
@@ -178,6 +177,9 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     .make(getView(), "Address: " +
                             address + " " + city, Snackbar.LENGTH_LONG).show();
         } catch (IOException e) {
+            Snackbar
+                    .make(getView(), "Error fetching address", Snackbar.LENGTH_LONG).show();
+
             e.printStackTrace();
         }
     }
@@ -194,10 +196,10 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(60000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(5000);
+     //   mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setSmallestDisplacement(10);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -268,17 +270,12 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(getContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        if (mGoogleApiClient == null) {
-                            buildGoogleApiClient();
-                        }
-                        mMap.setMyLocationEnabled(true);
+                    if (mGoogleApiClient == null) {
+                        buildGoogleApiClient();
                     }
+                    mMap.setMyLocationEnabled(true);
+                    mMap.setOnMarkerDragListener(this);
                 } else {
-
                     //  Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
                     Snackbar
                             .make(getView(), "permission denied", Snackbar.LENGTH_LONG).show();

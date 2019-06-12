@@ -79,7 +79,7 @@ public class OGCashListFragment extends Fragment {
             public void onClick(View view) {
                 Fragment fragment = new NewCashRequestFragment();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, fragment);
+                ft.replace(R.id.content_frame, fragment).addToBackStack(null);;
                 ft.commit();
             }
         });

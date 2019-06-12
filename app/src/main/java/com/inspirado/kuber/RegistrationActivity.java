@@ -30,10 +30,15 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if ((drawer!=null)&&(drawer.isDrawerOpen(GravityCompat.START))) {
+        if ((drawer != null) && (drawer.isDrawerOpen(GravityCompat.START))) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int count = getSupportFragmentManager().getBackStackEntryCount();
+            if (count == 0) {
+                super.onBackPressed();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
         }
     }
 

@@ -201,7 +201,7 @@ public class CashRequestDetailsFragment extends Fragment {
                                 Fragment fragment = new NewCashRequestSuccessFragment();
                                 ((NewCashRequestSuccessFragment) fragment).setMessage("You have successfully accepted the cash request");
                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                ft.replace(R.id.content_frame, fragment);
+                                ft.replace(R.id.content_frame, fragment).addToBackStack(null);;
                                 ft.commit();
                             } catch (Exception e) {
                                // Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -320,7 +320,7 @@ public class CashRequestDetailsFragment extends Fragment {
                                         Fragment fragment = new NewCashRequestSuccessFragment();
                                         ((NewCashRequestSuccessFragment) fragment).setMessage("Request completed successfully");
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                        ft.replace(R.id.content_frame, fragment);
+                                        ft.replace(R.id.content_frame, fragment).addToBackStack(null);;
                                         ft.commit();
                                     } catch (Exception e) {
                                       //  Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -410,8 +410,8 @@ public class CashRequestDetailsFragment extends Fragment {
                                     try {
                                         Fragment fragment = new NewCashRequestSuccessFragment();
                                         ((NewCashRequestSuccessFragment) fragment).setMessage("You have successfully completed the cash request");
-                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                        ft.replace(R.id.content_frame, fragment);
+                                        FragmentTransaction ft =  getFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment).addToBackStack(null);;
                                         ft.commit();
                                     } catch (Exception e) {
                                      //   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
