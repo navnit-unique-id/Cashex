@@ -161,7 +161,7 @@ public class NewCashRequestFragment extends Fragment {
                         public void onResponse(JSONObject responseObj) {
                             try {
                                 Fragment fragment = new NewCashRequestSuccessFragment();
-                                ((NewCashRequestSuccessFragment) fragment).setMessage("Your cash request has been successfully created. Please wait for someone to accept your request.");
+                                ((NewCashRequestSuccessFragment) fragment).setMessage("Cash request created. Please wait for someone to accept your request.");
                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                 ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                                 ft.commit();

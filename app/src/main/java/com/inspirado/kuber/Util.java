@@ -41,7 +41,7 @@ public class Util implements Serializable {
         paymentOptions.put("2","phonePe");
         paymentOptions.put("3","paytm");
         paymentOptions.put("4","GPay");
-        paymentOptions.put("2","BHIM");
+        paymentOptions.put("5","BHIM");
 
         statusTable = new Hashtable<>();
         statusTable.put(1,"Awaiting Acceptance");
