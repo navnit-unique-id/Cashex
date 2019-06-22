@@ -62,7 +62,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
     LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-
+    Geocoder geocoder;
     public User getUser() {
         return user;
     }
@@ -80,6 +80,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -160,7 +161,6 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
 
     private void updateUserDetails(Marker marker) {
         LatLng position = marker.getPosition();
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses;
         try {
             addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1);
@@ -173,9 +173,11 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             user.setLat(position.latitude);
             user.setLng(position.longitude);
             //     Toast.makeText(getContext(), "Address: " +                    address + " " + city, Toast.LENGTH_LONG).show();
-            Snackbar
-                    .make(getView(), "Address: " +
-                            address + " " + city, Snackbar.LENGTH_LONG).show();
+            if(getActivity()!=null){
+                Snackbar
+                        .make(getActivity().findViewById(android.R.id.content), "Address: " +
+                                address + " " + city, Snackbar.LENGTH_LONG).show();
+            }
         } catch (IOException e) {
             Snackbar
                     .make(getView(), "Error fetching address", Snackbar.LENGTH_LONG).show();

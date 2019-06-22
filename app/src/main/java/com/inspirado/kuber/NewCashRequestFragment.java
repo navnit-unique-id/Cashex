@@ -107,9 +107,9 @@ public class NewCashRequestFragment extends Fragment {
         try {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            cashRequest.setAmount(Double.parseDouble(amount.getText().toString()));
-            cashRequest.setIncentive(Double.parseDouble(charges.getText().toString()));
-            cashRequest.setPayableAmout(Double.parseDouble(payableAmount.getText().toString()));
+            cashRequest.setAmount(Double.parseDouble("0"+amount.getText().toString()));
+            cashRequest.setIncentive(Double.parseDouble("0"+charges.getText().toString()));
+            cashRequest.setPayableAmout(Double.parseDouble("0"+payableAmount.getText().toString()));
 
             //      postData.put("amount", ((EditText) getActivity().findViewById(R.id.amountLabel)).getText());
             //      postData.put("payableAmout", ((EditText) getActivity().findViewById(R.id.payableAmoutLabel)).getText());

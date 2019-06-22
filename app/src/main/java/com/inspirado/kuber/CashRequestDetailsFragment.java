@@ -124,7 +124,7 @@ public class CashRequestDetailsFragment extends Fragment {
         if (( !cashRequest.getRequesterId().equals(user.getId()) ) && (cashRequest.getStatus() == 1)) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
-            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
+          //  ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
             acceptBtn.setVisibility(View.VISIBLE);
             acceptBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,7 +137,7 @@ public class CashRequestDetailsFragment extends Fragment {
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 2)) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.VISIBLE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
-            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
+          //  ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
             completeBtn.setVisibility(View.VISIBLE);
             completeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,7 +150,7 @@ public class CashRequestDetailsFragment extends Fragment {
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.VISIBLE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
-            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
+          //  ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
 
 
@@ -158,11 +158,13 @@ public class CashRequestDetailsFragment extends Fragment {
         if ((cashRequest.getRequesterId().equals(user.getId())) && ((cashRequest.getStatus() == 1))) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
+            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
 
         if ((cashRequest.getRequesterId().equals(user.getId())) && ((cashRequest.getStatus() == 2))) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
+            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
         Button confirmBtn = (Button) getActivity().findViewById(R.id.comfirmBtn);
         if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
@@ -175,6 +177,12 @@ public class CashRequestDetailsFragment extends Fragment {
                     confirmRequest();
                 }
             });
+            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
+        }
+        if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 4)) {
+            ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
+            ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
+            ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
     }
 

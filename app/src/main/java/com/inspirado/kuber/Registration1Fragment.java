@@ -80,7 +80,7 @@ public class Registration1Fragment extends Fragment {
                                         } catch (Exception e) {
                                            // Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                             Snackbar
-                                                    .make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                                    .make(getActivity().findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
                                         }
                                         progressDialog.dismiss();
                                     }
@@ -88,12 +88,13 @@ public class Registration1Fragment extends Fragment {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
+                                        if(error.networkResponse==null){
+                                            Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                        }
                                         if(error.networkResponse.statusCode==404){
 
                                         }else{
-                                          //  Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                                            Snackbar
-                                                    .make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                            Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
                                         }
                                         progressDialog.dismiss();
                                     }

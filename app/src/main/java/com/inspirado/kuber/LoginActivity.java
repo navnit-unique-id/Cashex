@@ -36,6 +36,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+
 /**
  * A login screen that offers login via username/password.
  */
@@ -260,7 +262,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             try {
-                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/users" + "?username=" + mUsername + "&password=" + mPassword, null, new Response.Listener<JSONObject>() {
+                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) +"/users?username="+  URLEncoder.encode( mUsername,"UTF-8") + "&password=" +  URLEncoder.encode(mPassword,"UTF-8"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
