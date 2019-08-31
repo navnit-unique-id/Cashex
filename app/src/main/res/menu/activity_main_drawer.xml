@@ -9,21 +9,38 @@
             android:id="@+id/ic_cash_requests"
             android:checkable="true"
             android:checked="true"
-            android:title="Home" />
+            android:enabled="true"
+            android:icon="@drawable/ic_menu_home"
+            android:title="Home"
+            android:visible="true" />
     </group>
     <group android:id="@+id/grp2" >
         <item
             android:id="@+id/og_cash_requests"
+            android:icon="@drawable/baseline_move_to_inbox_black_18dp"
             android:title="My Requests" />
+    </group>
+    <group android:id="@+id/grp3" >
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/baseline_account_circle_black_18dp"
+            android:title="My Profile" />
+    </group>
+    <group android:id="@+id/grp4" >
+        <item
+            android:id="@+id/about"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="About" />
     </group>
 <!--    <group android:id="@+id/grp3" >
         <item
             android:id="@+id/nav_notifications"
             android:title="Help" />
     </group>-->
-    <group android:id="@+id/grp4" android:checkableBehavior="single">
+    <group android:id="@+id/grp5" android:checkableBehavior="single">
         <item
             android:id="@+id/logout"
+            android:icon="@drawable/baseline_settings_power_black_18dp"
             android:title="Logout" />
     </group>
 

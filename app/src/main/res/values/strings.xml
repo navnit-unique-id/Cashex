@@ -72,6 +72,7 @@
     <string name="registration4_title">Terms And Conditions</string>
     <string name="registration4_progressbar_msg">Updating ..</string>
 
+    <string name="profile_title">Profile</string>
 
     <string name="cr_details_title">Cash Request</string>
     <string name="cr_success_title"></string>

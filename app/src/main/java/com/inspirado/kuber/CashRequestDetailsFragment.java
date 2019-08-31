@@ -87,6 +87,7 @@ public class CashRequestDetailsFragment extends Fragment {
         ((TextView) getActivity().findViewById(R.id.phone)).setText(cashRequest.getRequestor().getMobileNumber());
         ((TextView) getActivity().findViewById(R.id.tranId)).setText(cashRequest.getLndrTransactionId());
         if(cashRequest.getLender()!=null){
+            ((TextView) getActivity().findViewById(R.id.ldrName)).setText(cashRequest.getLender().getName() );
             ((TextView) getActivity().findViewById(R.id.ldraddress)).setText(cashRequest.getLender().getAddress() + "\n" + cashRequest.getRequestor().getCity() + ", " + cashRequest.getLender().getState() + " -  " + cashRequest.getLender().getPinCode());
             ((TextView) getActivity().findViewById(R.id.ldrphone)).setText(cashRequest.getLender().getMobileNumber());
 

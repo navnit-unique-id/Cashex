@@ -137,14 +137,6 @@ public class MainActivity extends AppCompatActivity
 
         navUsername.setText(user.getName());
         navigationView.setNavigationItemSelectedListener(this);
-        /*IntentFilter filter = new IntentFilter("1003");
-        filter.addAction("1001");
-        filter.addAction("1002");
-        filter.addAction("1003");
-        filter.addAction("2");
-        filter.addAction("12");
-        filter.addAction("17");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);*/
     }
 
 
@@ -236,9 +228,36 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkForUpdates() {
-        final AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+        // Creates instance of the manager.
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+
+// Returns an intent object that you use to check for an update.
         com.google.android.play.core.tasks.Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-        appUpdateInfoTask.addOnSuccessListener(new OnSuccessListener<AppUpdateInfo>() {
+
+// Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+/*            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {*/
+                try{
+                    appUpdateManager.startUpdateFlowForResult(
+                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                            appUpdateInfo,
+                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                            AppUpdateType.IMMEDIATE,
+                            // The current activity making the update request.
+                            this,
+                            // Include a request code to later monitor this update request.
+                            1);
+                }catch (Exception e){
+
+                }
+
+          //  }
+        });
+
+
+       /* appUpdateInfoTask.addOnSuccessListener(new OnSuccessListener<AppUpdateInfo>() {
             @Override
             public void onSuccess(AppUpdateInfo appUpdateInfo) {
                 if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
@@ -254,7 +273,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             }
-        });
+        });*/
         this.VERSIONCHECKED = true;
     }
 
@@ -270,6 +289,12 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.og_cash_requests:
                 fragment = new OGCashListFragment();
+                break;
+            case R.id.profile:
+                fragment = new ProfileFragment();
+                break;
+            case R.id.about:
+                fragment = new AboutFragment();
                 break;
             case R.id.logout:
                 logout();

@@ -321,7 +321,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ldrContact"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7"
                 app:srcCompat="@mipmap/location" />
 
             <TextView
@@ -330,10 +330,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
                 android:text="Address"
                 app:layout_constraintStart_toEndOf="@+id/ldrimageView"
-                app:layout_constraintTop_toBottomOf="@+id/ldrContact" />
+                app:layout_constraintTop_toTopOf="@+id/ldrimageView" />
 
 
             <ImageView
@@ -345,7 +344,7 @@
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ldraddress"
+                app:layout_constraintTop_toBottomOf="@+id/ldrimageView"
                 app:srcCompat="@mipmap/ic_phone_fg" />
 
             <TextView
@@ -358,7 +357,8 @@
                 android:text="Phone"
                 app:layout_constraintBottom_toTopOf="@+id/tranIdLbl"
                 app:layout_constraintStart_toEndOf="@+id/ldrimageView2"
-                app:layout_constraintTop_toTopOf="@+id/ldrimageView2" />
+                app:layout_constraintTop_toTopOf="@+id/ldrimageView2"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/tranIdLbl"
@@ -384,6 +384,27 @@
                 android:text="tranId"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tranIdLbl" />
+
+            <TextView
+                android:id="@+id/ldrName"
+                android:layout_width="107dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Name"
+                app:layout_constraintStart_toEndOf="@+id/imageView7"
+                app:layout_constraintTop_toTopOf="@+id/imageView7" />
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="34dp"
+                android:layout_height="31dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ldrContact"
+                app:srcCompat="@mipmap/avatar" />
 
 
         </android.support.constraint.ConstraintLayout>

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,12 +15,17 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 //import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -27,6 +34,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -34,6 +42,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Created by Belal on 18/09/16.
@@ -152,6 +164,8 @@ public class ICCashListFragment extends Fragment {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" + resource + "?id=" + user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
+                list.setBackground(null);
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -164,6 +178,9 @@ public class ICCashListFragment extends Fragment {
                 }
                 ((RequestListAdapter) adapter).setRequests(cashRequests);
                 adapter.notifyDataSetChanged();
+               if(response.length()==0){
+                   list.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.not_found));
+               }
                 progressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
@@ -187,6 +204,36 @@ public class ICCashListFragment extends Fragment {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
+    }
+
+    private void showNoRecord(){
+        RecyclerView noList = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
+        noList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.not_found));
+    }
+
+    private void ShowIntro() {
+        FloatingActionButton addButton = (FloatingActionButton) getActivity().findViewById(R.id.addCashRequest);
+        new MaterialShowcaseView.Builder(getActivity())
+                .setTarget(addButton)
+                .setDismissText("GOT IT")
+                .setMaskColour(Color.argb(150, 0, 0, 0))
+                .setContentText("No Active Requests. Click this button to raise a new Cash Request")
+            //    .setDelay(5000) // optional but starting animations immediately in onCreate can make them choppy
+           //     .singleUse(1) // provide a unique ID used to ensure it is only shown once
+                .show();
+
+        // sequence example
+      /*  ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+        sequence.addSequenceItem(mButtonOne,
+                "This is button one", "GOT IT");
+        sequence.addSequenceItem(mButtonTwo,
+                "This is button two", "GOT IT");
+        sequence.addSequenceItem(mButtonThree,
+                "This is button three", "GOT IT");
+        sequence.start();*/
     }
 
     private String getStringFromJson(JSONObject jsonObject, String key) {
