@@ -24,15 +24,9 @@
         <item
             android:id="@+id/profile"
             android:icon="@drawable/baseline_account_circle_black_18dp"
-            android:title="My Profile" />
+            android:title="Profile" />
     </group>
-    <group android:id="@+id/grp4" >
-        <item
-            android:id="@+id/about"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="About" />
-    </group>
-<!--    <group android:id="@+id/grp3" >
+    <!--    <group android:id="@+id/grp3" >
         <item
             android:id="@+id/nav_notifications"
             android:title="Help" />

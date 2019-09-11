@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="86dp"
@@ -52,6 +52,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="-32dp" />
 
 </android.support.constraint.ConstraintLayout>

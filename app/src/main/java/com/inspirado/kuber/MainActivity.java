@@ -293,9 +293,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.profile:
                 fragment = new ProfileFragment();
                 break;
-            case R.id.about:
+/*            case R.id.about:
                 fragment = new AboutFragment();
-                break;
+                break;*/
             case R.id.logout:
                 logout();
                 //  fragment = new Menu3();

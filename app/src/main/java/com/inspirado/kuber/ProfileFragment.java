@@ -89,7 +89,10 @@ public class ProfileFragment extends Fragment {
         ((TextView) getActivity().findViewById(R.id.city)).setText(user.getCity());
         ((TextView) getActivity().findViewById(R.id.pincode)).setText(user.getPinCode());
         ((TextView) getActivity().findViewById(R.id.email)).setText(user.getEmail());
-     //   ((RadioGroup) getActivity().findViewById(R.id.radioGroup)).setText(user.getEmail());
+        ((TextView) getActivity().findViewById(R.id.referral)).setText(user.getMobileNumber());
+        ((TextView) getActivity().findViewById(R.id.phone)).setText(user.getMobileNumber());
+
+        //   ((RadioGroup) getActivity().findViewById(R.id.radioGroup)).setText(user.getEmail());
 
     }
 

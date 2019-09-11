@@ -4,29 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/fui_body_padding_bottom">
+    android:layout_height="match_parent">
 
 
     <LinearLayout
         android:id="@+id/textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView19"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Name:" />
+            android:text="Name:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Name *" />
+            android:hint="Name *"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -34,21 +39,27 @@
         android:id="@+id/textInputLayout10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <TextView
             android:id="@+id/textView26"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Address:" />
+            android:text="Address:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Address *" />
+            android:hint="Address *"
+            android:textSize="16sp" />
     </LinearLayout>
 
 
@@ -56,21 +67,27 @@
         android:id="@+id/textInputLayout11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout10">
 
         <TextView
             android:id="@+id/textView27"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="State:" />
+            android:text="State:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="State" />
+            android:text="State"
+            android:textSize="16sp" />
     </LinearLayout>
 
 
@@ -78,21 +95,27 @@
         android:id="@+id/textInputLayout12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
 
         <TextView
             android:id="@+id/textView28"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="City:" />
+            android:text="City:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="City" />
+            android:hint="City"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -101,21 +124,27 @@
         android:id="@+id/textInputLayout13"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout12">
 
         <TextView
             android:id="@+id/textView29"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Pin:" />
+            android:text="Pin:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/pincode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Pin Code *" />
+            android:hint="Pin Code *"
+            android:textSize="16sp" />
     </LinearLayout>
 
 
@@ -123,44 +152,95 @@
         android:id="@+id/textInputLayout14"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout13">
 
         <TextView
             android:id="@+id/textView30"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Email:" />
+            android:text="Email:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Email" />
+            android:hint="Email"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/textInputLayout19"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout14">
 
         <TextView
             android:id="@+id/textView31"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Referral:" />
+            android:text="Referral:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/referral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Referral Code"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textSize="16sp" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout19">
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="Phone:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="71dp"
+            tools:layout_editor_absoluteY="352dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView38"
+        android:layout_width="444dp"
+        android:layout_height="46dp"
+        android:background="@color/lightBG"
+        android:gravity="center_vertical"
+        android:text=" V 8.0  \n Release Date: 31-Aug-2019"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
