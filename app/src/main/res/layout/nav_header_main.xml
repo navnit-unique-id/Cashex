@@ -15,13 +15,13 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circularImageId"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="189dp"
+        android:layout_height="163dp"
         android:layout_gravity="center"
         android:layout_margin="@dimen/fui_body_padding_bottom"
         android:layout_marginStart="8dp"
         android:background="@color/colorPrimary"
-        android:src="@mipmap/avatar_round" />
+        android:src="@mipmap/home_round" />
 
     <TextView
         android:id="@+id/user_name"

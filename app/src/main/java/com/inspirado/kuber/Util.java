@@ -38,8 +38,8 @@ public class Util implements Serializable {
     static{
         paymentOptions = new Hashtable();
         paymentOptions.put("1","Bank A/C Transfer");
-        paymentOptions.put("2","phonePe");
-        paymentOptions.put("3","paytm");
+        paymentOptions.put("2","PhonePe");
+        paymentOptions.put("3","Paytm");
         paymentOptions.put("4","GPay");
         paymentOptions.put("5","BHIM");
 

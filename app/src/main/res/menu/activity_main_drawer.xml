@@ -14,14 +14,16 @@
             android:title="Home"
             android:visible="true" />
     </group>
-    <group android:id="@+id/grp2" >
+    <group android:id="@+id/grp2" android:checkableBehavior="single" >
         <item
+            android:checkable="true"
             android:id="@+id/og_cash_requests"
-            android:icon="@drawable/baseline_move_to_inbox_black_18dp"
+            android:icon="@drawable/inbox"
             android:title="My Requests" />
     </group>
-    <group android:id="@+id/grp3" >
+    <group android:id="@+id/grp3" android:checkableBehavior="single" >
         <item
+            android:checkable="true"
             android:id="@+id/profile"
             android:icon="@drawable/baseline_account_circle_black_18dp"
             android:title="Profile" />

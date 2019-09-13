@@ -14,10 +14,11 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         app:backgroundTint="@color/colorPrimary"
+        app:fabCustomSize="100dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="86dp"
+        app:maxImageSize="156dp"
         app:srcCompat="@mipmap/ic_add_new_fg" />
 
     <android.support.v7.widget.RecyclerView

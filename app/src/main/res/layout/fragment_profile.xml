@@ -236,7 +236,7 @@
         android:layout_height="46dp"
         android:background="@color/lightBG"
         android:gravity="center_vertical"
-        android:text=" V 8.0  \n Release Date: 31-Aug-2019"
+        android:text=" V 9.0  \n Release Date: 13-Sep-2019"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

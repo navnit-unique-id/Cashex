@@ -223,6 +223,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
+        item.setChecked(true);
+        item.setEnabled(true);
         displaySelectedScreen(item.getItemId());
         return true;
     }

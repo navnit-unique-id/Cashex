@@ -103,10 +103,10 @@ public class CashRequestDetailsFragment extends Fragment {
                 // (getActivity().findViewById(R.id.isBankPreferred)).setVisibility(1);
             }
             if (token.equalsIgnoreCase("2")) {
-                paymentModeStr = "Phonepe";
+                paymentModeStr = "PhonePe";
             }
             if (token.equalsIgnoreCase("3")) {
-                paymentModeStr = "PayTM";
+                paymentModeStr = "Paytm";
             }
             if (token.equalsIgnoreCase("4")) {
                 paymentModeStr = "GPay ";
