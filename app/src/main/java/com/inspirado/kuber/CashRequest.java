@@ -30,6 +30,12 @@ public class CashRequest  implements Serializable {
     User requestor;
     User lender;
 
+    float lndrRating;
+    float rcvrRating;
+
+    String rcvrFeedback;
+    String lndrFeedback;
+
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
     }
@@ -259,5 +265,37 @@ public class CashRequest  implements Serializable {
 
     public void setRcvrLng(double rcvrLng) {
         this.rcvrLng = rcvrLng;
+    }
+
+    public float getLndrRating() {
+        return lndrRating;
+    }
+
+    public void setLndrRating(float lndrRating) {
+        this.lndrRating = lndrRating;
+    }
+
+    public float getRcvrRating() {
+        return rcvrRating;
+    }
+
+    public void setRcvrRating(float rcvrRating) {
+        this.rcvrRating = rcvrRating;
+    }
+
+    public String getRcvrFeedback() {
+        return rcvrFeedback;
+    }
+
+    public void setRcvrFeedback(String rcvrFeedback) {
+        this.rcvrFeedback = rcvrFeedback;
+    }
+
+    public String getLndrFeedback() {
+        return lndrFeedback;
+    }
+
+    public void setLndrFeedback(String lndrFeedback) {
+        this.lndrFeedback = lndrFeedback;
     }
 }

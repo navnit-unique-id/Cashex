@@ -12,8 +12,9 @@
     <string name="firebase_path" translatable="false">columbus-mobile</string>
     <string name="firebase_email" translatable="false">columbus-dev@gmail.com</string>
     <string name="firebase_password" translatable="false">testing@123</string>
-   <!-- <string name="columbus_ms_url" translatable="false">http://10.0.2.2:8080</string>-->
+    <!--<string name="columbus_ms_url" translatable="false">http://10.0.2.2:8080</string>-->
     <string name="columbus_ms_url" translatable="false">http://34.74.60.4:8080</string>
+    <!--<string name="notification_ms_url" translatable="false">http://10.0.2.2:8090</string>-->
     <string name="notification_ms_url" translatable="false">http://34.74.60.4:8090</string>
 
     <string name="title_activity_replay">Map</string>
@@ -37,10 +38,15 @@
 
     </string-array>
     <string name="title_activity_login">Login</string>
+    <string name="title_activity_change_pwd">Change Password</string>
+    <string name="title_activity_upgrade">Upgrade Version</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="login_prompt_username">User Name</string>
     <string name="login_prompt_password">Password</string>
+    <string name="pwd_prompt_password">New Password</string>
+    <string name="pwd_prompt_password1">Confirm New Password</string>
 
 
     <string name="registration1_prompt_username">Mobile Number*</string>
@@ -85,6 +91,9 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_pwd_dont_match">Password does not match</string>
+    <string name="msg_pwd_changed">Password changed. Please login.</string>
+
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -101,4 +110,10 @@
     <string name="tc4">4. The Terms and Condition binds you not to do any illegal activities through the app described under Government of India and Reserve Bank of India</string>
     <string name="tc_heading">Terms and Conditons</string>
     <string name="label_transfer_mode"><u>Mode of Transfer*</u></string>
+
+    <string name="rateLabel1">Rate</string>
+    <string name="rateLabel2">for the transaction !!</string>
+    <string name="frsLabel1">FRS </string>
+
+
 </resources>

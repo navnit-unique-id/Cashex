@@ -110,7 +110,7 @@ public class ICCashListFragment extends Fragment {
         //   tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mList = getActivity().findViewById(R.id.ic_cash_list);
         cashRequests = new ArrayList<>();
-        adapter = new RequestListAdapter(getContext(), cashRequests);
+        adapter = new RequestListAdapter(getContext(), cashRequests, user);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mList.setHasFixedSize(true);
@@ -128,15 +128,11 @@ public class ICCashListFragment extends Fragment {
                     getData(false, 2);
                 }
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
@@ -147,6 +143,7 @@ public class ICCashListFragment extends Fragment {
         String resource = "";
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Fetching Cash Requests...");
+        final RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
         if (!silent) {
             progressDialog.show();
         }
@@ -164,8 +161,9 @@ public class ICCashListFragment extends Fragment {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" + resource + "?id=" + user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
-                list.setBackground(null);
+             //   list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
+                if(list!=null)
+                    list.setBackground(null);
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -178,8 +176,8 @@ public class ICCashListFragment extends Fragment {
                 }
                 ((RequestListAdapter) adapter).setRequests(cashRequests);
                 adapter.notifyDataSetChanged();
-               if(response.length()==0){
-                   list.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.not_found));
+               if((response.length()==0) && (list!=null)){
+                   list.setBackground(getContext().getResources().getDrawable(R.drawable.not_found));
                }
                 progressDialog.dismiss();
             }
@@ -221,19 +219,6 @@ public class ICCashListFragment extends Fragment {
             //    .setDelay(5000) // optional but starting animations immediately in onCreate can make them choppy
            //     .singleUse(1) // provide a unique ID used to ensure it is only shown once
                 .show();
-
-        // sequence example
-      /*  ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500); // half second between each showcase view
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
-        sequence.setConfig(config);
-        sequence.addSequenceItem(mButtonOne,
-                "This is button one", "GOT IT");
-        sequence.addSequenceItem(mButtonTwo,
-                "This is button two", "GOT IT");
-        sequence.addSequenceItem(mButtonThree,
-                "This is button three", "GOT IT");
-        sequence.start();*/
     }
 
     private String getStringFromJson(JSONObject jsonObject, String key) {

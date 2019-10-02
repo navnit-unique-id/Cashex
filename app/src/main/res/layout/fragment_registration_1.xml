@@ -49,7 +49,7 @@
             app:layout_constraintTop_toTopOf="@+id/login_progress" />
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout18"
+            android:id="@+id/textInputLayout19"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/next1"

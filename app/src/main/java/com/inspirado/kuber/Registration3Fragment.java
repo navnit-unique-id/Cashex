@@ -180,7 +180,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             }
         } catch (IOException e) {
             Snackbar
-                    .make(getView(), "Error fetching address", Snackbar.LENGTH_LONG).show();
+                    .make(getActivity().findViewById(android.R.id.content), "Error fetching address", Snackbar.LENGTH_LONG).show();
 
             e.printStackTrace();
         }

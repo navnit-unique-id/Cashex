@@ -91,7 +91,7 @@ public class OGCashListFragment extends Fragment {
     private void showOGList( ){
         mList = getActivity().findViewById(R.id.og_cash_requests);
         cashRequests = new ArrayList<>();
-        adapter = new RequestListAdapter(getContext(), cashRequests);
+        adapter = new RequestListAdapter(getContext(), cashRequests, user);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mList.setHasFixedSize(true);
@@ -116,6 +116,7 @@ public class OGCashListFragment extends Fragment {
     public void getData(final boolean  silent, int type) {
         String resource="";
       //  final ProgressDialog progressDialog =null;
+        final RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
         if(!silent){
         //    final ProgressDialog progressDialog = new ProgressDialog(getContext());
             progressDialog.setMessage("Fetching Cash Requests...");
@@ -135,8 +136,9 @@ public class OGCashListFragment extends Fragment {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" +resource+"?id="+user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.og_cash_requests);
-                list.setBackground(null);
+              //  RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.og_cash_requests);
+                if(list!=null)
+                    list.setBackground(null);
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -150,9 +152,10 @@ public class OGCashListFragment extends Fragment {
                     }
                 }
                 ((RequestListAdapter) adapter).setRequests(cashRequests);
+                ((RequestListAdapter) adapter).setUser(user);
                 adapter.notifyDataSetChanged();
-                if(response.length()==0){
-                    list.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.not_found));
+                if((response.length()==0) && (list!=null)){
+                    list.setBackground(getContext().getResources().getDrawable(R.drawable.not_found));
                 }
                 progressDialog.dismiss();
             }

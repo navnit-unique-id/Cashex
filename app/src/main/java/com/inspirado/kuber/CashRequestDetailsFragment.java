@@ -14,14 +14,17 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 //import android.widget.Toast;
@@ -80,6 +83,8 @@ public class CashRequestDetailsFragment extends Fragment {
         String payableLbl ="Total Recievable";
         Button acceptBtn = (Button) getActivity().findViewById(R.id.acceptBtn);
         ((TextView) getActivity().findViewById(R.id.name)).setText(cashRequest.getRequestor().getName() + "");
+        ((TextView) getActivity().findViewById(R.id.frs)).setText("FRS "+cashRequest.getRequestor().getOverallScore() + "");
+
         ((TextView) getActivity().findViewById(R.id.incentive)).setText(cashRequest.getIncentive() + "");
         ((TextView) getActivity().findViewById(R.id.amount)).setText(cashRequest.getAmount() + "");
         ((TextView) getActivity().findViewById(R.id.payableAmout)).setText(cashRequest.getPayableAmout() + "");
@@ -88,6 +93,7 @@ public class CashRequestDetailsFragment extends Fragment {
         ((TextView) getActivity().findViewById(R.id.tranId)).setText(cashRequest.getLndrTransactionId());
         if(cashRequest.getLender()!=null){
             ((TextView) getActivity().findViewById(R.id.ldrName)).setText(cashRequest.getLender().getName() );
+            ((TextView) getActivity().findViewById(R.id.lndrFRS)).setText("FRS "+cashRequest.getLender().getOverallScore() );
             ((TextView) getActivity().findViewById(R.id.ldraddress)).setText(cashRequest.getLender().getAddress() + "\n" + cashRequest.getRequestor().getCity() + ", " + cashRequest.getLender().getState() + " -  " + cashRequest.getLender().getPinCode());
             ((TextView) getActivity().findViewById(R.id.ldrphone)).setText(cashRequest.getLender().getMobileNumber());
 
@@ -266,22 +272,18 @@ public class CashRequestDetailsFragment extends Fragment {
     private void completeRequest() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Completing...");
-        //   progressDialog.show();
-        //   final JsonObjectRequest jsonObjectRequest = null;
-     //   final JSONObject postData = new JSONObject();
-        //  String paymentMode = "";
         Button showPopupBtn, submitPopupBtn, closePopupBtn;
         final PopupWindow popupWindow;
         ConstraintLayout constraintLayout = (ConstraintLayout) getActivity().findViewById(R.id.constraintLayout);
         try {
             LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View customView = layoutInflater.inflate(R.layout.popup_cash_req_confirm, null);
-            //customView.setBackgroundDrawable(new BitmapDrawable());
+            ((TextView) customView.findViewById(R.id.rateText)).setText(getString(R.string.rateLabel1) + " " +cashRequest.getRequestor().getName() +" " + getString( R.string.rateLabel2) );
 
             submitPopupBtn = (Button) customView.findViewById(R.id.submitPopupBtn);
             closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
 
-            popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             popupWindow.showAtLocation(constraintLayout, Gravity.CENTER, 0, 0);
 
             popupWindow.setFocusable(true);
@@ -293,19 +295,6 @@ public class CashRequestDetailsFragment extends Fragment {
             cashRequest.setLenderId(user.getId());
             cashRequest.setStatus(3);
             final JSONObject postData = new JSONObject(gson.toJson(cashRequest, CashRequest.class));
-
-/*            postData.put("amount", cashRequest.getAmount());
-            postData.put("payableAmout", cashRequest.getPayableAmout());
-            postData.put("preferredPaymentMode", cashRequest.getPreferredPaymentMode());
-            postData.put("paymentSlot", cashRequest.getPaymentSlot());
-            postData.put("requesterId", cashRequest.getRequesterId());
-            postData.put("requestDate", (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).format(cashRequest.getRequestDate()));
-            postData.put("acceptanceDate", (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).format(cashRequest.getAcceptanceDate()));
-            postData.put("completionDate", (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).format(new Date()));
-            postData.put("lenderId", user.getId());
-            postData.put("id", cashRequest.getId());
-            postData.put("status", 3);
-            Log.d("TAG", "putData: " + postData.toString());*/
             Spinner paymentMode = (Spinner) customView.findViewById(R.id.payment_mode);
             List list = Util.getPaymentOptionsDetails(cashRequest.getPreferredPaymentMode());
             ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
@@ -315,6 +304,16 @@ public class CashRequestDetailsFragment extends Fragment {
             submitPopupBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    RatingBar ratingBar = (RatingBar) customView.findViewById(R.id.ratingBar);
+                    TextView feedbackLabel = (TextView) customView.findViewById(R.id.rateText);
+                    String rcvrFeedback = ((EditText) customView.findViewById(R.id.feedbackText)).getText().toString();
+
+                    float rating = ratingBar.getRating();
+                    Log.d("TAG", "onClick: "+rating);
+                    if((rating+"").equalsIgnoreCase("0.0")){
+                        feedbackLabel.setError("Please rate the transaction");
+                        return;
+                    }
                     progressDialog.show();
                     try {
                         String selectedValue = ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem() == null ? "" : ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem().toString();
@@ -322,6 +321,9 @@ public class CashRequestDetailsFragment extends Fragment {
                         postData.put("lndrPaymentMode", paymentOptionCode);
                         String lndr_transaction_id = ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).getText().toString();
                         postData.put("lndrTransactionId", lndr_transaction_id);
+                        postData.put("rcvrRating", rating);
+                        postData.put("rcvrFeedback", rcvrFeedback);
+
                     } catch (Exception e) {
 
                     }
@@ -363,15 +365,12 @@ public class CashRequestDetailsFragment extends Fragment {
                     requestQueue.add(jsonObjectRequest);
                 }
             });
-
             closePopupBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     popupWindow.dismiss();
                 }
             });
-            //new RestService().execute(getString(R.string.columbus_ms_url) + "/CashRequests", postData.toString());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -388,7 +387,9 @@ public class CashRequestDetailsFragment extends Fragment {
             final View customView = layoutInflater.inflate(R.layout.popup_cash_req_confirm, null);
             submitPopupBtn = (Button) customView.findViewById(R.id.submitPopupBtn);
             closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
-            popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ((TextView) customView.findViewById(R.id.rateText)).setText(getString(R.string.rateLabel1) + " " +cashRequest.getLender().getName() +" " + getString( R.string.rateLabel2) );
+
+            popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             popupWindow.showAtLocation(constraintLayout, Gravity.CENTER, 0, 0);
             popupWindow.setFocusable(true);
             popupWindow.update();
@@ -406,6 +407,16 @@ public class CashRequestDetailsFragment extends Fragment {
             submitPopupBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    RatingBar ratingBar = (RatingBar) customView.findViewById(R.id.ratingBar);
+                    TextView feedbackLabel = (TextView) customView.findViewById(R.id.rateText);
+                    String lndrFeedback = ((EditText) customView.findViewById(R.id.feedbackText)).getText().toString();
+
+                    float rating = ratingBar.getRating();
+                    Log.d("TAG", "onClick: "+rating);
+                    if((rating+"").equalsIgnoreCase("0.0")){
+                        feedbackLabel.setError("Please rate the transaction");
+                        return;
+                    }
                     progressDialog.show();
                     try {
                         String selectedValue = ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem() == null ? "" : ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem().toString();
@@ -413,6 +424,9 @@ public class CashRequestDetailsFragment extends Fragment {
                         postData.put("rcvrPaymentMode", paymentOptionCode);
                         String lndr_transaction_id = ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).getText().toString();
                         postData.put("rcvrTransactionId", lndr_transaction_id);
+                        postData.put("lndrRating", rating);
+                        postData.put("lndrFeedback", lndrFeedback);
+
                     } catch (Exception e) {
 
                     }

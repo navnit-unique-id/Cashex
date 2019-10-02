@@ -23,6 +23,16 @@ public class User implements Serializable {
     String otp;
     String referralCode;
 
+    float lndrRatingScore;
+    float lndrRatingTotal;
+    int lndrTransactions;
+
+    float rcvrRatingScore;
+    float rcvrRatingTotal;
+    int rcvrTransactions;
+
+    float overallScore;
+
     public int getStatus() {
         return status;
     }
@@ -134,5 +144,61 @@ public class User implements Serializable {
 
     public void setReferralCode(String referralCode) {
         this.referralCode = referralCode;
+    }
+
+    public float getLndrRatingScore() {
+        return lndrRatingScore;
+    }
+
+    public void setLndrRatingScore(float lndrRatingScore) {
+        this.lndrRatingScore = lndrRatingScore;
+    }
+
+    public float getLndrRatingTotal() {
+        return lndrRatingTotal;
+    }
+
+    public void setLndrRatingTotal(float lndrRatingTotal) {
+        this.lndrRatingTotal = lndrRatingTotal;
+    }
+
+    public int getLndrTransactions() {
+        return lndrTransactions;
+    }
+
+    public void setLndrTransactions(int lndrTransactions) {
+        this.lndrTransactions = lndrTransactions;
+    }
+
+    public float getRcvrRatingScore() {
+        return rcvrRatingScore;
+    }
+
+    public void setRcvrRatingScore(float rcvrRatingScore) {
+        this.rcvrRatingScore = rcvrRatingScore;
+    }
+
+    public float getRcvrRatingTotal() {
+        return rcvrRatingTotal;
+    }
+
+    public void setRcvrRatingTotal(float rcvrRatingTotal) {
+        this.rcvrRatingTotal = rcvrRatingTotal;
+    }
+
+    public int getRcvrTransactions() {
+        return rcvrTransactions;
+    }
+
+    public void setRcvrTransactions(int rcvrTransactions) {
+        this.rcvrTransactions = rcvrTransactions;
+    }
+
+    public float getOverallScore() {
+        return overallScore;
+    }
+
+    public void setOverallScore(float overallScore) {
+        this.overallScore = overallScore;
     }
 }

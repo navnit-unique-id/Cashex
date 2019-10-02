@@ -22,16 +22,21 @@ import java.util.ArrayList;
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.RequestHolder> {
     private Context context;
     ArrayList cashRequests;
+    User user;
 
-   public RequestListAdapter(Context context, ArrayList Requests) {
+
+   public RequestListAdapter(Context context, ArrayList cashRequests, User user) {
         this.context = context;
-        Requests = Requests;
-    }
+        cashRequests = cashRequests;
+        this.user = user;
+   }
 
     public void setRequests(ArrayList Requests){
        this.cashRequests=Requests;
     }
-
+    public void setUser(User user){
+       this.user=user;
+    }
     @Override
     public RequestListAdapter.RequestHolder onCreateViewHolder(ViewGroup parent,
                                                                int viewType) {
@@ -51,11 +56,18 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
            holder.mRequestDateView.setText( dateBy + " " +time);
            holder.status.setText(Util.getStatusDetail(((CashRequest) cashRequests.get(position)).getStatus()));
            holder.cashRequest = (CashRequest) cashRequests.get(position);
-
+           String displayScore = "FRS "+holder.cashRequest.getRequestor().getOverallScore();
+           if(user.getId().equals(holder.cashRequest.getRequesterId())){
+                if( (holder.cashRequest.getStatus()!=1 ) && (holder.cashRequest.getLender()!=null)) {
+                    displayScore = "FRS "+holder.cashRequest.getLender().getOverallScore();
+                }else{
+                    displayScore ="";
+                }
+           }
+           holder.frs.setText(displayScore);
            holder.mRequester.setText(holder.cashRequest.getRequestor().getName());
            CardView card = (CardView) holder.cardView.findViewById(R.id.request_summary_card);
            card.setOnClickListener(new View.OnClickListener() {
-
                public void onClick(View v) {
                    Fragment fragment = new CashRequestDetailsFragment();
                    ((CashRequestDetailsFragment) fragment).setCashRequest(holder.cashRequest);
@@ -64,93 +76,6 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                    ft.commit();
                }
            });
-
-
-/*           boolean isOnline = holder.cashRequest.isOnLine();
-           boolean isEngineOn = holder.cashRequest.isEngineOn();
-           String message="";
-           if (!isOnline) {
-               gpsStatus = "Offline since ";
-               Date dte = holder.cashRequest.getGpsTime();
-               long duration = TimeUnit.MILLISECONDS.toMinutes((new Date()).getTime() - dte.getTime() );
-               if(duration>60){
-                   duration = TimeUnit.MILLISECONDS.toHours((new Date()).getTime() - dte.getTime() );
-                   if(duration > 24){
-                       duration = TimeUnit.MILLISECONDS.toDays((new Date()).getTime() - dte.getTime() );
-                       message=duration+" days";
-                   }else{
-                       message= duration+ " hours" ;
-                   }
-               } else{
-                   message = duration+" minutes";
-               }
-               gpsStatus=gpsStatus+message;
-               holder.gpsLabel.setTextColor(Color.RED);
-           }
-           holder.mRequestStatusView.setText(gpsStatus);
-
-           if(isEngineOn){
-               engineStatus="On";
-           }
-           holder.mRequestEngineStatusView.setText(engineStatus);
-*/
-
-       //    final String imei = holder.cashRequest.getImei();
-      //     Button trackBtn = (Button) holder.cardView.findViewById(R.id.trackBtn);
-     /*      trackBtn.setOnClickListener(new View.OnClickListener() {
-
-               public void onClick(View v) {
-                   Intent intent = new Intent(context, MapsActivity.class);
-                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                   intent.putExtra("Request", holder.Request );
-                   context.startActivity(intent);
-               }
-           });*/
-
-
- /*          holder.optionsView.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
-                   final CashRequest v = holder.cashRequest;
-                   Log.d("TAG", "onMenuItemClick1: " + v.getRequesterId());
-
-                   //creating a popup menu
-                   PopupMenu popup = new PopupMenu(context, holder.optionsView);
-                   //inflating menu from xml resource
-                   popup.inflate(R.menu.Request_options_menu);
-                   //adding click listener
- *//*                  popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                       @Override
-                       public boolean onMenuItemClick(MenuItem item) {
-                           switch (item.getItemId()) {
-                               case R.id.details:
-                                 //  Log.d("TAG", "onMenuItemClick: " + v.getRequestName());
-                                   Intent intent = new Intent(context, RequestSettingActivity.class);
-                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                   intent.putExtra("Request", v);
-                                   context.startActivity(intent);
-
-                                   //handle menu1 click
-                                   break;
-                               case R.id.geofence:
-                                   //handle menu2 click
-                                   break;
-                               case R.id.playback:
-                                *//**//*   Log.d("TAG", "onMenuItemClick: " + v.getRequestName());
-                                   intent = new Intent(context, ReplayActivity.class);
-                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                   intent.putExtra("Request", v);
-                                   context.startActivity(intent);
-                                   break;*//**//*
-                           }
-                           return false;
-                       }
-                   });*//*
-                   //displaying the popup
-                   popup.show();
-
-               }
-           });*/
        }
     }
 
@@ -172,6 +97,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         public TextView mRequestDateView;
         public TextView mRequester;
         public TextView status;
+        public TextView frs;
         public CardView cardView;
         TextView gpsLabel;
         public TextView  optionsView;
@@ -184,11 +110,8 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             mRequestDateView = v.findViewById(R.id.requestDate);
             status=  v.findViewById(R.id.status);
             mRequester=v.findViewById(R.id.txtName);
-            //   mRequestEngineStatusView = v.findViewById(R.id.engineStatus);
-          //  gpsLabel = v.findViewById(R.id.gpsLabel);
-
+            frs=v.findViewById(R.id.frs);
             cardView = v.findViewById(R.id.request_summary_card);
-         //   optionsView = v.findViewById(R.id.textViewOptions);
         }
     }
 

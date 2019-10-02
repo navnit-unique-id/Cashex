@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private PasswordResetTask mPwdRestTask = null;
 
     // UI references.
     private AutoCompleteTextView musernameView;
@@ -77,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                   // attemptLogin();
+                    // attemptLogin();
                     return true;
                 }
                 return false;
@@ -89,6 +91,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        TextView forgotPwd = (TextView) findViewById(R.id.forgotPassword);
+        forgotPwd.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPwdReset();
             }
         });
 
@@ -157,6 +166,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private void startPwdReset() {
+        EditText  musername = (EditText)findViewById(R.id.username);
+        String musernameTxt = musername.getText().toString();
+        if (musernameTxt.equalsIgnoreCase("")) {
+            musername.setError(getString(R.string.error_field_required));
+            musername.requestFocus();
+            return;
+        }
+       // showProgress(true);
+        mPwdRestTask = new PasswordResetTask(musernameTxt);
+        mPwdRestTask.execute((Void) null);
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -188,9 +210,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -212,8 +231,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -255,14 +272,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-          //  final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+            //  final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
             JsonObjectRequest jsonObjectRequest = null;
-          //  progressDialog.setMessage("Authenticating ...");
-          //  progressDialog.show();
+            //  progressDialog.setMessage("Authenticating ...");
+            //  progressDialog.show();
 
 
             try {
-                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) +"/users?username="+  URLEncoder.encode( mUsername,"UTF-8") + "&password=" +  URLEncoder.encode(mPassword,"UTF-8"), null, new Response.Listener<JSONObject>() {
+                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/users?username=" + URLEncoder.encode(mUsername, "UTF-8") + "&password=" + URLEncoder.encode(mPassword, "UTF-8"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
@@ -271,9 +288,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         user = (new Gson()).fromJson(response.toString(), User.class);
                         editor.commit();
                         int status = user.getStatus();
-                        if ((status == 1)||(status == 2)||(status == 3)||(status == 4)) {
+                        if ((status == 1) || (status == 2) || (status == 3) || (status == 4)) {
                             Intent myIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
-                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP  | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(myIntent);
                         } else {
                             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -281,14 +298,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             startActivity(myIntent);
                         }
                         showProgress(false);
-                     //   progressDialog.dismiss();
+                        //   progressDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String UIMessage ="System Exception";
-                        if((error.networkResponse!=null)&&(error.networkResponse.statusCode==401)){
-                            UIMessage="Invalid Username or Password";
+                        String UIMessage = "System Exception";
+                        if ((error.networkResponse != null) && (error.networkResponse.statusCode == 401)) {
+                            UIMessage = "Invalid Username or Password";
+                        }
+                        if ((error.networkResponse != null) && (error.networkResponse.statusCode == 403)) {
+                            UIMessage = "Account is locked out. Please use Forgot Password link to reset acocunt.";
                         }
                         if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                             UIMessage = "Unable to connect to internet.";
@@ -316,7 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-           // showProgress(false);
+            // showProgress(false);
             if (success) {
 
             } else {
@@ -330,6 +350,77 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+
+    public class PasswordResetTask extends AsyncTask<Void, Void, Boolean> {
+        private final String mUsername;
+
+        PasswordResetTask(String username) {
+            mUsername = username;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                JsonObjectRequest jsonObjectRequest = null;
+                Gson gson = new GsonBuilder().create();
+                User user = new User();
+                user.setUsername(mUsername);
+                user.setStatus(6);
+                JSONObject postData = new JSONObject(gson.toJson(user, User.class));
+                jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/users", postData, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Intent myIntent = new Intent(getApplicationContext(), PasswordResetActivity.class);
+                        myIntent.putExtra("username",mUsername);
+                        startActivity(myIntent);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String UIMessage = "System Exception";
+                        if ((error.networkResponse != null) && (error.networkResponse.statusCode == 401)) {
+                            UIMessage = "Invalid Mobile Number";
+                        }
+                        if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
+                            UIMessage = "Unable to connect to internet.";
+                        }
+                        if (error.getClass().toString().contains("com.android.volley.NoConnectionError")) {
+                            UIMessage = "Unable to connect to server.";
+                        }
+                        Toast toast = Toast.makeText(getApplicationContext(), UIMessage, Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        20 * 1000, 0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(jsonObjectRequest);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mPwdRestTask = null;
+            // showProgress(false);
+            if (success) {
+
+            } else {
+                //   mPasswordView.setError(getString(R.string.error_incorrect_password));
+                //    mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mPwdRestTask = null;
+        }
+
     }
 }
 
