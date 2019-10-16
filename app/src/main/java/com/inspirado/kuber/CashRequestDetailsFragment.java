@@ -187,6 +187,9 @@ public class CashRequestDetailsFragment extends Fragment {
             ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
         if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 4)) {
+            ((Button) getActivity().findViewById(R.id.comfirmBtn)).setVisibility(View.GONE);
+            ((Button) getActivity().findViewById(R.id.acceptBtn)).setVisibility(View.GONE);
+            ((Button) getActivity().findViewById(R.id.completeBtn)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
             ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
