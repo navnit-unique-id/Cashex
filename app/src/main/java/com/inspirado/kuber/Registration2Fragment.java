@@ -76,10 +76,12 @@ public class Registration2Fragment extends Fragment {
                 try {
                     user.setOtp(((EditText) getActivity().findViewById(R.id.otp)).getText().toString());
                     user.setStatus(2);
+                    String clientCode=user.getClientCode();
                     Gson gson = new Gson();
                     JSONObject postData = new JSONObject(gson.toJson(user));
                     Log.d("TAG", "putData: " + postData.toString());
-                    jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/users", postData,
+                       jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/cashrequest"
+                            + "/users", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {

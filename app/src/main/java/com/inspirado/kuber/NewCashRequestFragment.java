@@ -134,6 +134,7 @@ public class NewCashRequestFragment extends Fragment {
             cashRequest.setRequesterId(user.getId());
             cashRequest.setRcvrLat(user.getLat());
             cashRequest.setRcvrLng(user.getLng());
+            cashRequest.setClientCode(user.getClientCode());
             cashRequest.setStatus(1);
             //     postData.put("preferredPaymentMode", paymentMode);
             //    postData.put("paymentSlot", ((Spinner) getActivity().findViewById(R.id.paymentSlot)).getSelectedItem().toString());
@@ -155,7 +156,7 @@ public class NewCashRequestFragment extends Fragment {
 
             progressDialog.show();
             //new RestService().execute(getString(R.string.columbus_ms_url) + "/CashRequests", postData.toString());
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/CashRequests", postData,
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) +"/100/"+user.getClientCode()+"/cashrequest/", postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {

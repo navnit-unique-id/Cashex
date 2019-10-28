@@ -22,6 +22,7 @@ public class User implements Serializable {
     int status;
     String otp;
     String referralCode;
+    String clientCode;
 
     float lndrRatingScore;
     float lndrRatingTotal;
@@ -200,5 +201,13 @@ public class User implements Serializable {
 
     public void setOverallScore(float overallScore) {
         this.overallScore = overallScore;
+    }
+
+    public String getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 }

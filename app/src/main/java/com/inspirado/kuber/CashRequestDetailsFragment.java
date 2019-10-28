@@ -215,7 +215,7 @@ public class CashRequestDetailsFragment extends Fragment {
             cashRequest.setLenderId(user.getId());
             cashRequest.setStatus(2);
             JSONObject postData = new JSONObject(gson.toJson(cashRequest, CashRequest.class));
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/CashRequests", postData,
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/"+user.getClientCode()+"/cashrequest/", postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {
@@ -330,7 +330,7 @@ public class CashRequestDetailsFragment extends Fragment {
                     } catch (Exception e) {
 
                     }
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/CashRequests", postData,
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) +"/100/"+user.getClientCode()+"/cashrequest/", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {
@@ -433,7 +433,7 @@ public class CashRequestDetailsFragment extends Fragment {
                     } catch (Exception e) {
 
                     }
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/CashRequests", postData,
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) +"/100/"+user.getClientCode()+"/cashrequest/", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {
@@ -508,7 +508,7 @@ public class CashRequestDetailsFragment extends Fragment {
         if(!silent){
             progressDialog.show();
         }
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/requests/" +cashRequest.getId(),null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+user.getClientCode()+"/cashrequest"+"/requests/" +cashRequest.getId(),null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                     try {

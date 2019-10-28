@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 createRegistrationIntent();
             }
-            registerTokenIfRequired(TOKEN, user.getId());
+            registerTokenIfRequired(TOKEN, user.getId(), user.getClientCode());
         }
     }
 
@@ -142,9 +142,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void registerTokenIfRequired(final String token, final Long userId) {
+    private void registerTokenIfRequired(final String token, final Long userId, final String clientCode) {
         if ((TOKEN != null) && !TOKEN_REGISTERED) {
-            String url = getString(R.string.notification_ms_url) + "/installationinfo?userId=" + userId + "&registrationToken=" + token;
+            String url = getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/infra"+ "/installationinfo?userId=" + userId + "&registrationToken=" + token;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                             e.printStackTrace();
                         }
 
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.notification_ms_url) + "/installationinfo", postData, new Response.Listener<JSONObject>() {
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url)+"/100/"+clientCode+"/infra" + "/installationinfo", postData, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d("TAG", "onResponse: " + "Token registered successfully with FIrebase");
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity
     private void checkUpdate() {
         // get current version
         Activity mainActivity = this;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getString(R.string.notification_ms_url) + "/appversioninfo/latest", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) +"/100/default/infra"+ "/appversioninfo/latest", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {

@@ -38,6 +38,7 @@ public class PasswordResetActivity extends AppCompatActivity {
         Button nextBtn = (Button) findViewById(R.id.continueBtn);
         ((TextView) findViewById(R.id.otpPhone)).setText(getIntent().getStringExtra("username"));
         user.setUsername(getIntent().getStringExtra("username"));
+        user.setClientCode(getIntent().getStringExtra("clientcode"));
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -55,7 +56,7 @@ public class PasswordResetActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     JSONObject postData = new JSONObject(gson.toJson(user));
                     Log.d("TAG", "putData: " + postData.toString());
-                    jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/users", postData,
+                    jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) +"/100/"+user.getClientCode()+"/cashrequest"+ "/users", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {

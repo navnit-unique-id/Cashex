@@ -57,61 +57,9 @@ public class Registration1Fragment extends Fragment {
         getActivity().setTitle(R.string.registration1_title);
         Button nextBtn = (Button) getActivity().findViewById(R.id.next1);
         EditText userName = (EditText) getActivity().findViewById(R.id.username2);
+
         progressDialog = new ProgressDialog(getContext());
-        userName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    User user = new User();
-                    final EditText userName = ((EditText) v);
-                    progressDialog.setMessage("Checking Username...");
-                    progressDialog.show();
-                    JsonObjectRequest jsonObjectRequest = null;
 
-                    try {
-                        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/users?username=" + userName.getText().toString(), null,
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject responseObj) {
-                                        try {
-                                            if(responseObj!=null){
-                                                userName.setError("Username already taken !!");
-                                            }
-                                        } catch (Exception e) {
-                                           // Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            Snackbar
-                                                    .make(getActivity().findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
-                                        }
-                                        progressDialog.dismiss();
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if(error.networkResponse==null){
-                                            Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
-                                        }
-                                        if(error.networkResponse.statusCode==404){
-
-                                        }else{
-                                            Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
-                                        }
-                                        progressDialog.dismiss();
-                                    }
-                                });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                            0,
-                            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-                    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                    requestQueue.add(jsonObjectRequest);
-                }
-            }
-        });
 
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
@@ -126,16 +74,19 @@ public class Registration1Fragment extends Fragment {
                 progressDialog.show();
                 JsonObjectRequest jsonObjectRequest = null;
                 String paymentMode = "";
+                String clientCode = ((EditText) getActivity().findViewById(R.id.clientcode)).getText()+"";
+                clientCode=clientCode.equalsIgnoreCase("")?"default":clientCode;
 
                 try {
                     user.setUsername(((EditText) getActivity().findViewById(R.id.username2)).getText().toString());
                     user.setPassword(((EditText) getActivity().findViewById(R.id.password)).getText().toString());
                     user.setMobileNumber(((EditText) getActivity().findViewById(R.id.username2)).getText().toString());
+                    user.setClientCode(clientCode);
                     user.setStatus(1);
                     Gson gson = new Gson();
                     JSONObject postData = new JSONObject(gson.toJson(user));
                     Log.d("TAG", "putData: " + postData.toString());
-                    jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/users", postData,
+                    jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/cashrequest"+ "/users", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {
@@ -157,9 +108,13 @@ public class Registration1Fragment extends Fragment {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                   // Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    Snackbar
-                                            .make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    if(error.networkResponse.statusCode==409){
+                                        Snackbar.make(getView(), "User name already taken !!", Snackbar.LENGTH_LONG).show();
+                                    } if(error.networkResponse.statusCode==500){
+                                        Snackbar.make(getView(), "System Error.", Snackbar.LENGTH_LONG).show();
+                                    }else{
+                                        Snackbar.make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    }
                                     progressDialog.dismiss();
                                 }
                             });
@@ -205,6 +160,60 @@ public class Registration1Fragment extends Fragment {
 
         });
     }
+
+
+        /*public void checkUserExists(){
+                User user = new User();
+                EditText userName = (EditText) getActivity().findViewById(R.id.username2);
+                progressDialog.setMessage("Checking Username...");
+                progressDialog.show();
+                JsonObjectRequest jsonObjectRequest = null;
+                String clientCode = ((EditText) getActivity().findViewById(R.id.clientcode)).getText()+"";
+
+            try {
+                    jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/cashrequest"+ "/users?username=" + userName.getText().toString(), null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject responseObj) {
+                                    try {
+                                        if(responseObj!=null){
+                                            userName.setError("Username already taken !!");
+                                        }
+                                    } catch (Exception e) {
+                                        // Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        Snackbar
+                                                .make(getActivity().findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    }
+                                    progressDialog.dismiss();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if(error.networkResponse==null){
+                                        Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    }
+                                    if(error.networkResponse.statusCode==404){
+
+                                    }else{
+                                        Snackbar.make(getActivity().findViewById(android.R.id.content), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    }
+                                    progressDialog.dismiss();
+                                }
+                            });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        0,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                requestQueue.add(jsonObjectRequest);
+            }
+        }
+    }*/
 
     @Override
     public void onDestroy() {

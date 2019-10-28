@@ -49,10 +49,6 @@
             android:name=".OGCashListActivity"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".AddCashRequestActivity"
-            android:label="@string/title_activity_maps_all"
-            android:parentActivityName=".MainActivity" />
 
         <service android:name=".messaging.MessageService">
             <intent-filter>

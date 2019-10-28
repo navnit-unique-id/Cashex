@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView musernameView;
     private EditText mPasswordView;
+    private EditText mClientCodeView;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -75,6 +76,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         musernameView = (AutoCompleteTextView) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mClientCodeView=(EditText) findViewById(R.id.clientCode);
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -127,10 +130,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Reset errors.
         musernameView.setError(null);
         mPasswordView.setError(null);
+        mClientCodeView.setError(null);
 
         // Store values at the time of the login attempt.
         String username = musernameView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String clientCode = mClientCodeView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -161,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password);
+            mAuthTask = new UserLoginTask(username, password,clientCode);
             mAuthTask.execute((Void) null);
         }
     }
@@ -169,13 +174,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void startPwdReset() {
         EditText  musername = (EditText)findViewById(R.id.username);
         String musernameTxt = musername.getText().toString();
+        String mClientCodeTxt = mClientCodeView.getText().toString();
         if (musernameTxt.equalsIgnoreCase("")) {
             musername.setError(getString(R.string.error_field_required));
             musername.requestFocus();
             return;
         }
        // showProgress(true);
-        mPwdRestTask = new PasswordResetTask(musernameTxt);
+        mPwdRestTask = new PasswordResetTask(musernameTxt,mClientCodeTxt);
         mPwdRestTask.execute((Void) null);
     }
 
@@ -262,12 +268,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mUsername;
         private final String mPassword;
+        private String mClientCode;
         private User user;
 
-        UserLoginTask(String username, String password) {
+        UserLoginTask(String username, String password, String clientCode) {
             mUsername = username;
             mPassword = password;
-
+            mClientCode=clientCode;
         }
 
         @Override
@@ -279,7 +286,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             try {
-                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/users?username=" + URLEncoder.encode(mUsername, "UTF-8") + "&password=" + URLEncoder.encode(mPassword, "UTF-8"), null, new Response.Listener<JSONObject>() {
+                mClientCode= mClientCode.equalsIgnoreCase("")?"default":mClientCode;
+                jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+mClientCode+"/cashrequest"+"/users?username=" + URLEncoder.encode(mUsername, "UTF-8") + "&password=" + URLEncoder.encode(mPassword, "UTF-8")+ "&clientCode=" + URLEncoder.encode(mClientCode, "UTF-8"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
@@ -355,9 +363,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public class PasswordResetTask extends AsyncTask<Void, Void, Boolean> {
         private final String mUsername;
+        private  String mClientCodeText;
 
-        PasswordResetTask(String username) {
+        PasswordResetTask(String username, String clientCode) {
             mUsername = username;
+            mClientCodeText=clientCode;
         }
 
         @Override
@@ -367,13 +377,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Gson gson = new GsonBuilder().create();
                 User user = new User();
                 user.setUsername(mUsername);
+                mClientCodeText= mClientCodeText.equalsIgnoreCase("")?"default":mClientCodeText;
+                user.setClientCode(mClientCodeText);
                 user.setStatus(6);
                 JSONObject postData = new JSONObject(gson.toJson(user, User.class));
-                jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/users", postData, new Response.Listener<JSONObject>() {
+                jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) +"/100/"+mClientCodeText+"/cashrequest"+ "/users", postData, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Intent myIntent = new Intent(getApplicationContext(), PasswordResetActivity.class);
                         myIntent.putExtra("username",mUsername);
+                        myIntent.putExtra("clientcode",mClientCodeText);
                         startActivity(myIntent);
                     }
                 }, new Response.ErrorListener() {

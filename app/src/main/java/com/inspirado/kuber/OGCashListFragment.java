@@ -117,6 +117,7 @@ public class OGCashListFragment extends Fragment {
         String resource="";
       //  final ProgressDialog progressDialog =null;
         final RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
+        String clientCode = user.getClientCode();
         if(!silent){
         //    final ProgressDialog progressDialog = new ProgressDialog(getContext());
             progressDialog.setMessage("Fetching Cash Requests...");
@@ -133,7 +134,7 @@ public class OGCashListFragment extends Fragment {
         if(type==3){
             resource="OGCashRequests/myrequests";
         }
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) + "/" +resource+"?id="+user.getId(), new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/cashrequest"+ "/" +resource+"?id="+user.getId(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
               //  RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.og_cash_requests);

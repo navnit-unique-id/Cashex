@@ -101,7 +101,7 @@ public class MessageService extends FirebaseMessagingService {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.notification_ms_url) + "/installationinfo", postData, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/installationinfo", postData, new Response.Listener<JSONObject>() {
             //    JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, "http://10.0.2.2:8081/rest/installationinfo", postData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
