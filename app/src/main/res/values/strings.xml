@@ -67,6 +67,7 @@
     <string name="registration2_progressbar_resendotp_msg">Resending OTP</string>
 
     <string name="registration3_title">Address</string>
+    <string name="registration3_progress_title">Locating Position...</string>
     <string name="registration3_progressbar_msg">Updating details ..</string>
     <string name="registration3_error_name_blank">Name cannot blank</string>
     <string name="registration3_error_address_blank">Address cannot blank</string>

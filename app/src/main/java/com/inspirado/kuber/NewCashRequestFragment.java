@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -71,10 +73,11 @@ public class NewCashRequestFragment extends Fragment {
         paymentSlot = (Spinner) getActivity().findViewById(R.id.paymentSlot);
         final double amountVal = Double.parseDouble("0" + amount.getText());
 
+
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-             }
+            }
 
 
             @Override
@@ -107,9 +110,9 @@ public class NewCashRequestFragment extends Fragment {
         try {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            cashRequest.setAmount(Double.parseDouble("0"+amount.getText().toString()));
-            cashRequest.setIncentive(Double.parseDouble("0"+charges.getText().toString()));
-            cashRequest.setPayableAmout(Double.parseDouble("0"+payableAmount.getText().toString()));
+            cashRequest.setAmount(Double.parseDouble("0" + amount.getText().toString()));
+            cashRequest.setIncentive(Double.parseDouble("0" + charges.getText().toString()));
+            cashRequest.setPayableAmout(Double.parseDouble("0" + payableAmount.getText().toString()));
 
             //      postData.put("amount", ((EditText) getActivity().findViewById(R.id.amountLabel)).getText());
             //      postData.put("payableAmout", ((EditText) getActivity().findViewById(R.id.payableAmoutLabel)).getText());
@@ -128,6 +131,9 @@ public class NewCashRequestFragment extends Fragment {
             if (((CheckBox) getActivity().findViewById(R.id.isBhimPreferred)).isChecked()) {
                 paymentMode = paymentMode + "," + "5";
             }
+            String requestTypeStr = ((RadioButton) getActivity().findViewById(((RadioGroup) getActivity().findViewById(R.id.pickupdelivery)).getCheckedRadioButtonId())).getText().toString();
+            int requestType = requestTypeStr.equalsIgnoreCase("delivery") ? 1 : 2;
+
             cashRequest.setPaymentSlot(paymentSlot.getSelectedItem().toString());
             cashRequest.setPreferredPaymentMode(paymentMode);
             cashRequest.setRequestor(user);
@@ -135,15 +141,9 @@ public class NewCashRequestFragment extends Fragment {
             cashRequest.setRcvrLat(user.getLat());
             cashRequest.setRcvrLng(user.getLng());
             cashRequest.setClientCode(user.getClientCode());
+            cashRequest.setRequestType(requestType);
             cashRequest.setStatus(1);
-            //     postData.put("preferredPaymentMode", paymentMode);
-            //    postData.put("paymentSlot", ((Spinner) getActivity().findViewById(R.id.paymentSlot)).getSelectedItem().toString());
-            //    postData.put("requesterId", user.getId());
-            //   postData.put("incentive", charges.getText().toString());
-            //    postData.put("status", 1);
             double amountVal = Double.parseDouble("0" + amount.getText());
-
-            //   Log.d("TAG", "putData: " + postData.toString());
             if (amountVal <= 0) {
                 amount.setError(getString(R.string.error_invalid_amount));
                 return;
@@ -156,7 +156,7 @@ public class NewCashRequestFragment extends Fragment {
 
             progressDialog.show();
             //new RestService().execute(getString(R.string.columbus_ms_url) + "/CashRequests", postData.toString());
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) +"/100/"+user.getClientCode()+"/cashrequest/", postData,
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/", postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {

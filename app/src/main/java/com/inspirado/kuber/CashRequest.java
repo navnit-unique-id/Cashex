@@ -36,6 +36,7 @@ public class CashRequest  implements Serializable {
     String rcvrFeedback;
     String lndrFeedback;
     String clientCode;
+    int requestType;
 
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
@@ -306,5 +307,13 @@ public class CashRequest  implements Serializable {
 
     public void setClientCode(String clientCode) {
         this.clientCode = clientCode;
+    }
+
+    public int getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(int requestType) {
+        this.requestType = requestType;
     }
 }

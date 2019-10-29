@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-//import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -30,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+//import android.widget.Toast;
+
 /**
  * Created by Belal on 18/09/16.
  */
@@ -43,7 +43,7 @@ public class Registration1Fragment extends Fragment {
     private RecyclerView.Adapter adapter;
     ArrayList cashRequests = new ArrayList();
     User user;
-    ProgressDialog progressDialog =null;
+    ProgressDialog progressDialog = null;
 
     @Nullable
     @Override
@@ -61,7 +61,6 @@ public class Registration1Fragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
 
 
-
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 boolean cancel = validate();
@@ -74,8 +73,8 @@ public class Registration1Fragment extends Fragment {
                 progressDialog.show();
                 JsonObjectRequest jsonObjectRequest = null;
                 String paymentMode = "";
-                String clientCode = ((EditText) getActivity().findViewById(R.id.clientcode)).getText()+"";
-                clientCode=clientCode.equalsIgnoreCase("")?"default":clientCode;
+                String clientCode = ((EditText) getActivity().findViewById(R.id.clientcode)).getText() + "";
+                clientCode = clientCode.equalsIgnoreCase("") ? "default" : clientCode;
 
                 try {
                     user.setUsername(((EditText) getActivity().findViewById(R.id.username2)).getText().toString());
@@ -86,7 +85,7 @@ public class Registration1Fragment extends Fragment {
                     Gson gson = new Gson();
                     JSONObject postData = new JSONObject(gson.toJson(user));
                     Log.d("TAG", "putData: " + postData.toString());
-                    jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/cashrequest"+ "/users", postData,
+                    jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/100/" + clientCode + "/cashrequest" + "/users", postData,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {
@@ -94,11 +93,12 @@ public class Registration1Fragment extends Fragment {
                                         Fragment fragment = new Registration2Fragment();
                                         ((Registration2Fragment) fragment).setUser((new Gson()).fromJson(responseObj.toString(), User.class));
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                        ft.replace(R.id.registration_frame, fragment).addToBackStack(null);;
+                                        ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
+                                        ;
                                         ft.commit();
                                         Util.updateSharedPref(getContext().getSharedPreferences("pref", 0), responseObj);
                                     } catch (Exception e) {
-                                      //  Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        //  Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                         Snackbar
                                                 .make(getView(), e.getMessage(), Snackbar.LENGTH_LONG).show();
                                     }
@@ -108,11 +108,19 @@ public class Registration1Fragment extends Fragment {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    if(error.networkResponse.statusCode==409){
+                                    String message = "";
+                                    try {
+                                        message = new String(error.networkResponse.data, "UTF-8");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (error.networkResponse.statusCode == 409) {
                                         Snackbar.make(getView(), "User name already taken !!", Snackbar.LENGTH_LONG).show();
-                                    } if(error.networkResponse.statusCode==500){
+                                    } else if ((error.networkResponse.statusCode == 400)) {
+                                        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+                                    } else if ((error.networkResponse.statusCode == 500) || ((error.networkResponse.statusCode == 502))) {
                                         Snackbar.make(getView(), "System Error.", Snackbar.LENGTH_LONG).show();
-                                    }else{
+                                    } else {
                                         Snackbar.make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
                                     }
                                     progressDialog.dismiss();
@@ -133,8 +141,8 @@ public class Registration1Fragment extends Fragment {
                 boolean cancel = false;
                 EditText username = (EditText) getActivity().findViewById(R.id.username2);
                 EditText password = (EditText) getActivity().findViewById(R.id.password);
-            //    EditText retypePassword = (EditText) getActivity().findViewById(R.id.passwordRetype);
-             //   EditText mobileNumber = (EditText) getActivity().findViewById(R.id.mobileNumber);
+                //    EditText retypePassword = (EditText) getActivity().findViewById(R.id.passwordRetype);
+                //   EditText mobileNumber = (EditText) getActivity().findViewById(R.id.mobileNumber);
 
                 if (username.getText().toString().equalsIgnoreCase("")) {
                     username.setError(getResources().getString(R.string.registration1_error_username_blank));
@@ -152,7 +160,7 @@ public class Registration1Fragment extends Fragment {
                     mobileNumber.setError(getResources().getString(R.string.registration1_error_mobile_invalid));
                     cancel = true;
                 }*/
-                if ((username.getError()!=null) ||(password.getError()!=null)) {
+                if ((username.getError() != null) || (password.getError() != null)) {
                     cancel = true;
                 }
                 return cancel;

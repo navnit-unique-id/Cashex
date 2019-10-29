@@ -211,6 +211,9 @@ public class Registration4Fragment extends Fragment {
         ((AutoCompleteTextView) getActivity().findViewById(R.id.state)).setText(user.getState());
         ((EditText) getActivity().findViewById(R.id.city)).setText(user.getCity());
         ((EditText) getActivity().findViewById(R.id.pincode)).setText(user.getPinCode());
+        ((EditText) getActivity().findViewById(R.id.name)).setText(user.getName());
+        ((EditText) getActivity().findViewById(R.id.email)).setText(user.getEmail());
+        ((EditText) getActivity().findViewById(R.id.referral)).setText(user.getReferralCode());
     }
 
 

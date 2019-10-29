@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -45,6 +46,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Belal on 18/09/16.
@@ -63,6 +65,13 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
     Location mLastLocation;
     Marker mCurrLocationMarker;
     Geocoder geocoder;
+    boolean locationFound = false;
+    boolean searching = false;
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 4 * 1000;
+
+
     public User getUser() {
         return user;
     }
@@ -103,7 +112,6 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     ((Registration4Fragment) fragment).setUser(user);
                     FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
-                    ;
                     ft.commit();
                     progressDialog.dismiss();
                 } catch (Exception e) {
@@ -132,8 +140,40 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.setOnMarkerDragListener(this);
         }
+        initiliazeMarker();
+    }
 
+    private void initiliazeMarker() {
+        if ((user.getLat() != 0) && (user.getLng() != 0)) {
+            LatLng latLng = new LatLng(user.getLat(), user.getLng());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title("Current Position");
+            markerOptions.draggable(true);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+            locationFound = true;
+        } else {
+            searching = true;
+            LatLng latLng = new LatLng(20.5937, 78.9629);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
 
+            handler.postDelayed(runnable = new Runnable() {
+                public void run() {
+                    getActivity().setTitle(R.string.registration3_progress_title);
+                    int zoom = 7 + (new Random()).nextInt(4);
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 5000, null);
+                    handler.postDelayed(runnable, delay);
+                }
+            }, delay);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        handler.removeCallbacks(runnable); //stop handler when activity not visible
+        super.onPause();
     }
 
     @Override
@@ -172,8 +212,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             user.setAddress(addresses.get(0).getAddressLine(0));
             user.setLat(position.latitude);
             user.setLng(position.longitude);
-            //     Toast.makeText(getContext(), "Address: " +                    address + " " + city, Toast.LENGTH_LONG).show();
-            if(getActivity()!=null){
+            if (getActivity() != null) {
                 Snackbar
                         .make(getActivity().findViewById(android.R.id.content), "Address: " +
                                 address + " " + city, Snackbar.LENGTH_LONG).show();
@@ -197,10 +236,8 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
 
     @Override
     public void onConnected(Bundle bundle) {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-     //   mLocationRequest.setFastestInterval(10000);
-        mLocationRequest.setSmallestDisplacement(10);
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(15000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -209,6 +246,10 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+                    getActivity().setTitle(R.string.registration3_title);
+                    handler.removeCallbacks(runnable); //stop handler when activity not visible
+                    searching = false;
+                    if (locationFound) return;
                     mLastLocation = location;
                     if (mCurrLocationMarker != null) {
                         mCurrLocationMarker.remove();
@@ -218,10 +259,11 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     markerOptions.position(latLng);
                     markerOptions.title("Current Position");
                     markerOptions.draggable(true);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
                     updateUserDetails(mCurrLocationMarker);
+                    locationFound = true;
                 }
             });
         }
@@ -257,7 +299,6 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                         .create()
                         .show();
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -278,9 +319,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     mMap.setMyLocationEnabled(true);
                     mMap.setOnMarkerDragListener(this);
                 } else {
-                    //  Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
-                    Snackbar
-                            .make(getView(), "permission denied", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getView(), "permission denied", Snackbar.LENGTH_LONG).show();
                 }
                 return;
             }

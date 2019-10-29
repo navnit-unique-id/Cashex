@@ -91,6 +91,7 @@ public class CashRequestDetailsFragment extends Fragment {
         ((TextView) getActivity().findViewById(R.id.address)).setText(cashRequest.getRequestor().getAddress() + "\n" + cashRequest.getRequestor().getCity() + ", " + cashRequest.getRequestor().getState() + " -  " + cashRequest.getRequestor().getPinCode());
         ((TextView) getActivity().findViewById(R.id.phone)).setText(cashRequest.getRequestor().getMobileNumber());
         ((TextView) getActivity().findViewById(R.id.tranId)).setText(cashRequest.getLndrTransactionId());
+        ((TextView) getActivity().findViewById(R.id.requestType)).setText( (cashRequest.getRequestType()==1)?"Delivery":"Pickup");
         if(cashRequest.getLender()!=null){
             ((TextView) getActivity().findViewById(R.id.ldrName)).setText(cashRequest.getLender().getName() );
             ((TextView) getActivity().findViewById(R.id.lndrFRS)).setText("FRS "+cashRequest.getLender().getOverallScore() );
