@@ -33,6 +33,43 @@ public class User implements Serializable {
     int rcvrTransactions;
 
     float overallScore;
+    boolean pickupServiceEnabled;
+    double pickupRate;
+    double pickupRateEscalated;
+    double deliveryRate;
+    double deliveryRateEscalated;
+
+    public double getPickupRate() {
+        return pickupRate;
+    }
+
+    public void setPickupRate(double pickupRate) {
+        this.pickupRate = pickupRate;
+    }
+
+    public double getPickupRateEscalated() {
+        return pickupRateEscalated;
+    }
+
+    public void setPickupRateEscalated(double pickupRateEscalated) {
+        this.pickupRateEscalated = pickupRateEscalated;
+    }
+
+    public double getDeliveryRate() {
+        return deliveryRate;
+    }
+
+    public void setDeliveryRate(double deliveryRate) {
+        this.deliveryRate = deliveryRate;
+    }
+
+    public double getDeliveryRateEscalated() {
+        return deliveryRateEscalated;
+    }
+
+    public void setDeliveryRateEscalated(double deliveryRateEscalated) {
+        this.deliveryRateEscalated = deliveryRateEscalated;
+    }
 
     public int getStatus() {
         return status;
@@ -209,5 +246,13 @@ public class User implements Serializable {
 
     public void setClientCode(String clientCode) {
         this.clientCode = clientCode;
+    }
+
+    public boolean isPickupServiceEnabled() {
+        return pickupServiceEnabled;
+    }
+
+    public void setPickupServiceEnabled(boolean pickupServiceEnabled) {
+        this.pickupServiceEnabled = pickupServiceEnabled;
     }
 }

@@ -33,9 +33,7 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Created by Belal on 18/09/16.
- */
+
 
 
 public class NewCashRequestFragment extends Fragment {
@@ -72,28 +70,34 @@ public class NewCashRequestFragment extends Fragment {
         charges = ((TextView) getActivity().findViewById(R.id.charges));
         paymentSlot = (Spinner) getActivity().findViewById(R.id.paymentSlot);
         final double amountVal = Double.parseDouble("0" + amount.getText());
+        final double pickupRate =user.getPickupRate();
+        final double deliveryRate=user.getDeliveryRate();
 
-
+        if (user.isPickupServiceEnabled()) {
+            (getActivity().findViewById(R.id.pickupdelivery)).setVisibility(View.VISIBLE);
+            (getActivity().findViewById(R.id.textView33)).setVisibility(View.VISIBLE);
+        }
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
             }
-
-
             @Override
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if ((amount.getText().toString().equalsIgnoreCase(""))) {
                     amount.setText("0");
                 }
-                charges.setText((Double.parseDouble(amount.getText().toString() + "") * .01) + "");
-                payableAmount.setText((Double.parseDouble(amount.getText().toString() + "") * 1.01) + "");
-
+                String requestTypeStr = ((RadioButton) getActivity().findViewById(((RadioGroup) getActivity().findViewById(R.id.pickupdelivery)).getCheckedRadioButtonId())).getText().toString();
+                double rate = requestTypeStr.equalsIgnoreCase("delivery") ? deliveryRate : pickupRate;
+                double amt = Double.parseDouble(amount.getText().toString() + "");
+                double charge =  amt*rate /100;
+                double total = charge + amt;
+                charges.setText(charge + "");
+                payableAmount.setText(total + "");
             }
         });
 
@@ -110,9 +114,9 @@ public class NewCashRequestFragment extends Fragment {
         try {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            cashRequest.setAmount(Double.parseDouble("0" + amount.getText().toString()));
-            cashRequest.setIncentive(Double.parseDouble("0" + charges.getText().toString()));
-            cashRequest.setPayableAmout(Double.parseDouble("0" + payableAmount.getText().toString()));
+            cashRequest.setAmount(Double.parseDouble(amount.getText().toString()));
+            cashRequest.setIncentive(Double.parseDouble(charges.getText().toString()));
+            cashRequest.setPayableAmount(Double.parseDouble(payableAmount.getText().toString()));
 
             //      postData.put("amount", ((EditText) getActivity().findViewById(R.id.amountLabel)).getText());
             //      postData.put("payableAmout", ((EditText) getActivity().findViewById(R.id.payableAmoutLabel)).getText());

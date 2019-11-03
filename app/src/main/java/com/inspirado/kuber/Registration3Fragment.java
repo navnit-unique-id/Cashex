@@ -249,7 +249,10 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     getActivity().setTitle(R.string.registration3_title);
                     handler.removeCallbacks(runnable); //stop handler when activity not visible
                     searching = false;
-                    if (locationFound) return;
+                    if (locationFound){
+                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                        return;
+                    }
                     mLastLocation = location;
                     if (mCurrLocationMarker != null) {
                         mCurrLocationMarker.remove();
@@ -268,6 +271,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             });
         }
     }
+
 
     @Override
     public void onConnectionSuspended(int i) {

@@ -21,7 +21,7 @@ public class CashRequest  implements Serializable {
 
     String lndrPaymentMode;
     String rcvrPaymentMode;
-    double payableAmout;
+    double payableAmount;
     double incentive;
     double lndrLat;
     double lndrLng;
@@ -37,6 +37,28 @@ public class CashRequest  implements Serializable {
     String lndrFeedback;
     String clientCode;
     int requestType;
+    boolean pickupServiceEnabled;
+    String paymentSlot;
+    String preferredPaymentMode;
+    String rcvTransactionId;
+    Long requesterId;
+    Long lenderId;
+
+    int status;
+    Date requestDate;
+    Date acceptanceDate;
+    Date completionDate;
+    String escalationId;
+    String escalatedToId;
+    String escalatedToName;
+    String escalatedToAddress;
+    String escalatedToMobileNumber;
+
+    Date escalationRedressalDate;
+    String escalationRedressalMode;
+    String escalationRedressalId;
+    String escalationRedressalTransactionId;
+    String escalationRedressalStatus;
 
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
@@ -54,16 +76,6 @@ public class CashRequest  implements Serializable {
         this.rcvrPaymentMode = rcvrPaymentMode;
     }
 
-    String paymentSlot;
-    String preferredPaymentMode;
-    String rcvTransactionId;
-    Long requesterId;
-    Long lenderId;
-
-    int status;
-    Date requestDate;
-    Date acceptanceDate;
-    Date completionDate;
 
     public Date getCompletionDate() {
         return completionDate;
@@ -99,14 +111,14 @@ public class CashRequest  implements Serializable {
         this.lender = lender;
     }
 
-    public CashRequest(long id, double amount, Long requesterId, double payableAmout, int status,
+    public CashRequest(long id, double amount, Long requesterId, double payableAmount, int status,
                        String preferredPaymentMode, String paymentSlot, String paymentMode, String rcvTransactionId, double lenderDistance,
                        String lndrTransactionId) {
         super();
         this.id = id;
         this.amount = amount;
         this.requesterId = requesterId;
-        this.payableAmout = payableAmout;
+        this.payableAmount = payableAmount;
         this.status = status;
         this.preferredPaymentMode = preferredPaymentMode;
         this.paymentSlot = paymentSlot;
@@ -140,11 +152,17 @@ public class CashRequest  implements Serializable {
         return lndrTransactionId;
     }
 
-    public double getPayableAmout() {
-        return payableAmout;
+    public double getPayableAmount() {
+        return payableAmount;
     }
 
+    public boolean isPickupServiceEnabled() {
+        return pickupServiceEnabled;
+    }
 
+    public void setPickupServiceEnabled(boolean pickupServiceEnabled) {
+        this.pickupServiceEnabled = pickupServiceEnabled;
+    }
 
     public String getLndrPaymentMode() {
         return lndrPaymentMode;
@@ -186,8 +204,8 @@ public class CashRequest  implements Serializable {
         this.lndrTransactionId = lndrTransactionId;
     }
 
-    public void setPayableAmout(double payableAmout) {
-        this.payableAmout = payableAmout;
+    public void setPayableAmount(double payableAmout) {
+        this.payableAmount = payableAmout;
     }
 
     public void setLndrPaymentMode(String lndrPaymentMode) {
@@ -315,5 +333,85 @@ public class CashRequest  implements Serializable {
 
     public void setRequestType(int requestType) {
         this.requestType = requestType;
+    }
+
+    public String getEscalationId() {
+        return escalationId;
+    }
+
+    public void setEscalationId(String escalationId) {
+        this.escalationId = escalationId;
+    }
+
+    public String getEscalatedToId() {
+        return escalatedToId;
+    }
+
+    public void setEscalatedToId(String escalatedToId) {
+        this.escalatedToId = escalatedToId;
+    }
+
+    public String getEscalatedToName() {
+        return escalatedToName;
+    }
+
+    public void setEscalatedToName(String escalatedToName) {
+        this.escalatedToName = escalatedToName;
+    }
+
+    public String getEscalatedToAddress() {
+        return escalatedToAddress;
+    }
+
+    public void setEscalatedToAddress(String escalatedToAddress) {
+        this.escalatedToAddress = escalatedToAddress;
+    }
+
+    public String getEscalatedToMobileNumber() {
+        return escalatedToMobileNumber;
+    }
+
+    public void setEscalatedToMobileNumber(String escalatedToMobileNumber) {
+        this.escalatedToMobileNumber = escalatedToMobileNumber;
+    }
+
+    public Date getEscalationRedressalDate() {
+        return escalationRedressalDate;
+    }
+
+    public void setEscalationRedressalDate(Date escalationRedressalDate) {
+        this.escalationRedressalDate = escalationRedressalDate;
+    }
+
+    public String getEscalationRedressalMode() {
+        return escalationRedressalMode;
+    }
+
+    public void setEscalationRedressalMode(String escalationRedressalMode) {
+        this.escalationRedressalMode = escalationRedressalMode;
+    }
+
+    public String getEscalationRedressalId() {
+        return escalationRedressalId;
+    }
+
+    public void setEscalationRedressalId(String escalationRedressalId) {
+        this.escalationRedressalId = escalationRedressalId;
+    }
+
+    public String getEscalationRedressalTransactionId() {
+        return escalationRedressalTransactionId;
+    }
+
+    public void setEscalationRedressalTransactionId(String escalationRedressalTransactionId) {
+        this.escalationRedressalTransactionId = escalationRedressalTransactionId;
+    }
+
+    public String getEscalationRedressalStatus() {
+        return escalationRedressalStatus;
+    }
+
+    public void setEscalationRedressalStatus(String escalationRedressalStatus) {
+        this.escalationRedressalStatus = escalationRedressalStatus;
     }
 }

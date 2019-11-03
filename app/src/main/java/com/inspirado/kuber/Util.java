@@ -48,6 +48,7 @@ public class Util implements Serializable {
         statusTable.put(2,"Accepted");
         statusTable.put(3,"Transferred");
         statusTable.put(4,"Closed");
+        statusTable.put(5,"Escalated");
         statusTable.put(10,"Cancelled");
         statusTable.put(11,"Expired");
 

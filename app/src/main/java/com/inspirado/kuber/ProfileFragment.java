@@ -82,6 +82,8 @@ public class ProfileFragment extends Fragment {
         ((TextView) getActivity().findViewById(R.id.email)).setText(user.getEmail());
         ((TextView) getActivity().findViewById(R.id.referral)).setText(user.getMobileNumber());
         ((TextView) getActivity().findViewById(R.id.phone)).setText(user.getMobileNumber());
+        ((TextView) getActivity().findViewById(R.id.CompanyCode)).setText(user.getClientCode());
+
         try{
             PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
             String versionTxt = "V "+pInfo.versionCode+"\n Last Updated Date: " + new SimpleDateFormat("dd-MMM-yyyy").format(new Date(pInfo.lastUpdateTime));
