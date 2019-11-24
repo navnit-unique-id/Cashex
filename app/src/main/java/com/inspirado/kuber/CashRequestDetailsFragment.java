@@ -109,9 +109,14 @@ public class CashRequestDetailsFragment extends Fragment {
         }
 
         if(isMyRequestPage && (requestType==1) ){
-            payableReceivableLbl="Total Receivable";
+            payableReceivableLbl="Total Payable";
         }
         else if(isMyRequestPage && (requestType==2) ){
+            payableReceivableLbl="Total Receivable";
+        }else if(!isMyRequestPage && (requestType==1) ){
+            payableReceivableLbl="Total Receivable";
+        }
+        else if(!isMyRequestPage && (requestType==2) ){
             payableReceivableLbl="Total Payable";
         }
 

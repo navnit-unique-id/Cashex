@@ -116,7 +116,7 @@ public class OGCashListFragment extends Fragment {
     public void getData(final boolean  silent, int type) {
         String resource="";
       //  final ProgressDialog progressDialog =null;
-        final RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.ic_cash_list);
+        final RecyclerView list = (RecyclerView) getActivity().findViewById(R.id.og_cash_requests);
         String clientCode = user.getClientCode();
         if(!silent){
         //    final ProgressDialog progressDialog = new ProgressDialog(getContext());
