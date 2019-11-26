@@ -58,6 +58,7 @@ public class NewCashRequestFragment extends Fragment {
         String json = pref.getString("user", "");
         user = (new Gson()).fromJson(json, User.class);
         getActivity().setTitle("New Request");
+        RadioGroup pickupDelivery = ((RadioGroup)(getActivity().findViewById(R.id.pickupdelivery)));
         Button reqBtn = (Button) getActivity().findViewById(R.id.imageButton);
         reqBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +75,19 @@ public class NewCashRequestFragment extends Fragment {
         final double deliveryRate=user.getDeliveryRate();
 
         if (user.isPickupServiceEnabled()) {
-            (getActivity().findViewById(R.id.pickupdelivery)).setVisibility(View.VISIBLE);
+            pickupDelivery.setVisibility(View.VISIBLE);
             (getActivity().findViewById(R.id.textView33)).setVisibility(View.VISIBLE);
+            pickupDelivery.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener()
+            {
+                public void onCheckedChanged(RadioGroup group, int checkedId)
+                {
+                    String requestTypeStr = ((RadioButton) getActivity().findViewById(((RadioGroup) getActivity().findViewById(R.id.pickupdelivery)).getCheckedRadioButtonId())).getText().toString();
+                    String payableReceivableLbl = (requestTypeStr.equalsIgnoreCase("delivery"))? "Total Payable":"Total Receivable";
+                    ((TextView) getActivity().findViewById(R.id.textView10)).setText(payableReceivableLbl);
+                }
+            });
         }
+
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
