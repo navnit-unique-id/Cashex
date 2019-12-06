@@ -105,7 +105,7 @@ public class NewCashRequestFragment extends Fragment {
                 String requestTypeStr = ((RadioButton) getActivity().findViewById(((RadioGroup) getActivity().findViewById(R.id.pickupdelivery)).getCheckedRadioButtonId())).getText().toString();
                 double rate = requestTypeStr.equalsIgnoreCase("delivery") ? deliveryRate : pickupRate;
                 double amt = Double.parseDouble(amount.getText().toString() + "");
-                double charge =  (amt*rate /100 >80)?80:amt*rate /100 ;
+                double charge =  (amt*rate /100 >50)?50:amt*rate /100 ;
                 double total = charge + amt;
                 charges.setText(charge + "");
                 payableAmount.setText(total + "");
