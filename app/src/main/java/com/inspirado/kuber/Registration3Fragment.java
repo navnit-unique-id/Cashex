@@ -161,6 +161,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
 
             handler.postDelayed(runnable = new Runnable() {
                 public void run() {
+                    if(mGoogleApiClient!=null)mGoogleApiClient.connect();
                     getActivity().setTitle(R.string.registration3_progress_title);
                     int zoom = 7 + (new Random()).nextInt(4);
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 5000, null);
@@ -246,7 +247,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    getActivity().setTitle(R.string.registration3_title);
+                    if(getActivity()!=null)getActivity().setTitle(R.string.registration3_title);
                     handler.removeCallbacks(runnable); //stop handler when activity not visible
                     searching = false;
                     if (locationFound){
@@ -264,7 +265,8 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     markerOptions.draggable(true);
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                  //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18), 8000, null);
                     updateUserDetails(mCurrLocationMarker);
                     locationFound = true;
                 }
@@ -275,10 +277,12 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
 
     @Override
     public void onConnectionSuspended(int i) {
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Map disconnected !!", Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Connection to map failed !!", Snackbar.LENGTH_LONG).show();
     }
 
 
@@ -291,13 +295,11 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 new AlertDialog.Builder(getContext())
                         .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setMessage("This app needs location permission. Please accept to proceed further")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                                requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
                         .create()
@@ -319,6 +321,8 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (mGoogleApiClient == null) {
                         buildGoogleApiClient();
+                    }else{
+                        mGoogleApiClient.connect();
                     }
                     mMap.setMyLocationEnabled(true);
                     mMap.setOnMarkerDragListener(this);
