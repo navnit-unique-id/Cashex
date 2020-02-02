@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -22,11 +23,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -37,6 +40,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +53,9 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 //import android.widget.Toast;
 
@@ -57,6 +68,10 @@ public class CashRequestDetailsFragment extends Fragment {
 
     CashRequest cashRequest;
     User user;
+    public static int white = 0xFFFFFFFF;
+    public static int black = 0xFF000000;
+    public final static int WIDTH = 500;
+    private IntentIntegrator qrScan;
 
     @Nullable
     @Override
@@ -77,16 +92,22 @@ public class CashRequestDetailsFragment extends Fragment {
         filter.addAction("4");
         filter.addAction("11");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
-        createScreen();
+        if ((cashRequest != null) && (cashRequest.getStatus() != 100)) {
+            createScreen();
+            return;
+        }
+        if ((cashRequest != null) && (cashRequest.getStatus() == 100)) {
+            getCashRequestNCreateScreen(cashRequest.getId());
+        }
     }
 
     private void createScreen() {
         String payableReceivableLbl = "Total Receivable";
-        boolean isMyRequestPage= cashRequest.getRequesterId().equals(user.getId());
+        boolean isMyRequestPage = cashRequest.getRequesterId().equals(user.getId());
         int requestType = cashRequest.getRequestType();
         Button acceptBtn = (Button) getActivity().findViewById(R.id.acceptBtn);
         ((TextView) getActivity().findViewById(R.id.name)).setText(cashRequest.getRequestor().getName() + "");
-        ((TextView) getActivity().findViewById(R.id.frs)).setText("FRS " + cashRequest.getRequestor().getOverallScore() + "");
+        ((TextView) getActivity().findViewById(R.id.kmLbl)).setText("FRS " + cashRequest.getRequestor().getOverallScore() + "");
 
         ((TextView) getActivity().findViewById(R.id.incentive)).setText(cashRequest.getIncentive() + "");
         ((TextView) getActivity().findViewById(R.id.amount)).setText(cashRequest.getAmount() + "");
@@ -108,16 +129,14 @@ public class CashRequestDetailsFragment extends Fragment {
             ((TextView) getActivity().findViewById(R.id.ldrphone)).setText(cashRequest.getLender().getMobileNumber());
         }
 
-        if(isMyRequestPage && (requestType==1) ){
-            payableReceivableLbl="Total Payable";
-        }
-        else if(isMyRequestPage && (requestType==2) ){
-            payableReceivableLbl="Total Receivable";
-        }else if(!isMyRequestPage && (requestType==1) ){
-            payableReceivableLbl="Total Receivable";
-        }
-        else if(!isMyRequestPage && (requestType==2) ){
-            payableReceivableLbl="Total Payable";
+        if (isMyRequestPage && (requestType == 1)) {
+            payableReceivableLbl = "Total Payable";
+        } else if (isMyRequestPage && (requestType == 2)) {
+            payableReceivableLbl = "Total Receivable";
+        } else if (!isMyRequestPage && (requestType == 1)) {
+            payableReceivableLbl = "Total Receivable";
+        } else if (!isMyRequestPage && (requestType == 2)) {
+            payableReceivableLbl = "Total Payable";
         }
 
         ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText(payableReceivableLbl);
@@ -177,6 +196,10 @@ public class CashRequestDetailsFragment extends Fragment {
         }
 
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
+            if((requestType == 2)) {
+                ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
+                ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
+            }
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.VISIBLE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
             //  ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
@@ -194,6 +217,10 @@ public class CashRequestDetailsFragment extends Fragment {
         }
         Button confirmBtn = (Button) getActivity().findViewById(R.id.comfirmBtn);
         if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
+            if((requestType == 1)) {
+                ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
+                ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
+            }
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
             confirmBtn.setVisibility(View.VISIBLE);
@@ -211,7 +238,7 @@ public class CashRequestDetailsFragment extends Fragment {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
         }
-        if ( (cashRequest.getEscalatedToName()!=null) && (!cashRequest.getEscalatedToName().equalsIgnoreCase(""))) {
+        if ((cashRequest.getEscalatedToName() != null) && (!cashRequest.getEscalatedToName().equalsIgnoreCase(""))) {
             ((ConstraintLayout) getActivity().findViewById(R.id.escalation_contact_block)).setVisibility(View.VISIBLE);
         }
     }
@@ -407,6 +434,39 @@ public class CashRequestDetailsFragment extends Fragment {
     }
 
     private void confirmRequest() {
+        IntentIntegrator.forSupportFragment(this).initiateScan();
+      //  qrScan = new IntentIntegrator(getActivity());
+     //   qrScan.initiateScan();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            //if qrcode has nothing in it
+            if (result.getContents() != null) {
+                confirmRequest1();
+            } /*else {
+                try {
+                    Fragment fragment = new CashRequestDetailsFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    CashRequest cashRequest = new CashRequest();
+                    cashRequest.setId(Long.parseLong(""+result.getContents()));
+                    cashRequest.setStatus(100); //ghost
+                    ((CashRequestDetailsFragment) fragment).setCashRequest(cashRequest);
+                    ft.replace(R.id.content_frame, fragment).addToBackStack(null);
+                    ft.commitAllowingStateLoss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                }
+            }*/
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void confirmRequest1() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Confirming...");
         Button showPopupBtn, submitPopupBtn, closePopupBtn;
@@ -522,8 +582,6 @@ public class CashRequestDetailsFragment extends Fragment {
                     popupWindow.dismiss();
                 }
             });
-            //new RestService().execute(getString(R.string.columbus_ms_url) + "/CashRequests", postData.toString());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -556,8 +614,6 @@ public class CashRequestDetailsFragment extends Fragment {
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
-                //     Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
-                //     toast.show();
                 Snackbar snackbar = Snackbar
                         .make(getView(), UIMessage, Snackbar.LENGTH_LONG);
                 snackbar.show();
@@ -579,6 +635,70 @@ public class CashRequestDetailsFragment extends Fragment {
         } catch (JSONException e) {
         }
         return result;
+    }
+
+    Bitmap encodeAsBitmap(String str) {
+        BitMatrix result;
+        Bitmap bitmap;
+        try {
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
+            int w = result.getWidth();
+            int h = result.getHeight();
+            int[] pixels = new int[w * h];
+            for (int y = 0; y < h; y++) {
+                int offset = y * w;
+                for (int x = 0; x < w; x++) {
+                    pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+                }
+            }
+            bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
+        } catch (Exception iae) {
+            // Unsupported format
+            return null;
+        }
+        return bitmap;
+    }
+
+
+    public void getCashRequestNCreateScreen(Long id) {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        String clientCode = user.getClientCode();
+        progressDialog.setMessage("Fetching Cash Requests...");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/" + clientCode + "/cashrequest/requests/" + id, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    cashRequest = (new Gson()).fromJson(jsonObject.toString(), CashRequest.class);
+                    createScreen();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                }
+
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String UIMessage = "Error. Please try after some time";
+                if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
+                    UIMessage = "Unable to connect to internet.";
+                }
+                Snackbar snackbar = Snackbar
+                        .make(getView(), UIMessage, Snackbar.LENGTH_LONG);
+                snackbar.show();
+                progressDialog.dismiss();
+            }
+        });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonObjectRequest);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

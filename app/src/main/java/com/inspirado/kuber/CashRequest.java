@@ -2,6 +2,7 @@ package com.inspirado.kuber;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -59,6 +60,7 @@ public class CashRequest  implements Serializable {
     String escalationRedressalId;
     String escalationRedressalTransactionId;
     String escalationRedressalStatus;
+    List lenderOptions;
 
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
@@ -413,5 +415,13 @@ public class CashRequest  implements Serializable {
 
     public void setEscalationRedressalStatus(String escalationRedressalStatus) {
         this.escalationRedressalStatus = escalationRedressalStatus;
+    }
+
+    public List getLenderOptions() {
+        return lenderOptions;
+    }
+
+    public void setLenderOptions(List lenderOptions) {
+        this.lenderOptions = lenderOptions;
     }
 }

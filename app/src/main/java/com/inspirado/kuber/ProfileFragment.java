@@ -1,6 +1,5 @@
 package com.inspirado.kuber;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
@@ -12,26 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 //import android.widget.Toast;
 
@@ -74,7 +59,7 @@ public class ProfileFragment extends Fragment {
 
     public void setValues(User user){
         ((TextView) getActivity().findViewById(R.id.name)).setText(user.getName());
-        ((TextView) getActivity().findViewById(R.id.frs)).setText(user.getOverallScore()+"");
+        ((TextView) getActivity().findViewById(R.id.kmLbl)).setText(user.getOverallScore()+"");
         ((TextView) getActivity().findViewById(R.id.address)).setText(user.getAddress());
         ((TextView) getActivity().findViewById(R.id.state)).setText(user.getState());
         ((TextView) getActivity().findViewById(R.id.city)).setText(user.getCity());

@@ -19,8 +19,8 @@ android {
         applicationId "com.inspirado.kuber"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 24
-        versionName "24"
+        versionCode 29
+        versionName "29"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }
@@ -68,6 +68,8 @@ dependencies {
     implementation 'commons-beanutils:commons-beanutils:1.9.3'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
 
+    implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
+    implementation 'com.google.zxing:core:3.2.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

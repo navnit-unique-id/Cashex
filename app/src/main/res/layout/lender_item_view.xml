@@ -1,0 +1,128 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.vsa.columbus"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/request_summary_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/AppTheme"
+        app2:cardBackgroundColor="@color/lightBG"
+        app2:cardElevation="@dimen/fui_button_inset_bottom"
+        app2:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app2:layout_constraintEnd_toEndOf="parent"
+                    app2:layout_constraintStart_toStartOf="parent"
+                    app2:layout_constraintTop_toTopOf="@+id/vehicle_status">
+
+                    <CheckBox
+                        android:id="@+id/isSelected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintVertical_chainStyle="spread_inside" />
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Address"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app2:layout_constraintStart_toEndOf="@+id/imageView8"
+                        app2:layout_constraintTop_toTopOf="@+id/imageView8" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Business Name"
+                        android:textStyle="bold"
+                        app2:layout_constraintBottom_toBottomOf="@+id/isSelected"
+                        app2:layout_constraintEnd_toStartOf="@+id/km"
+                        app2:layout_constraintHorizontal_bias="0.0"
+                        app2:layout_constraintStart_toEndOf="@+id/isSelected" />
+
+                    <TextView
+                        android:id="@+id/km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toStartOf="@+id/kmLbl"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintVertical_bias="0.0" />
+
+                    <TextView
+                        android:id="@+id/kmLbl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="KM"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintVertical_bias="0.0" />
+
+                    <ImageView
+                        android:id="@+id/imageView8"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toBottomOf="@+id/isSelected"
+                        app2:srcCompat="@mipmap/location_fg" />
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

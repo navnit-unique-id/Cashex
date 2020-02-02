@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,8 +22,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +44,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.inspirado.kuber.domain.AppVersionInfo;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -58,6 +67,8 @@ public class MainActivity extends AppCompatActivity
     private User user;
     private static String TOKEN;
     private static boolean TOKEN_REGISTERED = false;
+    //qr code scanner object
+    private IntentIntegrator qrScan;
 
     public void createSignInIntent() {
         Intent myIntent = new Intent(this, LoginActivity.class);
@@ -114,6 +125,9 @@ public class MainActivity extends AppCompatActivity
 
         navUsername.setText(user.getName());
         navigationView.setNavigationItemSelectedListener(this);
+
+        qrScan = new IntentIntegrator(this);
+
     }
 
 
@@ -132,15 +146,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.scan_qr) {
+            qrScan.initiateScan();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        final MenuItem toggleservice = menu.findItem(R.id.atm_mode);
+        final Switch actionView = (Switch) toggleservice.getActionView();
+        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    setTitle("ATM ON");
+                    getSupportActionBar().setBackgroundDrawable( new ColorDrawable(Color.parseColor("#28CC65")));
+                }else{
+                    setTitle("ATM OFF");
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
+                }
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
 
     private void registerTokenIfRequired(final String token, final Long userId, final String clientCode) {
         if ((TOKEN != null) && !TOKEN_REGISTERED) {
@@ -238,8 +275,6 @@ public class MainActivity extends AppCompatActivity
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment).addToBackStack(null);
-            ;
-            ;
             ft.commit();
         }
 

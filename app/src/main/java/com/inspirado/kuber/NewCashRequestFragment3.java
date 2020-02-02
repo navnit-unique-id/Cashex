@@ -33,10 +33,12 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 
-
-public class NewCashRequestFragment extends Fragment {
+public class NewCashRequestFragment3 extends Fragment {
 
     CashRequest cashRequest;
     User user;
@@ -44,11 +46,12 @@ public class NewCashRequestFragment extends Fragment {
     TextView payableAmount;
     TextView charges;
     Spinner paymentSlot;
+    Hashtable lenders = new Hashtable();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_new_cash_req, container, false);
+        return inflater.inflate(R.layout.fragment_new_cash_req_3, container, false);
     }
 
     @Override
@@ -56,7 +59,9 @@ public class NewCashRequestFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
-        user = (new Gson()).fromJson(json, User.class);
+        if(user==null){
+            user = (new Gson()).fromJson(json, User.class);
+        }
         getActivity().setTitle("New Request");
         RadioGroup pickupDelivery = ((RadioGroup)(getActivity().findViewById(R.id.pickupdelivery)));
         Button reqBtn = (Button) getActivity().findViewById(R.id.imageButton);
@@ -111,9 +116,24 @@ public class NewCashRequestFragment extends Fragment {
                 payableAmount.setText(total + "");
             }
         });
-
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
+    public Hashtable getLenders() {
+        return lenders;
+    }
+
+    public void setLenders(Hashtable lenders) {
+        this.lenders = lenders;
+    }
     private void saveRequest() {
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -156,8 +176,12 @@ public class NewCashRequestFragment extends Fragment {
             cashRequest.setRcvrLat(user.getLat());
             cashRequest.setRcvrLng(user.getLng());
             cashRequest.setClientCode(user.getClientCode());
+            cashRequest.setRcvrLat(user.getLat());
+            cashRequest.setRcvrLng(user.getLng());
             cashRequest.setRequestType(requestType);
             cashRequest.setStatus(1);
+            ArrayList<Lender> lenderList = new ArrayList<Lender>(lenders.values());
+            cashRequest.setLenderOptions(lenderList);
             double amountVal = Double.parseDouble("0" + amount.getText());
             if (amountVal <= 0) {
                 amount.setError(getString(R.string.error_invalid_amount));
@@ -171,7 +195,7 @@ public class NewCashRequestFragment extends Fragment {
 
             progressDialog.show();
             //new RestService().execute(getString(R.string.columbus_ms_url) + "/CashRequests", postData.toString());
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/", postData,
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/v2", postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {

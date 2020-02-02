@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,7 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -44,29 +51,36 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by Belal on 18/09/16.
  */
 
 
-public class Registration3Fragment extends Fragment implements OnMapReadyCallback,
+public class NewCashRequestFragment1 extends Fragment implements OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener ,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerDragListener {
     public static GoogleMap mMap;
     private LinearLayoutManager linearLayoutManager;
     User user;
+    Hashtable lenders = new Hashtable();
     private FusedLocationProviderClient mFusedLocationClient;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
@@ -88,10 +102,19 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
         this.user = user;
     }
 
+
+    public Hashtable getLenders() {
+        return lenders;
+    }
+
+    public void setLenders(Hashtable lenders) {
+        this.lenders = lenders;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_registration_3, container, false);
+        return inflater.inflate(R.layout.fragment_new_cash_req_1, container, false);
     }
 
     @Override
@@ -102,26 +125,32 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         displayLocationSettingsRequest(getContext());
-        getActivity().setTitle(R.string.registration3_title);
+        getActivity().setTitle(R.string.new_cash_request_lenders_title);
         Button nextBtn = (Button) getActivity().findViewById(R.id.regBtn);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                progressDialog.setMessage(getContext().getString(R.string.registration3_progressbar_msg));
-                progressDialog.show();
-                JsonObjectRequest jsonObjectRequest = null;
-                String paymentMode = "";
                 try {
-                    user.setStatus(3);
-                    Gson gson = new Gson();
-                    JSONObject postData = new JSONObject(gson.toJson(user));
-                    Log.d("TAG", "putData: " + postData.toString());
-                    Fragment fragment = new Registration4Fragment();
-                    ((Registration4Fragment) fragment).setUser(user);
-                    FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
+                    Fragment fragment = new NewCashRequestFragment3();
+                    ((NewCashRequestFragment3) fragment).setUser(user);
+                    ((NewCashRequestFragment3) fragment).setLenders(lenders);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                     ft.commit();
-                    progressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Button newCashReq1ViewListBtn = (Button) getActivity().findViewById(R.id.newCashReq1ViewListBtn);
+        newCashReq1ViewListBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
+                    Fragment fragment = new NewCashRequestFragment2();
+                    ((NewCashRequestFragment2) fragment).setUser(user);
+                    ((NewCashRequestFragment2) fragment).setLenders(lenders);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment).addToBackStack(null);
+                    ft.commit();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -148,11 +177,12 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.setOnMarkerDragListener(this);
         }
+        mMap.setOnMarkerClickListener(this);
         initiliazeMarker();
     }
 
     private void initiliazeMarker() {
-        if ((user.getLat() != 0) && (user.getLng() != 0)) {
+      /*  if ((user.getLat() != 0) && (user.getLng() != 0)) {
             LatLng latLng = new LatLng(user.getLat(), user.getLng());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
@@ -162,9 +192,9 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             mCurrLocationMarker = mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
             locationFound = true;
-        } else {
+        } else {*/
             searching = true;
-            LatLng latLng = new LatLng(20.5937, 78.9629);
+            LatLng latLng = new LatLng(user.getLat(), user.getLng());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
 
             handler.postDelayed(runnable = new Runnable() {
@@ -176,7 +206,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                     handler.postDelayed(runnable, delay);
                 }
             }, delay);
-        }
+      //  }
     }
 
     @Override
@@ -205,34 +235,8 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        updateUserDetails(marker);
     }
 
-    private void updateUserDetails(Marker marker) {
-        LatLng position = marker.getPosition();
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1);
-            String address = addresses.get(0).getAddressLine(0);
-            String city = addresses.get(0).getLocality();
-            user.setState(addresses.get(0).getAdminArea());
-            user.setPinCode(addresses.get(0).getPostalCode());
-            user.setCity(addresses.get(0).getLocality());
-            user.setAddress(addresses.get(0).getAddressLine(0));
-            user.setLat(position.latitude);
-            user.setLng(position.longitude);
-            if (getActivity() != null) {
-                Snackbar
-                        .make(getActivity().findViewById(android.R.id.content), "Address: " +
-                                address + " " + city, Snackbar.LENGTH_LONG).show();
-            }
-        } catch (IOException e) {
-            Snackbar
-                    .make(getActivity().findViewById(android.R.id.content), "Error fetching address", Snackbar.LENGTH_LONG).show();
-
-            e.printStackTrace();
-        }
-    }
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
@@ -255,7 +259,7 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    if(getActivity()!=null)getActivity().setTitle(R.string.registration3_title);
+                    if(getActivity()!=null)getActivity().setTitle(R.string.new_cash_request_lenders_title);
                     handler.removeCallbacks(runnable); //stop handler when activity not visible
                     searching = false;
                     if (locationFound){
@@ -267,16 +271,28 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
                         mCurrLocationMarker.remove();
                     }
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
+/*                    MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
                     markerOptions.title("Current Position");
                     markerOptions.draggable(true);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    mCurrLocationMarker = mMap.addMarker(markerOptions);
-                  //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18), 8000, null);
-                    updateUserDetails(mCurrLocationMarker);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                    mCurrLocationMarker = mMap.addMarker(markerOptions);*/
+                    //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
+                    Circle circle = mMap.addCircle(new CircleOptions()
+                            .center(latLng)
+                            .radius(9000)
+                            .strokeWidth(1)
+                            .strokeColor(Color.GRAY)
+                            .fillColor(Color.argb(128, 220, 220, 220)));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11), 8000, null);
+                    user.setLat(location.getLatitude());
+                    user.setLng(location.getLongitude());
                     locationFound = true;
+                    if(lenders.isEmpty()){
+                        getNearbyLenders(location.getLatitude(), location.getLongitude());
+                    }else{
+                        displayLenderOnMap();
+                    }
                 }
             });
         }
@@ -368,6 +384,91 @@ public class Registration3Fragment extends Fragment implements OnMapReadyCallbac
             }
         });
     }
+
+    private void getNearbyLenders(Double lat, Double lng){
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        String clientCode = user.getClientCode();
+        progressDialog.setMessage("Finding lenders nearby...");
+        progressDialog.show();
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(getString(R.string.columbus_ms_url)+"/100/"+clientCode+"/cashrequest" + "/users/" + user.getId() + "/nearbylenders?lat="+lat+"&lng="+lng , new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        Lender lender = (new Gson()).fromJson(jsonObject.toString(), Lender.class);
+                        lenders.put(lender.getId(),lender);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+                displayLenderOnMap();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String UIMessage = "Error. Please try after some time";
+                if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
+                    UIMessage = "Unable to connect to internet.";
+                }
+                Snackbar snackbar = Snackbar
+                        .make(getView(), UIMessage, Snackbar.LENGTH_LONG);
+                snackbar.show();
+                progressDialog.dismiss();
+            }
+        });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+
+    private void displayLenderOnMap(){
+        Set<Long> keys = lenders.keySet();
+        for(Long key:keys){
+            Lender lender = (Lender) lenders.get(key);
+            if ((lender.getLat() != 0) && (lender.getLng() != 0)) {
+                LatLng latLng = new LatLng(lender.getLat(), lender.getLng());
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(lender.getBusinessName());
+                if(lender.isSelected()){
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                }else{
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+                mMap.addMarker(markerOptions).setTag(lender.getId());
+            }
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(marker.getTag()==null) return true;
+        Long id = Long.parseLong(""+marker.getTag());
+        Lender lender = (Lender)lenders.get(id);
+        lender.setSelected(!lender.isSelected());
+        marker.showInfoWindow();
+        Snackbar snackbar;
+        //     lenders.put(id,lender);
+        if(lender.isSelected()){
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            snackbar = Snackbar
+                    .make(getView(), "Request will be sent to "+lender.getBusinessName() , Snackbar.LENGTH_LONG);
+        }else{
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            snackbar = Snackbar
+                    .make(getView(), "Request will NOT be sent to "+lender.getBusinessName() , Snackbar.LENGTH_LONG);
+        }
+        snackbar.show();
+        return true;
+    }
+
 
 }
 

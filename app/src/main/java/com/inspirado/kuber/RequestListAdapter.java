@@ -105,12 +105,12 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
 
         public RequestHolder(View v) {
             super(v);
-            mRequestIDView = v.findViewById(R.id.requestId);
+            mRequestIDView = v.findViewById(R.id.name);
             mRequestAmountView = v.findViewById(R.id.requestAmount);
             mRequestDateView = v.findViewById(R.id.requestDate);
-            status=  v.findViewById(R.id.status);
+            status=  v.findViewById(R.id.km);
             mRequester=v.findViewById(R.id.txtName);
-            frs=v.findViewById(R.id.frs);
+            frs=v.findViewById(R.id.kmLbl);
             cardView = v.findViewById(R.id.request_summary_card);
         }
     }
