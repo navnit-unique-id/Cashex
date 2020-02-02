@@ -196,7 +196,7 @@ public class CashRequestDetailsFragment extends Fragment {
         }
 
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
-            if((requestType == 2)) {
+            if((requestType == 1)) {
                 ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
                 ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
             }
@@ -217,7 +217,7 @@ public class CashRequestDetailsFragment extends Fragment {
         }
         Button confirmBtn = (Button) getActivity().findViewById(R.id.comfirmBtn);
         if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
-            if((requestType == 1)) {
+            if((requestType == 2)) {
                 ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
                 ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
             }
