@@ -92,6 +92,9 @@ public class CashRequestDetailsFragment extends Fragment {
         filter.addAction("4");
         filter.addAction("11");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
+        if (savedInstanceState != null) {
+            cashRequest = (CashRequest) savedInstanceState.getSerializable("cashRequest");
+        }
         if ((cashRequest != null) && (cashRequest.getStatus() != 100)) {
             createScreen();
             return;
@@ -100,6 +103,21 @@ public class CashRequestDetailsFragment extends Fragment {
             getCashRequestNCreateScreen(cashRequest.getId());
         }
     }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("cashRequest", (CashRequest) cashRequest);
+    }
+
+/*    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            cashRequest = (CashRequest) savedInstanceState.getSerializable("cashRequest");
+        }
+    }*/
+
 
     private void createScreen() {
         String payableReceivableLbl = "Total Receivable";
@@ -182,6 +200,7 @@ public class CashRequestDetailsFragment extends Fragment {
             });
         }
         Button completeBtn = (Button) getActivity().findViewById(R.id.completeBtn);
+        // details page for incoming request
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 2)) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.VISIBLE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
@@ -194,33 +213,36 @@ public class CashRequestDetailsFragment extends Fragment {
                 }
             });
         }
-
+        // details page for incoming request
         if ((!cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
             if((requestType == 1)) {
                 ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
                 ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
             }
+
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.VISIBLE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
             //  ((TextView) getActivity().findViewById(R.id.payableAmoutLabel)).setText("Total Payable");
         }
 
-
+// details page for MY request
         if ((cashRequest.getRequesterId().equals(user.getId())) && ((cashRequest.getStatus() == 1))) {
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.GONE);
         }
 
         if ((cashRequest.getRequesterId().equals(user.getId())) && ((cashRequest.getStatus() == 2))) {
+            if((requestType == 2)) {
+                ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
+                ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
+            }
+
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
         }
         Button confirmBtn = (Button) getActivity().findViewById(R.id.comfirmBtn);
         if ((cashRequest.getRequesterId().equals(user.getId())) && (cashRequest.getStatus() == 3)) {
-            if((requestType == 2)) {
-                ((ImageView) getActivity().findViewById(R.id.qr)).setImageBitmap(encodeAsBitmap(cashRequest.getId() + ""));
-                ((ImageView) getActivity().findViewById(R.id.qr)).setVisibility(View.VISIBLE);
-            }
+
             ((ConstraintLayout) getActivity().findViewById(R.id.requester_contact_block)).setVisibility(View.GONE);
             ((ConstraintLayout) getActivity().findViewById(R.id.lender_contact_block)).setVisibility(View.VISIBLE);
             confirmBtn.setVisibility(View.VISIBLE);
@@ -321,6 +343,126 @@ public class CashRequestDetailsFragment extends Fragment {
     }
 
     private void completeRequest() {
+        // ???
+        if(cashRequest.getRequestType()==2){
+            IntentIntegrator.forSupportFragment(CashRequestDetailsFragment.this).initiateScan();
+        }// is below needed?
+        else{
+           completeRequest_1();
+        }
+        /*final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Completing...");
+        Button showPopupBtn, submitPopupBtn, closePopupBtn;
+        final PopupWindow popupWindow;
+        ConstraintLayout constraintLayout = (ConstraintLayout) getActivity().findViewById(R.id.constraintLayout);
+        try {
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View customView = layoutInflater.inflate(R.layout.popup_cash_req_confirm, null);
+            ((TextView) customView.findViewById(R.id.rateText)).setText(getString(R.string.rateLabel1) + " " + cashRequest.getRequestor().getName() + " " + getString(R.string.rateLabel2));
+
+            submitPopupBtn = (Button) customView.findViewById(R.id.submitPopupBtn);
+            closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
+
+            popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            popupWindow.showAtLocation(constraintLayout, Gravity.CENTER, 0, 0);
+
+            popupWindow.setFocusable(true);
+            popupWindow.update();
+
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+            cashRequest.setCompletionDate(new Date());
+            cashRequest.setLenderId(user.getId());
+            cashRequest.setStatus(3);
+            final JSONObject postData = new JSONObject(gson.toJson(cashRequest, CashRequest.class));
+            Spinner paymentMode = (Spinner) customView.findViewById(R.id.payment_mode);
+            List list = Util.getPaymentOptionsDetails(cashRequest.getPreferredPaymentMode());
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
+            paymentMode.setAdapter(myAdapter);
+
+
+            submitPopupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RatingBar ratingBar = (RatingBar) customView.findViewById(R.id.ratingBar);
+                    TextView feedbackLabel = (TextView) customView.findViewById(R.id.rateText);
+                    String rcvrFeedback = ((EditText) customView.findViewById(R.id.feedbackText)).getText().toString();
+
+                    float rating = ratingBar.getRating();
+                    Log.d("TAG", "onClick: " + rating);
+                    if ((rating + "").equalsIgnoreCase("0.0")) {
+                        feedbackLabel.setError("Please rate the transaction");
+                        return;
+                    }
+
+                    try {
+                        String selectedValue = ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem() == null ? "" : ((Spinner) customView.findViewById(R.id.payment_mode)).getSelectedItem().toString();
+                        String paymentOptionCode = Util.getPaymentOptionCode(selectedValue);
+                        postData.put("lndrPaymentMode", paymentOptionCode);
+                        String lndr_transaction_id = ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).getText().toString();
+                       *//* if ((lndr_transaction_id + "").equalsIgnoreCase("")) {
+                            ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).setError("Please enter the transaction id");
+                            return;
+                        }*//*
+                        postData.put("lndrTransactionId", lndr_transaction_id);
+                        postData.put("rcvrRating", rating);
+                        postData.put("rcvrFeedback", rcvrFeedback);
+
+                    } catch (Exception e) {
+
+                    }
+                    progressDialog.show();
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/", postData,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject responseObj) {
+                                    try {
+                                        Fragment fragment = new NewCashRequestSuccessFragment();
+                                        ((NewCashRequestSuccessFragment) fragment).setMessage("Request completed successfully");
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment).addToBackStack(null);
+                                        ;
+                                        ft.commit();
+                                    } catch (Exception e) {
+                                        //  Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        Snackbar snackbar = Snackbar
+                                                .make(getView(), e.getMessage(), Snackbar.LENGTH_LONG);
+                                        snackbar.show();
+                                    }
+                                    progressDialog.dismiss();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    //  Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar
+                                            .make(getView(), error.getMessage(), Snackbar.LENGTH_LONG);
+                                    snackbar.show();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                    popupWindow.dismiss();
+                    jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                            0,
+                            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                    requestQueue.add(jsonObjectRequest);
+                }
+            });
+            closePopupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    private void completeRequest_1() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Completing...");
         Button showPopupBtn, submitPopupBtn, closePopupBtn;
@@ -371,10 +513,10 @@ public class CashRequestDetailsFragment extends Fragment {
                         String paymentOptionCode = Util.getPaymentOptionCode(selectedValue);
                         postData.put("lndrPaymentMode", paymentOptionCode);
                         String lndr_transaction_id = ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).getText().toString();
-                        if ((lndr_transaction_id + "").equalsIgnoreCase("")) {
+                       /* if ((lndr_transaction_id + "").equalsIgnoreCase("")) {
                             ((TextInputEditText) customView.findViewById(R.id.lndr_transaction_id)).setError("Please enter the transaction id");
                             return;
-                        }
+                        }*/
                         postData.put("lndrTransactionId", lndr_transaction_id);
                         postData.put("rcvrRating", rating);
                         postData.put("rcvrFeedback", rcvrFeedback);
@@ -433,8 +575,13 @@ public class CashRequestDetailsFragment extends Fragment {
         }
     }
 
+
     private void confirmRequest() {
-        IntentIntegrator.forSupportFragment(this).initiateScan();
+        if(cashRequest.getRequestType()==2){
+            confirmRequest1();
+        }else{
+            IntentIntegrator.forSupportFragment(CashRequestDetailsFragment.this).setOrientationLocked(true).setBeepEnabled(true).initiateScan();
+        }
       //  qrScan = new IntentIntegrator(getActivity());
      //   qrScan.initiateScan();
     }
@@ -442,25 +589,24 @@ public class CashRequestDetailsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if (result != null) {
             //if qrcode has nothing in it
             if (result.getContents() != null) {
-                confirmRequest1();
-            } /*else {
-                try {
-                    Fragment fragment = new CashRequestDetailsFragment();
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    CashRequest cashRequest = new CashRequest();
-                    cashRequest.setId(Long.parseLong(""+result.getContents()));
-                    cashRequest.setStatus(100); //ghost
-                    ((CashRequestDetailsFragment) fragment).setCashRequest(cashRequest);
-                    ft.replace(R.id.content_frame, fragment).addToBackStack(null);
-                    ft.commitAllowingStateLoss();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                // get code. check to see if this code is equal to cash request code
+                Long crId = cashRequest.getId();
+                if( !result.getContents().equalsIgnoreCase(crId+"")){
+                    Snackbar snackbar = Snackbar
+                            .make(getView(), "Invalid QR", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    return;
                 }
-            }*/
+                if(cashRequest.getRequestType()==2){
+                    completeRequest_1();
+                }else{
+                    confirmRequest1();
+                }
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

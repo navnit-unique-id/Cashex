@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     private static String TOKEN;
     private static boolean TOKEN_REGISTERED = false;
     //qr code scanner object
-    private IntentIntegrator qrScan;
+    private Fragment cashRequestDetailsFragment;
 
     public void createSignInIntent() {
         Intent myIntent = new Intent(this, LoginActivity.class);
@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity
         } else {
             user = (new Gson()).fromJson(json, User.class);
             if (user.getStatus() == 5) {
+                if (savedInstanceState != null) {
+                    //Restore the fragment's instance
+                    cashRequestDetailsFragment = getSupportFragmentManager().getFragment(savedInstanceState, "cashRequestDetailsFragment");
+                }
                 displaySkeleton();
                 displaySelectedScreen(R.id.ic_cash_requests);
             } else {
@@ -106,6 +110,7 @@ public class MainActivity extends AppCompatActivity
             registerTokenIfRequired(TOKEN, user.getId(), user.getClientCode());
         }
     }
+
 
 
     protected void displaySkeleton() {
@@ -126,7 +131,6 @@ public class MainActivity extends AppCompatActivity
         navUsername.setText(user.getName());
         navigationView.setNavigationItemSelectedListener(this);
 
-        qrScan = new IntentIntegrator(this);
 
     }
 
