@@ -1,18 +1,25 @@
 package com.inspirado.kuber;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -69,6 +76,8 @@ public class MainActivity extends AppCompatActivity
     private static boolean TOKEN_REGISTERED = false;
     //qr code scanner object
     private Fragment cashRequestDetailsFragment;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
 
     public void createSignInIntent() {
         Intent myIntent = new Intent(this, LoginActivity.class);
@@ -86,13 +95,17 @@ public class MainActivity extends AppCompatActivity
         Intent intent = getIntent(); //internal screen navigation
         int fragment = intent.getIntExtra("fragment", 100);
         checkUpdate();
-
+        if (!checkPermizons()) {
+            requestPermission();
+        }
         if (TOKEN == null) {
             TOKEN = FirebaseInstanceId.getInstance().getToken();
         }
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
+
+
         if (json.equalsIgnoreCase("")) {
             createSignInIntent();
         } else {
@@ -111,7 +124,60 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+/**** CAMERA PERMISSIONS ******************/
 
+    private boolean checkPermizons(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            showMessageOKCancel("Kuber needs camera permissions to scan QR and complete transaction",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermission();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    /**** CAMERA PERMISSIONS ******************/
 
     protected void displaySkeleton() {
         setContentView(R.layout.activity_main);
