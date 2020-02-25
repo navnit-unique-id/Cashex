@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 public class Lender extends  User {
     boolean selected;
-    int borender;
     double distance;
 
     public boolean isSelected() {
@@ -14,14 +13,6 @@ public class Lender extends  User {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public int getBorender() {
-        return borender;
-    }
-
-    public void setBorender(int borender) {
-        this.borender = borender;
     }
 
     public double getDistance() {

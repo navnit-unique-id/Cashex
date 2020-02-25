@@ -3,6 +3,7 @@ package com.inspirado.kuber;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -33,7 +35,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +56,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.inspirado.kuber.domain.AppVersionInfo;
@@ -234,19 +240,72 @@ public class MainActivity extends AppCompatActivity
         inflater.inflate(R.menu.menu, menu);
         final MenuItem toggleservice = menu.findItem(R.id.atm_mode);
         final Switch actionView = (Switch) toggleservice.getActionView();
+        actionView.setChecked((user.getBorender()==1)?false:true);
+        setTitle((user.getBorender()==1)?"ATM OFF":"ATM ON");
+        getSupportActionBar().setBackgroundDrawable( (user.getBorender()==1)?new ColorDrawable(Color.LTGRAY):new ColorDrawable(Color.parseColor("#28CC65")));
+
         actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     setTitle("ATM ON");
                     getSupportActionBar().setBackgroundDrawable( new ColorDrawable(Color.parseColor("#28CC65")));
+                    user.setBorender(2);
                 }else{
                     setTitle("ATM OFF");
                     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
+                    user.setBorender(1);
                 }
+                updateUser();
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void updateUser(){
+        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+      //  progressDialog.setMessage("Changing mode ...");
+        JsonObjectRequest jsonObjectRequest = null;
+        try {
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+            JSONObject postData = new JSONObject(gson.toJson(user, User.class));
+
+       //     progressDialog.show();
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/users", postData,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject responseObj) {
+                            try {
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.commit();
+                            } catch (Exception e) {
+                                Snackbar.make(  findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                            }
+                            progressDialog.dismiss();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Snackbar.make(findViewById(android.R.id.content), "ATM Mode not changed", Snackbar.LENGTH_LONG).show();
+                            user.setBorender((user.getBorender()==1)?2:1);
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.commit();
+                        //    progressDialog.dismiss();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void registerTokenIfRequired(final String token, final Long userId, final String clientCode) {

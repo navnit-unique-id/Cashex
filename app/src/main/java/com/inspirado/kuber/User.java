@@ -12,6 +12,8 @@ public class User implements Serializable {
     String mobileNumber;
     String email;
     int userType;
+    int borender; // 1-> borrow, 2-> lender, blank -> both
+
     String businessName;
     String address;
     String state;
@@ -254,5 +256,13 @@ public class User implements Serializable {
 
     public void setPickupServiceEnabled(boolean pickupServiceEnabled) {
         this.pickupServiceEnabled = pickupServiceEnabled;
+    }
+
+    public int getBorender() {
+        return borender;
+    }
+
+    public void setBorender(int borender) {
+        this.borender = borender;
     }
 }
