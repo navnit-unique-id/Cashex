@@ -60,7 +60,7 @@ public class CashRequest  implements Serializable {
     String escalationRedressalId;
     String escalationRedressalTransactionId;
     String escalationRedressalStatus;
-    List lenderOptions;
+    List possibleLenders;
 
     public String getRcvrTransactionId() {
         return rcvrTransactionId;
@@ -417,11 +417,11 @@ public class CashRequest  implements Serializable {
         this.escalationRedressalStatus = escalationRedressalStatus;
     }
 
-    public List getLenderOptions() {
-        return lenderOptions;
+    public List getPossibleLenders() {
+        return possibleLenders;
     }
 
-    public void setLenderOptions(List lenderOptions) {
-        this.lenderOptions = lenderOptions;
+    public void setPossibleLenders(List possibleLenders) {
+        this.possibleLenders = possibleLenders;
     }
 }

@@ -33,6 +33,7 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -71,13 +72,14 @@ public class NewCashRequestFragment3 extends Fragment {
                 saveRequest();
             }
         });
-        amount = ((EditText) getActivity().findViewById(R.id.amountLabel));
         payableAmount = ((TextView) getActivity().findViewById(R.id.payableAmoutLabel));
         charges = ((TextView) getActivity().findViewById(R.id.charges));
         paymentSlot = (Spinner) getActivity().findViewById(R.id.paymentSlot);
-        final double amountVal = Double.parseDouble("0" + amount.getText());
-        final double pickupRate =user.getPickupRate();
+        amount = ((EditText) getActivity().findViewById(R.id.amountLabel));
+
+         final double pickupRate =user.getPickupRate();
         final double deliveryRate=user.getDeliveryRate();
+        final double chargeCap=user.getChargeCap();
 
         if (user.isPickupServiceEnabled()) {
             pickupDelivery.setVisibility(View.VISIBLE);
@@ -107,11 +109,17 @@ public class NewCashRequestFragment3 extends Fragment {
                 if ((amount.getText().toString().equalsIgnoreCase(""))) {
                     amount.setText("0");
                 }
+                /*double amountVal = Double.parseDouble("0" + amount.getText());
+                String formatted = (new DecimalFormat("##.##")).format(amountVal);
+                amount.setText(formatted);*/
+
                 String requestTypeStr = ((RadioButton) getActivity().findViewById(((RadioGroup) getActivity().findViewById(R.id.pickupdelivery)).getCheckedRadioButtonId())).getText().toString();
                 double rate = requestTypeStr.equalsIgnoreCase("delivery") ? deliveryRate : pickupRate;
                 double amt = Double.parseDouble(amount.getText().toString() + "");
-                double charge =  (amt*rate /100 >50)?50:amt*rate /100 ;
+                double charge =  (amt*rate /100 >chargeCap)?chargeCap:amt*rate /100 ;
+                charge=(Math.round(charge)*100)/100;
                 double total = charge + amt;
+                total=(Math.round(total)*100)/100;
                 charges.setText(charge + "");
                 payableAmount.setText(total + "");
             }
@@ -145,7 +153,10 @@ public class NewCashRequestFragment3 extends Fragment {
         try {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            cashRequest.setAmount(Double.parseDouble(amount.getText().toString()));
+            double amountVal = Double.parseDouble("0" + amount.getText());
+            amountVal=(Math.round(amountVal)*100)/100;
+            amount.setText(amountVal+"");
+            cashRequest.setAmount(amountVal);
             cashRequest.setIncentive(Double.parseDouble(charges.getText().toString()));
             cashRequest.setPayableAmount(Double.parseDouble(payableAmount.getText().toString()));
 
@@ -181,8 +192,7 @@ public class NewCashRequestFragment3 extends Fragment {
             cashRequest.setRequestType(requestType);
             cashRequest.setStatus(1);
             ArrayList<Lender> lenderList = new ArrayList<Lender>(lenders.values());
-            cashRequest.setLenderOptions(lenderList);
-            double amountVal = Double.parseDouble("0" + amount.getText());
+            cashRequest.setPossibleLenders(lenderList);
             if (amountVal <= 0) {
                 amount.setError(getString(R.string.error_invalid_amount));
                 return;

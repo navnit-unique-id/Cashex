@@ -80,7 +80,8 @@ public class OGCashListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = new NewCashRequestFragment2();
+                Fragment fragment = new NewCashRequestFragment1();
+                ((NewCashRequestFragment1) fragment).setUser(user);
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment).addToBackStack(null);;
                 ft.commit();

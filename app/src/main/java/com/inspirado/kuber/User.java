@@ -40,6 +40,7 @@ public class User implements Serializable {
     double pickupRateEscalated;
     double deliveryRate;
     double deliveryRateEscalated;
+    double chargeCap;
 
     public double getPickupRate() {
         return pickupRate;
@@ -264,5 +265,13 @@ public class User implements Serializable {
 
     public void setBorender(int borender) {
         this.borender = borender;
+    }
+
+    public double getChargeCap() {
+        return chargeCap;
+    }
+
+    public void setChargeCap(double chargeCap) {
+        this.chargeCap = chargeCap;
     }
 }

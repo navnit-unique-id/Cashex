@@ -241,18 +241,18 @@ public class MainActivity extends AppCompatActivity
         final MenuItem toggleservice = menu.findItem(R.id.atm_mode);
         final Switch actionView = (Switch) toggleservice.getActionView();
         actionView.setChecked((user.getBorender()==1)?false:true);
-        setTitle((user.getBorender()==1)?"ATM OFF":"ATM ON");
         getSupportActionBar().setBackgroundDrawable( (user.getBorender()==1)?new ColorDrawable(Color.LTGRAY):new ColorDrawable(Color.parseColor("#28CC65")));
+        actionView.setText((user.getBorender()==1)?"ATM OFF":"ATM ON");
 
         actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    setTitle("ATM ON");
+                    actionView.setText("ATM ON");
                     getSupportActionBar().setBackgroundDrawable( new ColorDrawable(Color.parseColor("#28CC65")));
                     user.setBorender(2);
                 }else{
-                    setTitle("ATM OFF");
+                    actionView.setText("ATM OFF");
                     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
                     user.setBorender(1);
                 }

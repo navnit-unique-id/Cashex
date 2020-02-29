@@ -1,5 +1,7 @@
 package com.inspirado.kuber;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
@@ -12,11 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 //import android.widget.Toast;
 
@@ -55,6 +69,7 @@ public class ProfileFragment extends Fragment {
         user = (new Gson()).fromJson(json, User.class);
         setValues(user);
         getActivity().setTitle(R.string.profile_title);
+        refreshUser();
     }
 
     public void setValues(User user){
@@ -76,6 +91,41 @@ public class ProfileFragment extends Fragment {
         }catch(Exception e){
             Log.e("PRO", e.getMessage());
         }
+    }
+
+    protected Boolean refreshUser(Void... params) {
+        JsonObjectRequest jsonObjectRequest = null;
+
+
+        try {
+            jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+user.getClientCode()+"/cashrequest/users?id=" + user.getId(), null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("user", response.toString());
+                    user = (new Gson()).fromJson(response.toString(), User.class);
+                    editor.commit();
+                    setValues( user);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String UIMessage = "System Exception";
+                    Toast toast = Toast.makeText(getContext(), UIMessage, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
 
