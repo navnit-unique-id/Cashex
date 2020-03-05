@@ -85,6 +85,8 @@ public class NewCashRequestFragment2 extends Fragment {
                 String paymentMode = "";
                 try {
                     Fragment fragment = new NewCashRequestFragment3();
+                    ((NewCashRequestFragment3) fragment).setUser(user);
+                    ((NewCashRequestFragment3) fragment).setLenders(lenders);
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                     ft.commit();
