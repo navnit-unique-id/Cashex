@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 
 //import com.inspirado.kuber.tracking.MapsActivity;
@@ -29,12 +30,14 @@ public class LenderItemAdapter extends RecyclerView.Adapter<LenderItemAdapter.Re
         this.context = context;
         lenders = lenders;
         lenderList = new ArrayList<Lender>(lenders.values());
+        lenderList.sort(Comparator.comparingDouble(l1 -> l1.getDistance()));
         this.user = user;
     }
 
     public void setLenders(Hashtable lenders) {
         this.lenders = lenders;
         lenderList = new ArrayList<Lender>(lenders.values());
+        lenderList.sort(Comparator.comparingDouble(l1 -> l1.getDistance()));
     }
 
     public void setUser(User user) {

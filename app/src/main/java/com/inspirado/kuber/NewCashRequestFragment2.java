@@ -178,7 +178,6 @@ public class NewCashRequestFragment2 extends Fragment {
                         progressDialog.dismiss();
                     }
                 }
-
                 progressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
