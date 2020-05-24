@@ -1,0 +1,177 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.vsa.columbus"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/request_summary_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme"
+        app2:cardBackgroundColor="@color/colorBackground"
+        app2:cardElevation="@dimen/fui_button_inset_bottom"
+        app2:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app2:layout_constraintEnd_toEndOf="parent"
+                    app2:layout_constraintStart_toStartOf="parent"
+                    app2:layout_constraintTop_toTopOf="@+id/vehicle_status">
+
+                    <RadioButton
+                        android:id="@+id/isSelected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textStyle="bold"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="@+id/name" />
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="Address"
+                        android:textSize="10sp"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toBottomOf="@+id/isSelected" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:gravity="center"
+                        android:text="Business Name"
+                        android:textStyle="bold"
+                        app2:layout_constraintStart_toEndOf="@+id/isSelected"
+                        app2:layout_constraintTop_toTopOf="@+id/km" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBar2"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:numStars="5"
+                        android:stepSize="0.01"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintStart_toEndOf="@+id/checkedTextView"
+                        app2:layout_constraintTop_toBottomOf="@+id/address"
+                        app2:layout_constraintVertical_bias="0.25" />
+
+                    <TextView
+                        android:id="@+id/ratingText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="-"
+                        android:textSize="12sp"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toStartOf="@+id/toggleButton"
+                        app2:layout_constraintHorizontal_bias="0.0"
+                        app2:layout_constraintStart_toEndOf="@+id/ratingBar2"
+                        app2:layout_constraintTop_toTopOf="@+id/ratingBar2" />
+
+                    <TextView
+                        android:id="@+id/km"
+                        android:layout_width="29dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="right"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app2:layout_constraintEnd_toStartOf="@+id/kmLbl"
+                        app2:layout_constraintTop_toTopOf="@+id/kmLbl" />
+
+                    <TextView
+                        android:id="@+id/kmLbl"
+                        android:layout_width="26dp"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="KM"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Category"
+                        android:textSize="12sp"
+                        app2:layout_constraintBottom_toBottomOf="@+id/isSelected"
+                        app2:layout_constraintStart_toEndOf="@+id/isSelected" />
+
+                    <CheckedTextView
+                        android:id="@+id/checkedTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Delivery Service"
+                        android:textSize="10sp"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintStart_toEndOf="@+id/imageView9"
+                        app2:layout_constraintTop_toBottomOf="@+id/address" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButton"
+                        style="@style/toggleButton"
+                        android:layout_width="45dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/ic_toggle"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toEndOf="parent" />
+
+                    <ToggleButton
+                        android:id="@+id/imageView9"
+                        android:layout_width="21dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/delivery"
+                        android:textOff="."
+                        android:textOn="."
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toBottomOf="@+id/address" />
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

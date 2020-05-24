@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,10 +19,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,10 +38,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,19 +57,34 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.inspirado.kuber.cash.CashRequestDetailsFragment;
 import com.inspirado.kuber.domain.AppVersionInfo;
+import com.inspirado.kuber.ecom.order.NewOrderFragment0;
+import com.inspirado.kuber.ecom.order.NewOrderFragment1;
+import com.inspirado.kuber.ecom.order.PaymentFragment;
+import com.inspirado.kuber.ecom.store.Membership;
+import com.inspirado.kuber.ecom.store.Privilege;
+import com.inspirado.kuber.ecom.store.Store;
+import com.inspirado.kuber.ecom.store.StoreAccountFragment;
+import com.inspirado.kuber.ecom.store.StoreMapFragment;
+import com.inspirado.kuber.ecom.store.StorePlanFragment;
+import com.inspirado.kuber.ecom.store.inventory.StoreInventoryListFragment;
+import com.inspirado.kuber.util.Util;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PaymentResultWithDataListener {
     private RecyclerView mList;
     ArrayList cashRequests = new ArrayList();
     private RecyclerView.Adapter adapter;
@@ -80,10 +95,15 @@ public class MainActivity extends AppCompatActivity
     private User user;
     private static String TOKEN;
     private static boolean TOKEN_REGISTERED = false;
+    private  Store store;
     //qr code scanner object
     private Fragment cashRequestDetailsFragment;
     private static final int PERMISSION_REQUEST_CODE = 200;
-
+    View parentLayout;
+    boolean isMembershipActive = false;
+    private Menu menu;
+    MenuItem toggleservice;
+    Switch actionView;
 
     public void createSignInIntent() {
         Intent myIntent = new Intent(this, LoginActivity.class);
@@ -99,7 +119,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent(); //internal screen navigation
-        int fragment = intent.getIntExtra("fragment", 100);
+        int fragment = intent.getIntExtra("fragment", 0);
         checkUpdate();
         if (!checkPermizons()) {
             requestPermission();
@@ -122,17 +142,24 @@ public class MainActivity extends AppCompatActivity
                     cashRequestDetailsFragment = getSupportFragmentManager().getFragment(savedInstanceState, "cashRequestDetailsFragment");
                 }
                 displaySkeleton();
-                displaySelectedScreen(R.id.ic_cash_requests);
+                displaySelectedScreen(fragment);
             } else {
                 createRegistrationIntent();
             }
             registerTokenIfRequired(TOKEN, user.getId(), user.getClientCode());
         }
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("21");
+        filter.addAction("22");
+        filter.addAction("34");
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mMessageReceiver, filter);
+
     }
 
-/**** CAMERA PERMISSIONS ******************/
+    /**** CAMERA PERMISSIONS ******************/
 
-    private boolean checkPermizons(){
+    private boolean checkPermizons() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
@@ -145,6 +172,7 @@ public class MainActivity extends AppCompatActivity
                 new String[]{Manifest.permission.CAMERA},
                 PERMISSION_REQUEST_CODE);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -186,6 +214,7 @@ public class MainActivity extends AppCompatActivity
     /**** CAMERA PERMISSIONS ******************/
 
     protected void displaySkeleton() {
+        parentLayout = findViewById(android.R.id.content);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -198,9 +227,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.user_name);
-        //navUsername.setText(user.getDisplayName());
-
         navUsername.setText(user.getName());
+
+        Menu nav_Menu = navigationView.getMenu();
+        if (user.getUserType() == 1) {
+            nav_Menu.findItem(R.id.shop).setVisible(true);
+        }
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -222,95 +254,152 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.scan_qr) {
-            qrScan.initiateScan();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        final MenuItem toggleservice = menu.findItem(R.id.atm_mode);
-        final Switch actionView = (Switch) toggleservice.getActionView();
-        actionView.setChecked((user.getBorender()==1)?false:true);
-        getSupportActionBar().setBackgroundDrawable( (user.getBorender()==1)?new ColorDrawable(Color.LTGRAY):new ColorDrawable(Color.parseColor("#28CC65")));
-        actionView.setText((user.getBorender()==1)?"ATM OFF":"ATM ON");
-
-        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    actionView.setText("ATM ON");
-                    getSupportActionBar().setBackgroundDrawable( new ColorDrawable(Color.parseColor("#28CC65")));
-                    user.setBorender(2);
-                }else{
-                    actionView.setText("ATM OFF");
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
-                    user.setBorender(1);
-                }
-                updateUser();
-            }
-        });
+        this.menu= menu;
+        if (user.getUserType() == 2)
+            return false; // if user is individual, dont display the toggle bar
+        setStoreStatusToggleBar(menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void updateUser(){
+    private void setStoreStatusToggleBar(Menu menu) {
         final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
-      //  progressDialog.setMessage("Changing mode ...");
+        //progressDialog.setMessage("Changing mode ...");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId="+user.getId(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try {
+                            JSONArray jsonArray = jsonObject.getJSONArray("content");
+                            if (jsonArray != null && jsonArray.length() > 0) {
+                                store = (new Gson()).fromJson(jsonArray.getString(0), Store.class);
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
+                            }
+                            MenuInflater inflater = getMenuInflater();
+                            inflater.inflate(R.menu.menu, menu);
+                            toggleservice = menu.findItem(R.id.atm_mode);
+                            actionView = (Switch) toggleservice.getActionView();
+                            actionView.setTextColor(getColor(R.color.textColor)); //red color for displayed text of Switch
+                            actionView.setChecked( (store != null) && (store.getOpenClose()==1)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) ? true : false);
+                            getSupportActionBar().setBackgroundDrawable((store != null) && (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) && (store.getOpenClose()==1)  ? new ColorDrawable(getColor(R.color.colorPrimary)) : new ColorDrawable(getColor(R.color.atmOff)));
+                            actionView.setText((store != null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) )  && (store.getOpenClose()==1) ? "Open" : "Closed");
+
+                            actionView.setOnClickListener(new Switch.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (((Switch)view).isChecked()) {
+                                        if ( (store!=null )&& !store.getMarketplaceVisibilityEndDate().before(new Date())) {
+                                            actionView.setText("Open");
+                                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorPrimary)));
+                                            store.setOpenClose(1);
+                                            updateStore();
+                                        } else {
+                                            Snackbar.make(findViewById(android.R.id.content), "Membership inactive. Please recharge.", Snackbar.LENGTH_LONG).show();
+                                            actionView.setChecked(false);
+                                            store.setOpenClose(0);
+                                            getStoreInfo();
+                                        }
+                                    }else {
+                                        actionView.setText("Closed");
+                                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.atmOff)));
+                                        store.setOpenClose(0);
+                                        updateStore();
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+                            Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
+                        progressDialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Snackbar.make(findViewById(android.R.id.content), "System Error", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void updateStore() {
+        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+    //      progressDialog.setMessage("Changing mode ...");
         JsonObjectRequest jsonObjectRequest = null;
         try {
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            JSONObject postData = new JSONObject(gson.toJson(user, User.class));
+            JSONObject postData = new JSONObject(gson.toJson(store, Store.class));
 
-       //     progressDialog.show();
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/cashrequest/users", postData,
+//                 progressDialog.show();
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/"+user.getClientCode(), postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {
                             try {
-                                SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
-                                SharedPreferences.Editor editor = pref.edit();
-                                editor.commit();
+                                store = (new Gson()).fromJson(responseObj.toString(), Store.class);
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(responseObj.toString()));
                             } catch (Exception e) {
-                                Snackbar.make(  findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
                             }
-                            progressDialog.dismiss();
+                        //    progressDialog.dismiss();
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Snackbar.make(findViewById(android.R.id.content), "ATM Mode not changed", Snackbar.LENGTH_LONG).show();
-                            user.setBorender((user.getBorender()==1)?2:1);
-                            SharedPreferences pref = getApplicationContext().getSharedPreferences("pref", 0);
-                            SharedPreferences.Editor editor = pref.edit();
-                            editor.commit();
-                        //    progressDialog.dismiss();
+                            Snackbar.make(findViewById(android.R.id.content), "Store status not changed", Snackbar.LENGTH_LONG).show();
+                            store.setOpenClose(store.getOpenClose()==0?1:0);
+                            try {
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0), new JSONObject(gson.toJson(store)));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                         //   progressDialog.dismiss();
                         }
                     });
         } catch (Exception e) {
             e.printStackTrace();
         }
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(jsonObjectRequest);
     }
 
+
+    private void getStoreInfo() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId="+user.getId(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try {
+                            JSONArray jsonArray = jsonObject.getJSONArray("content");
+                            if (jsonArray != null && jsonArray.length() > 0) {
+                                store = (new Gson()).fromJson(jsonArray.getString(0), Store.class);
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
+                            }
+                        } catch (Exception e) {
+                            Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Snackbar.make(findViewById(android.R.id.content), "System Error", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(jsonObjectRequest);
+    }
     private void registerTokenIfRequired(final String token, final Long userId, final String clientCode) {
         if ((TOKEN != null) && !TOKEN_REGISTERED) {
-            String url = getString(R.string.columbus_ms_url) +"/100/"+clientCode+"/infra"+ "/installationinfo?userId=" + userId + "&registrationToken=" + token;
+            String url = getString(R.string.columbus_ms_url) + "/100/" + clientCode + "/infra" + "/installationinfo?userId=" + userId + "&registrationToken=" + token;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
@@ -326,7 +415,7 @@ public class MainActivity extends AppCompatActivity
                             e.printStackTrace();
                         }
 
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url)+"/100/"+clientCode+"/infra" + "/installationinfo", postData, new Response.Listener<JSONObject>() {
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.columbus_ms_url) + "/100/" + clientCode + "/infra" + "/installationinfo", postData, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d("TAG", "onResponse: " + "Token registered successfully with FIrebase");
@@ -374,13 +463,30 @@ public class MainActivity extends AppCompatActivity
 
 
     private void displaySelectedScreen(int itemId) {
-        //creating fragment object
+        int clickedMenu = 0;
+        if (user.getUserType() == 2) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.shop).setVisible(false);
+            nav_Menu.findItem(R.id.membership).setVisible(false);
+            nav_Menu.findItem(R.id.inventoryMenuItem).setVisible(false);
+            nav_Menu.findItem(R.id.shop_payments).setVisible(false);
+            nav_Menu.findItem(R.id.ic_cash_requests).setVisible(false);
+            clickedMenu=R.id.og_cash_requests;
+        } if (user.getUserType() == 1) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            Menu nav_Menu = navigationView.getMenu();
+            clickedMenu=R.id.ic_cash_requests;
+        }
+        if(itemId !=0) {
+            clickedMenu=itemId;
+        }
         Fragment fragment = null;
-
+        String fragmentName = "";
         //initializing the fragment object which is selected
-        switch (itemId) {
+        switch (clickedMenu) {
             case R.id.ic_cash_requests:
-                fragment = new ICCashListFragment();
+                fragment = new IncomingRequestListFragment();
                 break;
             case R.id.og_cash_requests:
                 fragment = new OGCashListFragment();
@@ -388,9 +494,19 @@ public class MainActivity extends AppCompatActivity
             case R.id.profile:
                 fragment = new ProfileFragment();
                 break;
-/*            case R.id.about:
-                fragment = new AboutFragment();
-                break;*/
+            case R.id.shop:
+                fragment = new StoreMapFragment();
+                break;
+            case R.id.membership:
+                fragment = new StorePlanFragment();
+                fragmentName = "membership";
+                break;
+            case R.id.shop_payments:
+                fragment = new StoreAccountFragment();
+                break;
+            case R.id.inventoryMenuItem:
+                fragment = new StoreInventoryListFragment();
+                break;
             case R.id.logout:
                 logout();
                 //  fragment = new Menu3();
@@ -403,7 +519,7 @@ public class MainActivity extends AppCompatActivity
         //replacing the fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment).addToBackStack(null);
+            ft.replace(R.id.content_frame, fragment, fragmentName).addToBackStack(null);
             ft.commit();
         }
 
@@ -434,7 +550,7 @@ public class MainActivity extends AppCompatActivity
     private void checkUpdate() {
         // get current version
         Activity mainActivity = this;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) +"/100/default/infra"+ "/appversioninfo/latest", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/default/infra" + "/appversioninfo/latest", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -466,4 +582,52 @@ public class MainActivity extends AppCompatActivity
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(jsonObjectRequest);
     }
+
+
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+        PaymentFragment paymentFragment = (PaymentFragment) getSupportFragmentManager().findFragmentByTag("paymentFragment");
+        StorePlanFragment storePlanFragment = (StorePlanFragment) getSupportFragmentManager().findFragmentByTag("membership");
+        if (paymentFragment != null && paymentFragment.isVisible()) {
+            paymentFragment.onPaymentSuccess(s, paymentData);
+        } else if (storePlanFragment != null && storePlanFragment.isVisible()) {
+            storePlanFragment.onPaymentSuccess(s, paymentData);
+        }
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
+        PaymentFragment paymentFragment = (PaymentFragment) getSupportFragmentManager().findFragmentByTag("paymentFragment");
+        if (paymentFragment != null && paymentFragment.isVisible()) {
+            paymentFragment.onPaymentError(i, s, paymentData);
+        }
+    }
+
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equalsIgnoreCase("21")){
+                actionView.setText("Open");
+                actionView.setChecked(true);
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorPrimary)));
+                store.setOpenClose(1);
+                getStoreInfo();
+            }
+            if(intent.getAction().equalsIgnoreCase("22")) {
+                actionView.setText("Closed");
+                actionView.setChecked(false);
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.atmOff)));
+                store.setOpenClose(0);
+                getStoreInfo();
+            }
+            if(intent.getAction().equalsIgnoreCase("34")) {
+                NewOrderFragment0 fragment = new NewOrderFragment0();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment).addToBackStack(null);
+                ft.commit();
+
+            }
+        }
+    };
 }

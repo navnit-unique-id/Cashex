@@ -34,6 +34,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.inspirado.kuber.MainActivity;
+import com.inspirado.kuber.PasswordResetActivity;
+import com.inspirado.kuber.R;
+import com.inspirado.kuber.RegistrationActivity;
+import com.inspirado.kuber.User;
 
 import org.json.JSONObject;
 
@@ -286,7 +291,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             try {
-                mClientCode= mClientCode.equalsIgnoreCase("")?"default":mClientCode;
+                mClientCode= mClientCode.equalsIgnoreCase("")?"51":mClientCode;
                 jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+mClientCode+"/cashrequest"+"/users?username=" + URLEncoder.encode(mUsername, "UTF-8") + "&password=" + URLEncoder.encode(mPassword, "UTF-8")+ "&clientCode=" + URLEncoder.encode(mClientCode, "UTF-8"), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -377,7 +382,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Gson gson = new GsonBuilder().create();
                 User user = new User();
                 user.setUsername(mUsername);
-                mClientCodeText= mClientCodeText.equalsIgnoreCase("")?"default":mClientCodeText;
+                mClientCodeText= mClientCodeText.equalsIgnoreCase("")?"51":mClientCodeText;
                 user.setClientCode(mClientCodeText);
                 user.setStatus(6);
                 JSONObject postData = new JSONObject(gson.toJson(user, User.class));

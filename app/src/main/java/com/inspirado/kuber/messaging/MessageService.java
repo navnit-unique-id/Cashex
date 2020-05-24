@@ -21,7 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.inspirado.kuber.Util;
+import com.inspirado.kuber.util.Util;
 import com.inspirado.kuber.MainActivity;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;

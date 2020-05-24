@@ -23,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.inspirado.kuber.cash.CashRequest;
+import com.inspirado.kuber.util.Util;
 
 import org.json.JSONObject;
 
@@ -74,7 +76,7 @@ public class Registration1Fragment extends Fragment {
                 JsonObjectRequest jsonObjectRequest = null;
                 String paymentMode = "";
                 String clientCode = ((EditText) getActivity().findViewById(R.id.clientcode)).getText() + "";
-                clientCode = clientCode.equalsIgnoreCase("") ? "default" : clientCode;
+                clientCode = clientCode.equalsIgnoreCase("") ? "51" : clientCode;
 
                 try {
                     user.setUsername(((EditText) getActivity().findViewById(R.id.username2)).getText().toString());

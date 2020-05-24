@@ -32,6 +32,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.inspirado.kuber.cash.CashRequest;
+import com.inspirado.kuber.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,7 +114,7 @@ public class Registration4Fragment extends Fragment {
                     user.setCity(((AutoCompleteTextView) getActivity().findViewById(R.id.city)).getText().toString());
                     user.setReferralCode(((EditText) getActivity().findViewById(R.id.referral)).getText().toString());
                     String selectedUserType =  ((RadioButton)   getActivity().findViewById(   ((RadioGroup)getActivity().findViewById(R.id.radioGroup)).getCheckedRadioButtonId()    ) ).getText().toString();
-                    int userType = selectedUserType.equalsIgnoreCase("businessOwner")?1:2;
+                    int userType = selectedUserType.equalsIgnoreCase("business owner")?1:2;
                     user.setUserType(userType);
 
 

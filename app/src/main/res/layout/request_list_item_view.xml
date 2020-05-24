@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/AppTheme"
-        app2:cardBackgroundColor="@color/lightBG"
         app2:cardElevation="@dimen/fui_button_inset_bottom"
         app2:cardUseCompatPadding="true">
 

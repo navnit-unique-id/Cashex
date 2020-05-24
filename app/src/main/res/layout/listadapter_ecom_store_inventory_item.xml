@@ -1,0 +1,144 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.vsa.columbus"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/request_summary_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/AppTheme"
+        app2:cardElevation="@dimen/fui_button_inset_bottom"
+        app2:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app2:layout_constraintEnd_toEndOf="parent"
+                    app2:layout_constraintStart_toStartOf="parent"
+                    app2:layout_constraintTop_toTopOf="@+id/vehicle_status">
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="Description"
+                        android:textStyle="normal"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        app2:layout_constraintStart_toEndOf="@+id/imageView10"
+                        app2:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="0"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintStart_toEndOf="@+id/mrp"
+                        app2:layout_constraintTop_toBottomOf="@+id/description"
+                        app2:layout_constraintVertical_bias="1.0" />
+
+                    <TextView
+                        android:id="@+id/mrp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="0"
+                        android:textColor="@android:color/darker_gray"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toStartOf="@+id/price"
+                        app2:layout_constraintHorizontal_bias="0.0"
+                        app2:layout_constraintStart_toEndOf="@+id/imageView10"
+                        app2:layout_constraintTop_toTopOf="@+id/price" />
+
+                    <TextView
+                        android:id="@+id/qty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="7dp"
+                        android:layout_weight="1"
+                        android:text="200 Packets"
+                        android:textSize="12sp"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintEnd_toStartOf="@+id/linearLayout8"
+                        app2:layout_constraintHorizontal_bias="1.0"
+                        app2:layout_constraintStart_toEndOf="@+id/price"
+                        app2:layout_constraintTop_toTopOf="@+id/price" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout8"
+                        android:layout_width="69dp"
+                        android:layout_height="18dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/colorPrimary"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        app2:layout_constraintEnd_toEndOf="parent"
+                        tools:layout_editor_absoluteY="46dp">
+
+                        <Button
+                            android:id="@+id/minusBtn"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:text="+" />
+
+                        <TextView
+                            android:id="@+id/quantity"
+                            android:layout_width="30dp"
+                            android:layout_height="20dp"
+                            android:background="@color/colorBackground"
+                            android:gravity="center"
+                            android:text="2500"
+                            android:textSize="12dp" />
+
+                        <Button
+                            android:id="@+id/plusBtn"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:text="-" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        app2:layout_constraintBottom_toBottomOf="parent"
+                        app2:layout_constraintStart_toStartOf="parent"
+                        app2:layout_constraintTop_toTopOf="parent"
+                        app2:layout_constraintVertical_bias="1.0"
+                        app2:srcCompat="@mipmap/inventory_item_blank_round" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -25,13 +25,12 @@
         android:id="@+id/newCashReq1ViewListBtn"
         android:layout_width="130dp"
         android:layout_height="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:height="60dp"
-        android:background="@color/fui_bgTwitter"
+        android:background="@drawable/stylishbutton"
         android:drawableLeft="@drawable/ic_list_black_24dp"
         android:gravity="center|center"
         android:text="View List"
-        android:textColor="@color/car_bg"
         android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/regBtn"
@@ -40,11 +39,9 @@
 
     <Button
         android:id="@+id/regBtn"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/lightBG"
         android:text="Next"
-        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

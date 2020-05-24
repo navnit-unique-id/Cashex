@@ -1,7 +1,5 @@
 package com.inspirado.kuber;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
@@ -23,14 +21,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.inspirado.kuber.cash.CashRequest;
 
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 //import android.widget.Toast;
 
@@ -74,7 +70,7 @@ public class ProfileFragment extends Fragment {
 
     public void setValues(User user){
         ((TextView) getActivity().findViewById(R.id.name)).setText(user.getName());
-        ((TextView) getActivity().findViewById(R.id.kmLbl)).setText(user.getOverallScore()+"");
+        ((TextView) getActivity().findViewById(R.id.kmLbl)).setText(user.getRcvrRatingScore()+"");
         ((TextView) getActivity().findViewById(R.id.address)).setText(user.getAddress());
         ((TextView) getActivity().findViewById(R.id.state)).setText(user.getState());
         ((TextView) getActivity().findViewById(R.id.city)).setText(user.getCity());

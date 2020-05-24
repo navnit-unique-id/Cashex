@@ -3,7 +3,8 @@
     package="com.inspirado.kuber">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -62,6 +63,9 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
+            android:name=".ecom.order.PaymentFragment"
+            android:label="Payment" />
+        <activity
         android:name=".PasswordResetActivity"
         android:label="@string/title_activity_change_pwd" />
 
@@ -82,6 +86,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_JAaW0QWEILREqa" />
 
+    </application>
 </manifest>

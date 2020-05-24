@@ -5,4 +5,10 @@
         PM,05:00 PM - 06:00 PM,06:00 PM - 07:00 PM,07:00 PM - 08:00 PM,08:00 PM - 09:00 PM,09:00 PM
         - 10:00 PM
     </string-array>
+    <string-array name="store_category">
+        <item>Grocery / Kirana</item>
+        <item>Medical</item>
+        <item>Electronics</item>
+        <item>Electricals</item>
+    </string-array>
 </resources>

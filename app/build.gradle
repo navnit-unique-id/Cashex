@@ -19,8 +19,8 @@ android {
         applicationId "com.inspirado.kuber"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 37
-        versionName "37"
+        versionCode 41
+        versionName "41"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }
@@ -38,6 +38,10 @@ android {
     }
     productFlavors {
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -70,6 +74,10 @@ dependencies {
 
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
+    implementation 'com.razorpay:checkout:1.5.16'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
+    implementation 'com.karumi:dexter:5.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

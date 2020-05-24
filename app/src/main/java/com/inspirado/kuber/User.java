@@ -1,7 +1,10 @@
 package com.inspirado.kuber;
 
+import com.inspirado.kuber.ecom.order.UserPreference;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 public class User implements Serializable {
@@ -12,7 +15,7 @@ public class User implements Serializable {
     String mobileNumber;
     String email;
     int userType;
-    int borender; // 1-> borrow, 2-> lender, blank -> both
+    boolean isVisibleOnNetwork; // 1-> borrow, 2-> lender, blank -> both
 
     String businessName;
     String address;
@@ -41,6 +44,10 @@ public class User implements Serializable {
     double deliveryRate;
     double deliveryRateEscalated;
     double chargeCap;
+    Long ledgerId;
+    Long customerId;
+    List<UserPreference> userPreferences;
+
 
     public double getPickupRate() {
         return pickupRate;
@@ -72,6 +79,30 @@ public class User implements Serializable {
 
     public void setDeliveryRateEscalated(double deliveryRateEscalated) {
         this.deliveryRateEscalated = deliveryRateEscalated;
+    }
+
+    public Long getLedgerId() {
+        return ledgerId;
+    }
+
+    public void setLedgerId(Long ledgerId) {
+        this.ledgerId = ledgerId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public List<UserPreference> getUserPreferences() {
+        return userPreferences;
+    }
+
+    public void setUserPreferences(List<UserPreference> userPreferences) {
+        this.userPreferences = userPreferences;
     }
 
     public int getStatus() {
@@ -259,12 +290,12 @@ public class User implements Serializable {
         this.pickupServiceEnabled = pickupServiceEnabled;
     }
 
-    public int getBorender() {
-        return borender;
+    public boolean isVisibleOnNetwork() {
+        return isVisibleOnNetwork;
     }
 
-    public void setBorender(int borender) {
-        this.borender = borender;
+    public void setVisibleOnNetwork(boolean visibleOnNetwork) {
+        isVisibleOnNetwork = visibleOnNetwork;
     }
 
     public double getChargeCap() {

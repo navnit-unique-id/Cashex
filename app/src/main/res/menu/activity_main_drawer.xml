@@ -1,44 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:id="@+id/grp1" android:checkableBehavior="single">
-        <item
-            android:id="@+id/ic_cash_requests"
-            android:checkable="true"
-            android:checked="true"
-            android:enabled="true"
-            android:icon="@drawable/ic_menu_home"
-            android:title="Home"
-            android:visible="true" />
-    </group>
-    <group android:id="@+id/grp2" android:checkableBehavior="single" >
-        <item
-            android:checkable="true"
-            android:id="@+id/og_cash_requests"
-            android:icon="@drawable/inbox"
-            android:title="My Requests" />
-    </group>
-    <group android:id="@+id/grp3" android:checkableBehavior="single" >
-        <item
-            android:checkable="true"
-            android:id="@+id/profile"
-            android:icon="@drawable/baseline_account_circle_black_18dp"
-            android:title="Profile" />
-    </group>
+    <item
+        android:id="@+id/ic_cash_requests"
+        android:checkable="true"
+        android:checked="true"
+        android:enabled="true"
+        android:icon="@drawable/home_fg"
+        android:title="Incoming Requests"
+        android:visible="true" />
+    <item
+        android:id="@+id/og_cash_requests"
+        android:checkable="true"
+        android:icon="@drawable/inbox_fg"
+        android:title="My Requests" />
+
+    <item android:title="My Shop">
+        <menu>
+            <group
+                android:id="@+id/shop_grp"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/shop"
+                    android:checkable="true"
+                    android:icon="@drawable/myshop_fg"
+                    android:title="Shop Details"
+                    android:visible="true" />
+                <item
+                    android:id="@+id/shop_payments"
+                    android:checkable="true"
+                    android:icon="@drawable/atm"
+                    android:title="Payment Setup"
+                    android:visible="true" />
+                <item
+                    android:id="@+id/membership"
+                    android:checkable="true"
+                    android:icon="@drawable/member_fg"
+                    android:title="Membership"
+                    android:visible="true" />
+                <item
+                    android:id="@+id/inventoryMenuItem"
+                    android:icon="@drawable/list_fg"
+                    android:title="Inventory" />
+            </group>
+        </menu>
+    </item>
+
+        <group  android:id="@+id/profile_grp">
+            <item
+                android:id="@+id/profile"
+                android:checkable="true"
+                android:icon="@drawable/profile_fg"
+                android:title="Profile" />
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/logout_fg"
+                android:title="Logout" />
+
+        </group>
     <!--    <group android:id="@+id/grp3" >
         <item
             android:id="@+id/nav_notifications"
             android:title="Help" />
     </group>-->
-    <group android:id="@+id/grp5" android:checkableBehavior="single">
-        <item
-            android:id="@+id/logout"
-            android:icon="@drawable/baseline_settings_power_black_18dp"
-            android:title="Logout" />
-    </group>
 
     <!--    <item android:title="Communicate">
             <menu>
