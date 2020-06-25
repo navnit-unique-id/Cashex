@@ -34,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
@@ -69,7 +70,7 @@ public class OrderDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
-        user = (new Gson()).fromJson(json, User.class);
+        user = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(json, User.class);
         getActivity().setTitle(R.string.order_details_title);
         if (savedInstanceState != null) {
             order = (Order) savedInstanceState.getSerializable("order");
@@ -167,6 +168,7 @@ public class OrderDetailsFragment extends Fragment {
             ((TextView) getActivity().findViewById(R.id.mop)).setText("Direct payment to store");
         //  ((TextView) getActivity().findViewById(R.id.orderStatus)).setText(order.getStatus() + "");
         ((TextView) getActivity().findViewById(R.id.ecomOrderAddress)).setText(order.getShippingAddress() + "");
+        ((TextView) getActivity().findViewById(R.id.ecomOrderPhone)).setText(order.getBuyer()==null?"":order.getBuyer().getBuyerMobileNumber() + "");
         ((TextView) getActivity().findViewById(R.id.orderNumber)).setText(order.getId() + "");
         ((TextView) getActivity().findViewById(R.id.orderItems)).setText(order.getTotalQuantity()+"");
         ((TextView) getActivity().findViewById(R.id.orderValue)).setText(order.getTotalAmount() + "");
@@ -416,7 +418,7 @@ public class OrderDetailsFragment extends Fragment {
         progressDialog.show();
         JSONObject postData = null;
         try {
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -425,7 +427,7 @@ public class OrderDetailsFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject responseObj) {
-                        Order order = (new Gson()).fromJson(responseObj.toString(), Order.class);
+                        Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(responseObj.toString(), Order.class);
                         createScreen();
                         progressDialog.dismiss();
                     }
@@ -454,7 +456,7 @@ public class OrderDetailsFragment extends Fragment {
         // get payment ..update status
 
         try {
-            postData = new JSONObject(new Gson().toJson(payment));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(payment));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -69,6 +69,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setValues(User user){
+        if((TextView) getActivity().findViewById(R.id.name) ==null)return;
         ((TextView) getActivity().findViewById(R.id.name)).setText(user.getName());
         ((TextView) getActivity().findViewById(R.id.kmLbl)).setText(user.getRcvrRatingScore()+"");
         ((TextView) getActivity().findViewById(R.id.address)).setText(user.getAddress());
@@ -97,6 +98,7 @@ public class ProfileFragment extends Fragment {
             jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+user.getClientCode()+"/cashrequest/users?id=" + user.getId(), null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    if(getContext()==null) return;
                     SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putString("user", response.toString());

@@ -39,6 +39,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.inspirado.kuber.cash.CashRequest;
 import com.inspirado.kuber.cash.CashRequestListAdapter;
 import com.inspirado.kuber.cash.NewCashRequestFragment1;
@@ -91,7 +92,7 @@ public class OGCashListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
-        user = (new Gson()).fromJson(json, User.class);
+        user = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(json, User.class);
         getActivity().setTitle("My Requests");
      //   createFilterButtons();
         showTabs();
@@ -207,7 +208,7 @@ public class OGCashListFragment extends Fragment {
 
         try {
             if(orders.length()>0){
-                order = (new Gson()).fromJson(orders.get(0).toString(), Order.class);
+                order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(orders.get(0).toString(), Order.class);
             }
             LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View customView = layoutInflater.inflate(R.layout.popup_ecom_order_confirm, null);
@@ -260,7 +261,7 @@ public class OGCashListFragment extends Fragment {
         progressDialog.show();
         JSONObject postData = null;
         try {
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -269,7 +270,7 @@ public class OGCashListFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject responseObj) {
-                        Order order = (new Gson()).fromJson(responseObj.toString(), Order.class);
+                        Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(responseObj.toString(), Order.class);
                         checkUnratedCompleteRequests();
                         progressDialog.dismiss();
                     }
@@ -471,7 +472,7 @@ public class OGCashListFragment extends Fragment {
             for (int i = 0; i < response.length(); i++) {
                 try {
                     JSONObject jsonObject = response.getJSONObject(i);
-                    CashRequest cashRequest = (new Gson()).fromJson(jsonObject.toString(), CashRequest.class);
+                    CashRequest cashRequest = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonObject.toString(), CashRequest.class);
                     cashRequests.add(cashRequest);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -486,7 +487,7 @@ public class OGCashListFragment extends Fragment {
             for (int i = 0; i < response.length(); i++) {
                 try {
                     JSONObject jsonObject = response.getJSONObject(i);
-                    Order order = (new Gson()).fromJson(jsonObject.toString(), Order.class);
+                    Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonObject.toString(), Order.class);
                     orders.add(order);
                 } catch (Exception e) {
                     e.printStackTrace();

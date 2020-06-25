@@ -147,6 +147,7 @@ public class StoreMapFragment extends Fragment implements OnMapReadyCallback,
             jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/"+user.getClientCode()+"/properties/orgs/" + user.getId()+"?ownerId="+user.getId(), null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    if(getContext()==null)return;
                     SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
                     SharedPreferences.Editor editor = pref.edit();
                     try {

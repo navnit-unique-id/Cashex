@@ -35,6 +35,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
 import com.inspirado.kuber.ecom.order.cart.CartItemListAdapter;
@@ -49,6 +50,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class NewOrderFragment3 extends Fragment {
@@ -60,6 +62,7 @@ public class NewOrderFragment3 extends Fragment {
     private RecyclerView.Adapter cartItemAdapter;
     List<Inventory> inventoryItemsAll = new ArrayList<Inventory>();
     List<Inventory> inventoryItems = new ArrayList<Inventory>();
+    View cartView;
 
     User user;
     Store store;
@@ -138,6 +141,7 @@ public class NewOrderFragment3 extends Fragment {
         newOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isValidToOrder())return;
                 order.setStatus(2);
                 saveOrder();
             }
@@ -161,10 +165,10 @@ public class NewOrderFragment3 extends Fragment {
                 final PopupWindow popupWindow;
                 ConstraintLayout constraintLayout = (ConstraintLayout) getActivity().findViewById(R.id.ecom_order_3_layout);
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View customView = layoutInflater.inflate(R.layout.popup_ecom_order_address, null);
-                popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                final View addressView = layoutInflater.inflate(R.layout.popup_ecom_order_address, null);
+                popupWindow = new PopupWindow(addressView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-                TextView address = customView.findViewById(R.id.addressTxt);
+                TextView address = addressView.findViewById(R.id.addressTxt);
                 String add = order.getShippingAddress();
                 if (add == null) {
                     add = user.getAddress();
@@ -173,7 +177,7 @@ public class NewOrderFragment3 extends Fragment {
                 popupWindow.showAtLocation(constraintLayout, Gravity.CENTER, 0, 0);
                 popupWindow.setFocusable(true);
                 popupWindow.update();
-                Button closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
+                Button closePopupBtn = (Button) addressView.findViewById(R.id.closePopupBtn);
                 closePopupBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -181,7 +185,7 @@ public class NewOrderFragment3 extends Fragment {
                     }
                 });
 
-                Button savePopupBtn = (Button) customView.findViewById(R.id.savePopupBtn);
+                Button savePopupBtn = (Button) addressView.findViewById(R.id.savePopupBtn);
                 savePopupBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -205,10 +209,10 @@ public class NewOrderFragment3 extends Fragment {
                 final PopupWindow popupWindow;
                 ConstraintLayout constraintLayout = (ConstraintLayout) getActivity().findViewById(R.id.ecom_order_3_layout);
                 LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View customView = layoutInflater.inflate(R.layout.popup_ecom_order_cart, null);
-                popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                cartView = layoutInflater.inflate(R.layout.popup_ecom_order_cart, null);
+                popupWindow = new PopupWindow(cartView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-                RecyclerView oList = customView.findViewById(R.id.ic_order_item_list);
+                RecyclerView oList = cartView.findViewById(R.id.ic_order_item_list);
                 linearLayoutManager = new LinearLayoutManager(getContext());
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 oList.setHasFixedSize(true);
@@ -217,14 +221,14 @@ public class NewOrderFragment3 extends Fragment {
                 ((CartItemListAdapter) cartItemAdapter).setOrder(order);
                 oList.setAdapter(cartItemAdapter);
                 cartItemAdapter.notifyDataSetChanged();
-                ((TextView)customView.findViewById(R.id.total)).setText(order.getTotalAmount()+"");
-                ((TextView)customView.findViewById(R.id.deliveryCharge)).setText(order.getDeliveryCharge()+"");
-                ((TextView)customView.findViewById(R.id.gross)).setText(order.getGrossAmount()+"");
+                ((TextView)cartView.findViewById(R.id.total)).setText(order.getTotalAmount()+"");
+                ((TextView)cartView.findViewById(R.id.deliveryCharge)).setText(order.getDeliveryCharge()+"");
+                ((TextView)cartView.findViewById(R.id.gross)).setText(order.getGrossAmount()+"");
 
                 popupWindow.showAtLocation(constraintLayout, Gravity.CENTER, 0, 0);
                 popupWindow.setFocusable(true);
                 popupWindow.update();
-                Button closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
+                Button closePopupBtn = (Button) cartView.findViewById(R.id.closePopupBtn);
                 closePopupBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -268,7 +272,7 @@ public class NewOrderFragment3 extends Fragment {
                             categoryBtn.setTextOff(category.get("category") + " (" + category.get("count") + ")");
                             categoryBtn.setBackground(getActivity().getDrawable(R.drawable.stylishbutton));
                             categoryBtn.setTextSize(12);
-                            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 40);
+                            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80);
                             categoryBtn.setPadding(0, 0, 0, 0);
                             // categoryBtn.setHeight(30);
                             ll.addView(categoryBtn, lp);
@@ -350,7 +354,7 @@ public class NewOrderFragment3 extends Fragment {
             }
         }
         ((InventoryListAdapter) inventoryListAdapter).setRequests(inventoryItems);
-        ((InventoryListAdapter) inventoryListAdapter).setOrder(order);
+    //    ((InventoryListAdapter) inventoryListAdapter).setOrder(order);
         inventoryListAdapter.notifyDataSetChanged();
     }
 
@@ -394,7 +398,7 @@ public class NewOrderFragment3 extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String UIMessage = "Error. Please try after some time";
+                String UIMessage = "Error getting inventory items";
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
@@ -432,7 +436,7 @@ public class NewOrderFragment3 extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String UIMessage = "Error. Please try after some time";
+                String UIMessage = "Error fetching draft orders";
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
@@ -519,8 +523,9 @@ public class NewOrderFragment3 extends Fragment {
     private void createNewOrder() {
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.show();
         String clientCode = user.getClientCode();
-        progressDialog.setMessage("Getting orders ...");
+        progressDialog.setMessage("Creating new order ...");
         Order order = new Order();
         Buyer buyer = new Buyer();
         buyer.setBuyerSourceId(user.getId());
@@ -571,7 +576,7 @@ public class NewOrderFragment3 extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String UIMessage = "Error. Please try after some time";
+                String UIMessage = "Could not create new draft order";
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
@@ -587,7 +592,9 @@ public class NewOrderFragment3 extends Fragment {
     }
 
     private void saveOrder() {
-
+        if(!isValid()){
+          return;
+        }
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         String clientCode = user.getClientCode();
         progressDialog.setMessage("Saving ...");
@@ -595,7 +602,7 @@ public class NewOrderFragment3 extends Fragment {
         JSONObject postData = null;
         try {
             order.setDateOfOrder(new Date());
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -611,7 +618,7 @@ public class NewOrderFragment3 extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String UIMessage = "Error. Please try after some time";
+                String UIMessage = "Could not save order";
                 if (error.getClass().toString().contains("com.android.volley.TimeoutError")) {
                     UIMessage = "Unable to connect to internet.";
                 }
@@ -628,16 +635,39 @@ public class NewOrderFragment3 extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
 
+    private boolean isValid() {
+        if(order.getId()==null) {
+            Snackbar.make(getView(), "Oops!!! Let's retry ..", Snackbar.LENGTH_LONG).show();
+            fetchDraftOrders();
+            return false;
+        }
+      //  Snackbar.make(getView(), "Request is OK. id = " + order.getId(), Snackbar.LENGTH_LONG).show();
+        return true;
+    }
+
+    private boolean isValidToOrder() {
+        if(order.getId()==null) {
+            Snackbar.make(getView(), "ID is null", Snackbar.LENGTH_LONG).show();
+            return false;
+        }
+        if(  (order.getOrderItems()==null) || (order.getOrderItems()!=null && order.getOrderItems().size()<1)){
+            Snackbar.make(getView(), "Cart is empty", Snackbar.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
 
     private BroadcastReceiver orderMessageReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            order = (Order) intent.getSerializableExtra("order");
+
+            Order orderFromInv = (Order) intent.getSerializableExtra("order");
             if (getActivity() != null) {
                 Button summaryBtn = (Button) getActivity().findViewById(R.id.summaryBtn);
-                summaryBtn.setText("Rs " + order.getGrossAmount());
-                shipmentAddress = order.getShippingAddress();
+                summaryBtn.setText("Rs " + orderFromInv.getGrossAmount());
+                shipmentAddress = orderFromInv.getShippingAddress();
                 order.setShippingAddress(shipmentAddress);
+                order.setOrderItems(orderFromInv.getOrderItems());
                 saveOrder();
             }
         }
@@ -647,23 +677,32 @@ public class NewOrderFragment3 extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Order orderSrv = (Order) intent.getSerializableExtra("order");
-            for (OrderItem orderItem : orderSrv.getOrderItems()) {
-                if(order!=null && order.getOrderItems()!=null){
-                    order.getOrderItems().forEach(orderItem1 -> {
-                        if(orderItem1.getId().equals(orderItem.getId())){
-                            orderItem.setMaxQuantity(orderItem1.getMaxQuantity());
+            if ((orderSrv==null)|| (orderSrv!=null && orderSrv.getId()==null) ) return; //dont process junk data
+            if(orderSrv!=null) {
+                if (orderSrv.getOrderItems() != null) {
+                    for (OrderItem orderItem : orderSrv.getOrderItems()) {
+                        if (order != null && order.getOrderItems() != null) {
+                            order.getOrderItems().forEach(orderItem1 -> {
+                                if (orderItem1.getId() != null && orderItem1.getId().equals(orderItem.getId())) {
+                                    orderItem.setMaxQuantity(orderItem1.getMaxQuantity());
+                                }
+                            });
                         }
-                    });
+                    }
                 }
+                order = orderSrv; //above is in a bid to retain the maxQuantity which is not sent to server
             }
-            order=orderSrv; //above is in a bid to retain the maxQuantity which is not sent to server
-            if (getActivity() != null) {
+
+           if (getActivity() != null) {
                 if (order.getStatus() == 1) {
                     Button summaryBtn = (Button) getActivity().findViewById(R.id.summaryBtn);
                     summaryBtn.setText("Rs " + order.getGrossAmount());
-                    TextView addressTxtView = (TextView) getActivity().findViewById(R.id.address);
-                    addressTxtView.setText(order.getShippingAddress() + "");
-                    shipmentAddress = order.getShippingAddress();
+                    if(order.getShippingAddress()!=null && !order.getShippingAddress().equalsIgnoreCase("")){
+
+                        TextView addressTxtView = (TextView) getActivity().findViewById(R.id.address);
+                        addressTxtView.setText(order.getShippingAddress() + "");
+                        shipmentAddress = order.getShippingAddress();
+                    }
                     ((InventoryListAdapter) inventoryListAdapter).setOrder(order);
                     inventoryListAdapter.notifyDataSetChanged();
                 } else if (order.getStatus() == 2) {
@@ -680,6 +719,7 @@ public class NewOrderFragment3 extends Fragment {
                     startActivity(myIntent);*/
                 }
             }
+           getActivity().setTitle(order.getId()+" - " +store.getName());
         }
     };
 
@@ -692,6 +732,9 @@ public class NewOrderFragment3 extends Fragment {
                 summaryBtn.setText("Rs " + order.getGrossAmount());
                 ((InventoryListAdapter) inventoryListAdapter).setOrder(order);
                 inventoryListAdapter.notifyDataSetChanged();
+                ((TextView)cartView.findViewById(R.id.total)).setText(order.getTotalAmount()+"");
+                ((TextView)cartView.findViewById(R.id.deliveryCharge)).setText(order.getDeliveryCharge()+"");
+                ((TextView)cartView.findViewById(R.id.gross)).setText(order.getGrossAmount()+"");
             }
             saveOrder();
         }

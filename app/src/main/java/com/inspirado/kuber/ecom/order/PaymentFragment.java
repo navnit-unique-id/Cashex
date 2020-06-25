@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.inspirado.kuber.MainActivity;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
@@ -68,7 +69,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         Checkout.preload(getContext());
         SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
-        user = (new Gson()).fromJson(json, User.class);
+        user = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(json, User.class);
 
     //    setContentView(R.layout.activity_ecom_order_payment);
         parentLayout = getActivity().findViewById(android.R.id.content);
@@ -103,7 +104,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
             jsonObjectRequest = new JsonObjectRequest(getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/accounting/ledgers/" + ledgerId, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    storeOwnerLedger = (new Gson()).fromJson(response.toString(), Ledger.class);
+                    storeOwnerLedger = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(response.toString(), Ledger.class);
                     if(storeOwnerLedger.isAcceptsCOD() && getActivity().findViewById(R.id.cod)!=null){
                         getActivity().findViewById(R.id.cod).setVisibility(View.VISIBLE);
                     }else{
@@ -174,7 +175,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         order.setMop(4);
         JSONObject postData=null;
         try {
-             postData = new JSONObject(new Gson().toJson(order));
+             postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,7 +185,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
             public void onResponse(JSONObject orderObj) {
                 Checkout checkout = new Checkout();
                 try {
-                    order= (new Gson()).fromJson(orderObj.toString(), Order.class);
+                    order= (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(orderObj.toString(), Order.class);
                     JSONObject options = new JSONObject();
                     options.put("name", order.getSeller().getSellerName());
                     options.put("description", order.getBuyer().getBuyerName()+". "+order.getShippingAddress());
@@ -226,7 +227,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         order.setStatus(status);
         JSONObject postData=null;
         try {
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -235,7 +236,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
             @Override
             public void onResponse(JSONObject orderObj) {
                 try {
-                    Order order = (new Gson()).fromJson(orderObj.toString(), Order.class);
+                    Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(orderObj.toString(), Order.class);
                     Payment payment= new Payment();
                     if(order.getStatus()==401){
                         payment.setStatus(401);
@@ -283,7 +284,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         progressDialog.show();
         JSONObject postData=null;
         try {
-            postData = new JSONObject(new Gson().toJson(payment));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(payment));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -328,7 +329,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         JSONObject postData=null;
         order.setStatus(3);
         try {
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -336,7 +337,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
             @Override
             public void onResponse(JSONObject orderObj) {
                 try {
-                    Order order = (new Gson()).fromJson(orderObj.toString(), Order.class);
+                    Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(orderObj.toString(), Order.class);
                     Payment payment= new Payment();
                     payment.setStatus(1);
                     payment.setLedgerId(order.getSeller().getSellerLedgerId());
@@ -378,7 +379,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
         JSONObject postData=null;
         order.setStatus(3);
         try {
-            postData = new JSONObject(new Gson().toJson(order));
+            postData = new JSONObject(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create().toJson(order));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -386,7 +387,7 @@ public class PaymentFragment extends Fragment implements PaymentResultWithDataLi
             @Override
             public void onResponse(JSONObject orderObj) {
                 try {
-                    Order order = (new Gson()).fromJson(orderObj.toString(), Order.class);
+                    Order order = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(orderObj.toString(), Order.class);
                     Payment payment= new Payment();
                     payment.setStatus(1);
                     payment.setLedgerId(order.getSeller().getSellerLedgerId());

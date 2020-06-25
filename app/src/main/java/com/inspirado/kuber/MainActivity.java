@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         if (json.equalsIgnoreCase("")) {
             createSignInIntent();
         } else {
-            user = (new Gson()).fromJson(json, User.class);
+            user = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(json, User.class);
             if (user.getStatus() == 5) {
                 if (savedInstanceState != null) {
                     //Restore the fragment's instance
@@ -274,23 +274,25 @@ public class MainActivity extends AppCompatActivity
                         try {
                             JSONArray jsonArray = jsonObject.getJSONArray("content");
                             if (jsonArray != null && jsonArray.length() > 0) {
-                                store = (new Gson()).fromJson(jsonArray.getString(0), Store.class);
+                                store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonArray.getString(0), Store.class);
                                 Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
+                            }else{
+                                return;
                             }
                             MenuInflater inflater = getMenuInflater();
                             inflater.inflate(R.menu.menu, menu);
                             toggleservice = menu.findItem(R.id.atm_mode);
                             actionView = (Switch) toggleservice.getActionView();
                             actionView.setTextColor(getColor(R.color.textColor)); //red color for displayed text of Switch
-                            actionView.setChecked( (store != null) && (store.getOpenClose()==1)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) ? true : false);
-                            getSupportActionBar().setBackgroundDrawable((store != null) && (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) && (store.getOpenClose()==1)  ? new ColorDrawable(getColor(R.color.colorPrimary)) : new ColorDrawable(getColor(R.color.atmOff)));
-                            actionView.setText((store != null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) )  && (store.getOpenClose()==1) ? "Open" : "Closed");
+                            actionView.setChecked( (store != null) && (store.getOpenClose()==1)&& (store.getMarketplaceVisibilityEndDate()!=null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) ? true : false);
+                            getSupportActionBar().setBackgroundDrawable((store != null)&& (store.getMarketplaceVisibilityEndDate()!=null) && (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) && (store.getOpenClose()==1)  ? new ColorDrawable(getColor(R.color.colorPrimary)) : new ColorDrawable(getColor(R.color.atmOff)));
+                            actionView.setText((store != null)&& (store.getMarketplaceVisibilityEndDate()!=null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) )  && (store.getOpenClose()==1) ? "Open" : "Closed");
 
                             actionView.setOnClickListener(new Switch.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     if (((Switch)view).isChecked()) {
-                                        if ( (store!=null )&& !store.getMarketplaceVisibilityEndDate().before(new Date())) {
+                                        if ( (store!=null )&& (store.getMarketplaceVisibilityEndDate()!=null)&& !store.getMarketplaceVisibilityEndDate().before(new Date())) {
                                             actionView.setText("Open");
                                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorPrimary)));
                                             store.setOpenClose(1);
@@ -341,7 +343,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onResponse(JSONObject responseObj) {
                             try {
-                                store = (new Gson()).fromJson(responseObj.toString(), Store.class);
+                                store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(responseObj.toString(), Store.class);
                                 Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(responseObj.toString()));
                             } catch (Exception e) {
                                 Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -379,7 +381,7 @@ public class MainActivity extends AppCompatActivity
                         try {
                             JSONArray jsonArray = jsonObject.getJSONArray("content");
                             if (jsonArray != null && jsonArray.length() > 0) {
-                                store = (new Gson()).fromJson(jsonArray.getString(0), Store.class);
+                                store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonArray.getString(0), Store.class);
                                 Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
                             }
                         } catch (Exception e) {
@@ -556,7 +558,7 @@ public class MainActivity extends AppCompatActivity
                 try {
                     PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getPackageName(), 0);
                     int verCode = pInfo.versionCode;
-                    AppVersionInfo upgradeInfo = (new Gson()).fromJson(response.toString(), AppVersionInfo.class);
+                    AppVersionInfo upgradeInfo = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(response.toString(), AppVersionInfo.class);
                     if ((upgradeInfo != null) && (verCode < upgradeInfo.getVersion()) && (upgradeInfo.getUpdateCompulsion() == 2)) {
                         Intent upgradeIntent = new Intent(mainActivity, UpgradeActivity.class);
                         upgradeIntent.putExtra("url", upgradeInfo.getUrl());
@@ -607,6 +609,7 @@ public class MainActivity extends AppCompatActivity
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if(actionView==null) return;
             if(intent.getAction().equalsIgnoreCase("21")){
                 actionView.setText("Open");
                 actionView.setChecked(true);

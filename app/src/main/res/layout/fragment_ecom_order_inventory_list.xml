@@ -88,10 +88,67 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.52" >
+
+    </android.support.v7.widget.RecyclerView>
     <!--
     </android.support.constraint.ConstraintLayout>
 -->
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/viewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/linearLayout12"
+            android:layout_width="202dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="@color/colorBackground">
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="50dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/summaryBtn"
+                app:srcCompat="@drawable/new_order_fg" />
+
+            <Button
+                android:id="@+id/summaryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/colorBackground"
+                android:gravity="center|left"
+                android:paddingLeft="8dp"
+                android:text="Rs 0"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView11"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/newOrderBtn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:padding="0dp"
+            android:text="Place Order" />
+
+    </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -107,56 +164,4 @@
 
     </android.support.v4.view.ViewPager>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout12"
-        android:layout_width="202dp"
-        android:layout_height="wrap_content"
-        android:background="@color/colorBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/newOrderBtn">
-
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="50dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/summaryBtn"
-            app:srcCompat="@drawable/new_order_fg" />
-
-        <Button
-            android:id="@+id/summaryBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="@color/colorBackground"
-            android:gravity="center|left"
-            android:paddingLeft="8dp"
-            android:text="Rs 0"
-            android:textColor="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.25"
-            app:layout_constraintStart_toEndOf="@+id/imageView11"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <Button
-        android:id="@+id/newOrderBtn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:padding="0dp"
-        android:text="Place Order"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout12" />
 </android.support.constraint.ConstraintLayout>

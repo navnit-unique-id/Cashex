@@ -145,7 +145,7 @@ public class StoreInventoryListFragment extends Fragment {
                             categoryBtn.setTextOff(category.get("category")+" (" +category.get("count") + ")");
                             categoryBtn.setBackground(getActivity().getDrawable(R.drawable.stylishbutton));
                             categoryBtn.setTextSize(12);
-                            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 40);
+                            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80);
                             categoryBtn.setPadding(0,0,0,0);
                            // categoryBtn.setHeight(30);
                             ll.addView(categoryBtn, lp);

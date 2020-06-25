@@ -144,19 +144,36 @@ public class NewOrderFragment2 extends Fragment {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("user", (User) user);
+    }
+
+
     private void getDataLocal(String category) {
         Hashtable storesTemp = new Hashtable();
         if (category == null) {
             ((StoreItemAdapter) adapter).setStores(stores);
-        } else {
-            user.getUserPreferences().forEach(preference -> {
+        } else if(user!=null && user.getUserPreferences()!=null) {
+            List prefs = user.getUserPreferences();
+            for (int i = 0; i < prefs.size(); i++) {
+                UserPreference preference = (UserPreference) prefs.get(i);
+                if ( (preference.getType()==1)
+                        && (stores.containsKey(preference.getTypeId()))
+                        && ("favouritestore".equalsIgnoreCase(preference.getAttributeName()))
+                        && ("true".equalsIgnoreCase(preference.getAttributValue()))){
+                    storesTemp.put(preference.getTypeId(), stores.get(preference.getTypeId()));
+                }
+            }
+/*            user.getUserPreferences().forEach(preference -> {
                 if ( (preference.getType()==1)
                     && (stores.containsKey(preference.getTypeId()))
                         && ("favouritestore".equalsIgnoreCase(preference.getAttributeName()))
                         && ("true".equalsIgnoreCase(preference.getAttributValue()))){
                     storesTemp.put(preference.getTypeId(), stores.get(preference.getTypeId()));
                 }
-            });
+            });*/
             ((StoreItemAdapter) adapter).setStores(storesTemp);
         }
         adapter.notifyDataSetChanged();

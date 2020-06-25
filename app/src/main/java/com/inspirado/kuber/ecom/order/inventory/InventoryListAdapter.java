@@ -76,10 +76,12 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
             holder.description.setText(description);
             if (mrp.equalsIgnoreCase(price)) {
+                holder.mrp.setText(mrp);
                 holder.mrp.setVisibility(View.GONE);
             } else {
                 holder.mrp.setText(mrp);
                 holder.mrp.setPaintFlags(holder.mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                holder.mrp.setVisibility(View.VISIBLE);
             }
             holder.qty.setText(qtyLeft);
             holder.price.setText(price);
@@ -138,13 +140,19 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             holder.addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.quantity.setText("1");
-                    order.addItemAsPerInventory(holder.inventory, 1);
-                    holder.minusBtn.setVisibility(View.VISIBLE);
-                    holder.plusBtn.setVisibility(View.VISIBLE);
-                    holder.quantity.setVisibility(View.VISIBLE);
-                    holder.addBtn.setVisibility(View.GONE);
-                    broadCastOrder();
+
+                    int quantity = Integer.parseInt("0" + holder.quantity.getText());
+                    if (holder.inventory.getQuantity() < 1) {
+                        Snackbar.make(v, "Exceeds inventory in stock", Snackbar.LENGTH_LONG).show();
+                    } else {
+                        holder.quantity.setText("1");
+                        order.addItemAsPerInventory(holder.inventory, 1);
+                        holder.minusBtn.setVisibility(View.VISIBLE);
+                        holder.plusBtn.setVisibility(View.VISIBLE);
+                        holder.quantity.setVisibility(View.VISIBLE);
+                        holder.addBtn.setVisibility(View.GONE);
+                        broadCastOrder();
+                    }
                 }
             });
 

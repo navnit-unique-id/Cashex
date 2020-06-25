@@ -17,10 +17,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.inspirado.kuber"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 28
-        versionCode 41
-        versionName "41"
+        versionCode 52
+        versionName "52"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }

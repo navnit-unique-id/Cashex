@@ -61,8 +61,11 @@ import com.inspirado.kuber.ecom.store.Store;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
@@ -81,6 +84,7 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
     private LinearLayoutManager linearLayoutManager;
     User user;
     Hashtable stores = new Hashtable();
+    Hashtable storesMarker = new Hashtable(); // |2 | marker | //
     private FusedLocationProviderClient mFusedLocationClient;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
@@ -225,17 +229,6 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
     }
 
     private void initiliazeMarker() {
-      /*  if ((user.getLat() != 0) && (user.getLng() != 0)) {
-            LatLng latLng = new LatLng(user.getLat(), user.getLng());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Current Position");
-            markerOptions.draggable(true);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mCurrLocationMarker = mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-            locationFound = true;
-        } else {*/
         searching = true;
         LatLng latLng = new LatLng(user.getLat(), user.getLng());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
@@ -429,6 +422,7 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
     }
 
     private void getNearbyStores(Double lat, Double lng) {
+        if(getContext()==null) return;
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         String clientCode = user.getClientCode();
         progressDialog.setMessage("Finding stores nearby...");
@@ -449,7 +443,7 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
                     }
                 }
                 displayLenderOnMap();
-                progressDialog.dismiss();
+                if(progressDialog!=null) progressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -492,6 +486,7 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
                     Marker marker = mMap.addMarker(markerOptions);
                     marker.setTag(store.getId());
                     marker.showInfoWindow();
+                    storesMarker.put(store.getId(),marker);
                 }
             }
         }
@@ -499,7 +494,22 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
 
     private boolean shouldDisplay(Store store, String filter) {
         if (filter == null) return true;
-        int filteredRecordNum = user.getUserPreferences().stream().filter(preference -> {
+        if ((user==null) || (user!=null && user.getUserPreferences()==null)) return false;
+        List prefs = user.getUserPreferences();
+        List eligible = new ArrayList();
+        for (int i = 0; i < prefs.size(); i++) {
+            UserPreference preference = (UserPreference) prefs.get(i);
+            if ((preference.getType() == 1)
+                    && (store.getId().equals(preference.getTypeId()))
+                    && ("favouritestore".equalsIgnoreCase(preference.getAttributeName()))
+                    && ("true".equalsIgnoreCase(preference.getAttributValue()))) {
+                eligible.add(preference);
+            }
+            return false;
+        };
+        int filteredRecordNum = eligible.size();
+
+/*        int filteredRecordNum = user.getUserPreferences().stream().filter(preference -> {
             if ((preference.getType() == 1)
                     && (store.getId().equals(preference.getTypeId()))
                     && ("favouritestore".equalsIgnoreCase(preference.getAttributeName()))
@@ -507,7 +517,7 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
                 return true;
             }
             return false;
-        }).collect(Collectors.toList()).size();
+        }).collect(Collectors.toList()).size();*/
         if (filteredRecordNum > 0) {
             return true;
         } else {
@@ -519,20 +529,26 @@ public class NewOrderFragment1 extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (marker.getTag() == null) return true;
-        Long id = Long.parseLong("" + marker.getTag());
-        Store store = (Store) stores.get(id);
-        store.setSelected(!store.isSelected());
-        marker.showInfoWindow();
-      // Snackbar snackbar;
-        //     stores.put(id,store);
-        if (store.isSelected()) {
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-          //  snackbar = Snackbar.make(getView(), "Request will be sent to " + store.getName(), Snackbar.LENGTH_LONG);
-        } else {
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-          //  snackbar = Snackbar.make(getView(), "Request will NOT be sent to " + store.getName(), Snackbar.LENGTH_LONG);
+        Long clickedId = Long.parseLong("" + marker.getTag());
+        Enumeration keys = storesMarker.keys();
+        while(keys.hasMoreElements()){
+            Long thisStoreId = Long.parseLong(""+keys.nextElement());
+            Marker thisMarker = (Marker)storesMarker.get(thisStoreId);
+            if(thisStoreId.equals(clickedId)){
+                Store store = (Store) stores.get(thisStoreId);
+                store.setSelected(!store.isSelected());
+                thisMarker.showInfoWindow();
+                if (store.isSelected()) {
+                    thisMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else {
+                    thisMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+            }else{
+                thisMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                Store store = (Store) stores.get(thisStoreId);
+                store.setSelected(false);
+            }
         }
-       // snackbar.show();
         return true;
     }
 }

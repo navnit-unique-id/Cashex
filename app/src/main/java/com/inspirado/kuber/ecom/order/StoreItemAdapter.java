@@ -109,6 +109,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.Requ
                 }
             });
             RadioButton isSelectedView = (RadioButton) holder.cardView.findViewById(R.id.isSelected);
+            isSelectedView.setChecked(((Store) storeList.get(position)).isSelected());
             isSelectedView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,6 +117,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.Requ
                     Store store = (Store) storeList.get(position);
                     Long id = store.getId();
                     ((Store)stores.get(id)).setSelected(true);
+                    notifyDataSetChanged();
                 }
               }
             );
@@ -141,6 +143,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.Requ
 
     private List<UserPreference> updateMatchingPreferenceForStore(List<UserPreference> preferences, UserPreference preferenceToBeUpdted){
         boolean newRecord = true;
+        if(preferences==null) return null;
         for (int i = 0; i < preferences.size(); i++) {
             UserPreference userPreference = preferences.get(i);
             if ( userPreference.getId().equals(preferenceToBeUpdted.getId())){

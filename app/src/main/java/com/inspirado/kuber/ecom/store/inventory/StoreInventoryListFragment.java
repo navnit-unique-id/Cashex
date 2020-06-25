@@ -116,6 +116,7 @@ public class StoreInventoryListFragment extends Fragment {
     }
 
     private void showCategories() {
+        if((user==null)||(store==null)) return;
         LinearLayout ll = (LinearLayout)getActivity().findViewById(R.id.categoryLayout);
         ToggleButton allBtn = (ToggleButton)getActivity().findViewById(R.id.allBtn);
         allBtn.setChecked(true);
@@ -227,6 +228,7 @@ public class StoreInventoryListFragment extends Fragment {
 
 
     public void getData(boolean silent, String category, String status) {
+        if((user==null)||(store==null)) return;
         String resource = "";
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         String clientCode = user.getClientCode();
@@ -286,6 +288,7 @@ public class StoreInventoryListFragment extends Fragment {
 
 
     public void toggleState(Inventory inventory) {
+        if((user==null)||(store==null)) return;
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         String clientCode = user.getClientCode();
         JSONObject postData = null;
