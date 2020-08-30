@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -21,15 +23,17 @@ import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
 import com.inspirado.kuber.ecom.order.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //import com.inspirado.kuber.tracking.MapsActivity;
 //import com.inspirado.kuber.tracking.ReplayActivity;
 
 
-public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.RequestHolder> {
+public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.RequestHolder> implements Filterable {
     private Context context;
     List inventoryItems;
+    List inventoryItemsFiltered;
     User user;
     private RadioButton lastCheckedRB = null;
     Order order;
@@ -46,10 +50,12 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         this.context = context;
         this.inventoryItems = inventoryItems;
         this.user = user;
+        inventoryItemsFiltered=inventoryItems;
     }
 
     public void setRequests(List Requests) {
         this.inventoryItems = Requests;
+        inventoryItemsFiltered=inventoryItems;
     }
 
     public void setUser(User user) {
@@ -67,8 +73,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public void onBindViewHolder(final RequestHolder holder, int position) {
-        if (inventoryItems != null) {
-            Inventory inventory = (Inventory) inventoryItems.get(position);
+        if (inventoryItemsFiltered != null) {
+            Inventory inventory = (Inventory) inventoryItemsFiltered.get(position);
             String description = inventory.getBrand() + " " + inventory.getName() + " " + inventory.getDescription();
             String mrp = "Rs " + inventory.getMrp();
             String price = "Rs " + inventory.getPrice();
@@ -170,12 +176,42 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public int getItemCount() {
-        if (inventoryItems != null) {
-            return inventoryItems.size();
+        if (inventoryItemsFiltered != null) {
+            return inventoryItemsFiltered.size();
         }
         return 0;
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    inventoryItemsFiltered = inventoryItems;
+                } else {
+                    ArrayList<Inventory> filteredList = new ArrayList<>();
+                    for (Object inventory : inventoryItems) {
+                        if ( (((Inventory)inventory).getBrand().toLowerCase().contains(charString.toLowerCase())) || ( ((Inventory)inventory).getCategory().toLowerCase().contains(charString.toLowerCase())) || ( ((Inventory)inventory).getName().toLowerCase().contains(charString.toLowerCase())) ||   ((Inventory)inventory).getDescription().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add((Inventory)inventory);
+                        }
+                    }
+                    inventoryItemsFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = inventoryItemsFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                inventoryItemsFiltered = (ArrayList<com.inspirado.kuber.ecom.store.inventory.Inventory>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
     public void broadCastOrder() {
         Intent intent = new Intent("order-message");
         intent.putExtra("order", order);
@@ -209,7 +245,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         }
 
         public void destroy() {
-            inventoryItems.remove(inventory);
+            inventoryItemsFiltered.remove(inventory);
             notifyDataSetChanged();
         }
 

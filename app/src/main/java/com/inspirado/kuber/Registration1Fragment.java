@@ -83,7 +83,7 @@ public class Registration1Fragment extends Fragment {
                     user.setPassword(((EditText) getActivity().findViewById(R.id.password)).getText().toString());
                     user.setMobileNumber(((EditText) getActivity().findViewById(R.id.username2)).getText().toString());
                     user.setClientCode(clientCode);
-                    user.setStatus(1);
+                    user.setStatus(2);
                     Gson gson = new Gson();
                     JSONObject postData = new JSONObject(gson.toJson(user));
                     Log.d("TAG", "putData: " + postData.toString());
@@ -92,8 +92,8 @@ public class Registration1Fragment extends Fragment {
                                 @Override
                                 public void onResponse(JSONObject responseObj) {
                                     try {
-                                        Fragment fragment = new Registration2Fragment();
-                                        ((Registration2Fragment) fragment).setUser((new Gson()).fromJson(responseObj.toString(), User.class));
+                                        Fragment fragment = new Registration3Fragment();
+                                        ((Registration3Fragment) fragment).setUser((new Gson()).fromJson(responseObj.toString(), User.class));
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                                         ft.replace(R.id.registration_frame, fragment).addToBackStack(null);
                                         ;

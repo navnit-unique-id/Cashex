@@ -67,8 +67,8 @@ public class RegistrationActivity extends AppCompatActivity {
         } else { // registration was left midway..
            // user = (new Gson()).fromJson(json, User.class);
             if (user.getStatus() == 1) {
-                fragment = new Registration2Fragment();
-                ((Registration2Fragment) fragment).setUser(user);
+                fragment = new Registration3Fragment();
+                ((Registration3Fragment) fragment).setUser(user);
             }
             if (user.getStatus() == 2) {
                 fragment = new Registration3Fragment();

@@ -1,6 +1,7 @@
 package com.inspirado.kuber.ecom.store.inventory;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,13 +15,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.ToggleButton;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -48,7 +54,7 @@ public class StoreInventoryListFragment extends Fragment {
     Inventory inventoryItem;
     private RecyclerView mList;
     private LinearLayoutManager linearLayoutManager;
-    private RecyclerView.Adapter adapter;
+    private InventoryListAdapter adapter;
     ArrayList inventoryItems = new ArrayList();
     User user;
     Store store;
@@ -57,19 +63,21 @@ public class StoreInventoryListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+     //   setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_ecom_store_inventory_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         SharedPreferences pref = getContext().getSharedPreferences("pref", 0);
         String json = pref.getString("user", "");
         user = (new Gson()).fromJson(json, User.class);
         store = Util.getStoreFromSharedPref(getContext());
 
         getActivity().setTitle("Inventory List");
+      //  getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+     //   ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         mList = getActivity().findViewById(R.id.ic_inventory_list);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -100,6 +108,30 @@ public class StoreInventoryListFragment extends Fragment {
         IntentFilter filter = new IntentFilter("1");
         filter.addAction("4");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
+        buildSearch();
+    }
+
+    public void buildSearch() {
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView  searchView = (SearchView) getActivity().findViewById(R.id.action_search);
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+//        getActivity().getActionBar().setCustomView(getActivity().findViewById(R.id.action_search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
     }
 
     private void showFloatingButton() {

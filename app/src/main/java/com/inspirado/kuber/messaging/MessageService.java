@@ -1,6 +1,7 @@
 package com.inspirado.kuber.messaging;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -128,7 +129,7 @@ public class MessageService extends FirebaseMessagingService {
      */
     private void sendNotification(String messageBody, int priority, int code) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("fragment",4);
+        intent.putExtra("fragment",0);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -143,6 +144,8 @@ public class MessageService extends FirebaseMessagingService {
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(messageBody))
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =

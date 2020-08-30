@@ -133,6 +133,8 @@
     <string name="tc2">2. The application is only a platform to help a person who is need of cash, by providing him/her cash in return of online money transfer.</string>
     <string name="tc3">3. The person himself/herself is liable for any misuse of the platform provided - not the company.</string>
     <string name="tc4">4. The Terms and Condition binds you not to do any illegal activities through the app described under Government of India and Reserve Bank of India</string>
+    <string name="tc5">Detailed Terms and Condition https://eunicoinfotech.com/our-policies</string>
+
     <string name="tc_heading">Terms and Conditons</string>
     <string name="label_transfer_mode"><u>Mode of Transfer*</u></string>
 

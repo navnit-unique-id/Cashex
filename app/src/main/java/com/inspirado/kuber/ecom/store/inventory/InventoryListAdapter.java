@@ -1,6 +1,7 @@
 package com.inspirado.kuber.ecom.store.inventory;
 
 import android.content.Context;
+import android.graphics.Movie;
 import android.graphics.Paint;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -18,14 +21,16 @@ import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //import com.inspirado.kuber.tracking.MapsActivity;
 //import com.inspirado.kuber.tracking.ReplayActivity;
 
 
-public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.RequestHolder> {
+public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.RequestHolder> implements Filterable {
     private Context context;
-    ArrayList inventoryItems;
+    ArrayList<Inventory> inventoryItems;
+    ArrayList<Inventory> inventoryItemsFiltered;
     User user;
     private RadioButton lastCheckedRB = null;
 
@@ -33,11 +38,13 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
    public InventoryListAdapter(Context context, ArrayList inventoryItems, User user) {
         this.context = context;
         this.inventoryItems = inventoryItems;
+        this.inventoryItemsFiltered=inventoryItems;
         this.user = user;
    }
 
     public void setRequests(ArrayList Requests){
        this.inventoryItems=Requests;
+        this.inventoryItemsFiltered=inventoryItems;
     }
     public void setUser(User user){
        this.user=user;
@@ -53,8 +60,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public void onBindViewHolder(final RequestHolder holder, int position) {
-       if(inventoryItems!=null) {
-           Inventory inventory = (Inventory) inventoryItems.get(position);
+       if(inventoryItemsFiltered!=null) {
+           Inventory inventory = (Inventory) inventoryItemsFiltered.get(position);
            String description = inventory.getBrand()+" "+inventory.getName()+" "+inventory.getDescription();
            String mrp="Rs "+inventory.getMrp();
            String price = "Rs "+ inventory.getPrice();
@@ -86,12 +93,42 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public int getItemCount() {
-        if(inventoryItems!=null){
-            return inventoryItems.size();
+        if(inventoryItemsFiltered!=null){
+            return inventoryItemsFiltered.size();
         }
         return 0;
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                   inventoryItemsFiltered = inventoryItems;
+                } else {
+                    ArrayList<Inventory> filteredList = new ArrayList<>();
+                    for (Inventory inventory : inventoryItems) {
+                        if ( (inventory.getBrand().toLowerCase().contains(charString.toLowerCase())) || (inventory.getCategory().toLowerCase().contains(charString.toLowerCase())) || (inventory.getName().toLowerCase().contains(charString.toLowerCase())) ||   inventory.getDescription().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(inventory);
+                        }
+                    }
+                    inventoryItemsFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = inventoryItemsFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+               inventoryItemsFiltered = (ArrayList<Inventory>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
     private void showDetails(View view){
         Log.d("TAG", "showDetails: NEED TO OPEN DETAILS HERE");
     }
@@ -123,8 +160,4 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             return inventory;
         }
     }
-
-
-
-
 }

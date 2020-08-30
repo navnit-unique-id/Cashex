@@ -1,6 +1,7 @@
 package com.inspirado.kuber.ecom.order;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -58,7 +60,7 @@ public class NewOrderFragment3 extends Fragment {
     Inventory inventoryItem;
     private RecyclerView mList;
     private LinearLayoutManager linearLayoutManager;
-    private RecyclerView.Adapter inventoryListAdapter;
+    private InventoryListAdapter inventoryListAdapter;
     private RecyclerView.Adapter cartItemAdapter;
     List<Inventory> inventoryItemsAll = new ArrayList<Inventory>();
     List<Inventory> inventoryItems = new ArrayList<Inventory>();
@@ -113,6 +115,7 @@ public class NewOrderFragment3 extends Fragment {
         showCategories();
         showCart();
         showOrderButton();
+        buildSearch();
         getData(false, null, "1");
         fetchDraftOrders();
         IntentFilter filter = new IntentFilter("order-message");
@@ -147,6 +150,29 @@ public class NewOrderFragment3 extends Fragment {
             }
         });
 
+    }
+
+    public void buildSearch() {
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) getActivity().findViewById(R.id.action_search);
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+//        getActivity().getActionBar().setCustomView(getActivity().findViewById(R.id.action_search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                inventoryListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                inventoryListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
     }
 
     private void showAddressDetails() {

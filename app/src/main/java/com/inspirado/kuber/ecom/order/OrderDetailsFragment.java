@@ -120,6 +120,7 @@ public class OrderDetailsFragment extends Fragment {
                     getActivity().findViewById(R.id.ecomOrderAddressLayout).setVisibility(View.VISIBLE);
                     getActivity().findViewById(R.id.orderStatusLayout).setVisibility(View.VISIBLE);
                     getActivity().findViewById(R.id.orderDetailsCard).setVisibility(View.VISIBLE);
+                    getActivity().findViewById(R.id.scrollView).setVisibility(View.GONE);
                     mList.setVisibility(View.GONE);
                 }
                 if (tab.getPosition() == 1) {
@@ -127,6 +128,7 @@ public class OrderDetailsFragment extends Fragment {
                     getActivity().findViewById(R.id.ecomOrderAddressLayout).setVisibility(View.GONE);
                     getActivity().findViewById(R.id.orderStatusLayout).setVisibility(View.GONE);
                     getActivity().findViewById(R.id.orderDetailsCard).setVisibility(View.GONE);
+                    getActivity().findViewById(R.id.scrollView).setVisibility(View.VISIBLE);
                     mList.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
                 }
