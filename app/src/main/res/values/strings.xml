@@ -149,5 +149,7 @@
 
     <string name="direct_payment_instruction_blank">Instructions cannot be blank</string>
     <string name="extending_membership_msg">Updating membership details ..</string>
+    <string name="getting_ledger_details">Getting account details ..</string>
+
 
 </resources>

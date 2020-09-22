@@ -576,7 +576,7 @@ public class StoreAccountFragment extends Fragment {
 
     private void getLedgerDetails() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage(getContext().getString(R.string.registration3_progressbar_msg));
+        progressDialog.setMessage(getContext().getString(R.string.getting_ledger_details));
         progressDialog.show();
         JsonObjectRequest jsonObjectRequest = null;
         try {
