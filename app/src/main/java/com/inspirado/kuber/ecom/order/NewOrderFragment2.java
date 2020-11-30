@@ -3,13 +3,13 @@ package com.inspirado.kuber.ecom.order;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
-import com.inspirado.kuber.ecom.order.inventory.InventoryListAdapter;
 import com.inspirado.kuber.ecom.store.Store;
 
 import org.json.JSONArray;
@@ -36,7 +35,6 @@ import org.json.JSONObject;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 //import android.widget.Toast;
 

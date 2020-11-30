@@ -12,36 +12,32 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -51,19 +47,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.cashfree.pg.CFPaymentService;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.inspirado.kuber.cash.CashRequestDetailsFragment;
 import com.inspirado.kuber.domain.AppVersionInfo;
 import com.inspirado.kuber.ecom.order.NewOrderFragment0;
-import com.inspirado.kuber.ecom.order.NewOrderFragment1;
 import com.inspirado.kuber.ecom.order.PaymentFragment;
-import com.inspirado.kuber.ecom.store.Membership;
-import com.inspirado.kuber.ecom.store.Privilege;
 import com.inspirado.kuber.ecom.store.Store;
 import com.inspirado.kuber.ecom.store.StoreAccountFragment;
 import com.inspirado.kuber.ecom.store.StoreMapFragment;
@@ -77,10 +73,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Properties;
 
 
 public class MainActivity extends AppCompatActivity
@@ -95,7 +89,7 @@ public class MainActivity extends AppCompatActivity
     private User user;
     private static String TOKEN;
     private static boolean TOKEN_REGISTERED = false;
-    private  Store store;
+    private Store store;
     //qr code scanner object
     private Fragment cashRequestDetailsFragment;
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -257,7 +251,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu= menu;
+        this.menu = menu;
         if (user.getUserType() == 2)
             return false; // if user is individual, dont display the toggle bar
         setStoreStatusToggleBar(menu);
@@ -267,7 +261,7 @@ public class MainActivity extends AppCompatActivity
     private void setStoreStatusToggleBar(Menu menu) {
         final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
         //progressDialog.setMessage("Changing mode ...");
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId="+user.getId(), null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId=" + user.getId(), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -275,8 +269,8 @@ public class MainActivity extends AppCompatActivity
                             JSONArray jsonArray = jsonObject.getJSONArray("content");
                             if (jsonArray != null && jsonArray.length() > 0) {
                                 store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonArray.getString(0), Store.class);
-                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
-                            }else{
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0), new JSONObject(jsonArray.get(0).toString()));
+                            } else {
                                 return;
                             }
                             MenuInflater inflater = getMenuInflater();
@@ -284,15 +278,15 @@ public class MainActivity extends AppCompatActivity
                             toggleservice = menu.findItem(R.id.atm_mode);
                             actionView = (Switch) toggleservice.getActionView();
                             actionView.setTextColor(getColor(R.color.textColor)); //red color for displayed text of Switch
-                            actionView.setChecked( (store != null) && (store.getOpenClose()==1)&& (store.getMarketplaceVisibilityEndDate()!=null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) ? true : false);
-                            getSupportActionBar().setBackgroundDrawable((store != null)&& (store.getMarketplaceVisibilityEndDate()!=null) && (!store.getMarketplaceVisibilityEndDate().before(new Date()) ) && (store.getOpenClose()==1)  ? new ColorDrawable(getColor(R.color.colorPrimary)) : new ColorDrawable(getColor(R.color.atmOff)));
-                            actionView.setText((store != null)&& (store.getMarketplaceVisibilityEndDate()!=null)&& (!store.getMarketplaceVisibilityEndDate().before(new Date()) )  && (store.getOpenClose()==1) ? "Open" : "Closed");
+                            actionView.setChecked((store != null) && (store.getOpenClose() == 1) && (store.getMarketplaceVisibilityEndDate() != null) && (!store.getMarketplaceVisibilityEndDate().before(new Date())) ? true : false);
+                            getSupportActionBar().setBackgroundDrawable((store != null) && (store.getMarketplaceVisibilityEndDate() != null) && (!store.getMarketplaceVisibilityEndDate().before(new Date())) && (store.getOpenClose() == 1) ? new ColorDrawable(getColor(R.color.colorPrimary)) : new ColorDrawable(getColor(R.color.atmOff)));
+                            actionView.setText((store != null) && (store.getMarketplaceVisibilityEndDate() != null) && (!store.getMarketplaceVisibilityEndDate().before(new Date())) && (store.getOpenClose() == 1) ? "Open" : "Closed");
 
                             actionView.setOnClickListener(new Switch.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (((Switch)view).isChecked()) {
-                                        if ( (store!=null )&& (store.getMarketplaceVisibilityEndDate()!=null)&& !store.getMarketplaceVisibilityEndDate().before(new Date())) {
+                                    if (((Switch) view).isChecked()) {
+                                        if ((store != null) && (store.getMarketplaceVisibilityEndDate() != null) && !store.getMarketplaceVisibilityEndDate().before(new Date())) {
                                             actionView.setText("Open");
                                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorPrimary)));
                                             store.setOpenClose(1);
@@ -303,7 +297,7 @@ public class MainActivity extends AppCompatActivity
                                             store.setOpenClose(0);
                                             getStoreInfo();
                                         }
-                                    }else {
+                                    } else {
                                         actionView.setText("Closed");
                                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.atmOff)));
                                         store.setOpenClose(0);
@@ -330,7 +324,7 @@ public class MainActivity extends AppCompatActivity
 
     private void updateStore() {
         final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
-    //      progressDialog.setMessage("Changing mode ...");
+        //      progressDialog.setMessage("Changing mode ...");
         JsonObjectRequest jsonObjectRequest = null;
         try {
             Gson gson = new GsonBuilder()
@@ -338,30 +332,30 @@ public class MainActivity extends AppCompatActivity
             JSONObject postData = new JSONObject(gson.toJson(store, Store.class));
 
 //                 progressDialog.show();
-            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/"+user.getClientCode(), postData,
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode(), postData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject responseObj) {
                             try {
                                 store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(responseObj.toString(), Store.class);
-                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(responseObj.toString()));
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0), new JSONObject(responseObj.toString()));
                             } catch (Exception e) {
                                 Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
                             }
-                        //    progressDialog.dismiss();
+                            //    progressDialog.dismiss();
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Snackbar.make(findViewById(android.R.id.content), "Store status not changed", Snackbar.LENGTH_LONG).show();
-                            store.setOpenClose(store.getOpenClose()==0?1:0);
+                            store.setOpenClose(store.getOpenClose() == 0 ? 1 : 0);
                             try {
                                 Util.updateStoreInSharedPref(getSharedPreferences("pref", 0), new JSONObject(gson.toJson(store)));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                         //   progressDialog.dismiss();
+                            //   progressDialog.dismiss();
                         }
                     });
         } catch (Exception e) {
@@ -374,7 +368,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void getStoreInfo() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId="+user.getId(), null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.columbus_ms_url) + "/100/" + user.getClientCode() + "/properties/orgs/" + user.getClientCode() + "?ownerId=" + user.getId(), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -382,7 +376,7 @@ public class MainActivity extends AppCompatActivity
                             JSONArray jsonArray = jsonObject.getJSONArray("content");
                             if (jsonArray != null && jsonArray.length() > 0) {
                                 store = (new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()).fromJson(jsonArray.getString(0), Store.class);
-                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0),new JSONObject(jsonArray.get(0).toString()));
+                                Util.updateStoreInSharedPref(getSharedPreferences("pref", 0), new JSONObject(jsonArray.get(0).toString()));
                             }
                         } catch (Exception e) {
                             Snackbar.make(findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -399,6 +393,7 @@ public class MainActivity extends AppCompatActivity
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(jsonObjectRequest);
     }
+
     private void registerTokenIfRequired(final String token, final Long userId, final String clientCode) {
         if ((TOKEN != null) && !TOKEN_REGISTERED) {
             String url = getString(R.string.columbus_ms_url) + "/100/" + clientCode + "/infra" + "/installationinfo?userId=" + userId + "&registrationToken=" + token;
@@ -474,14 +469,15 @@ public class MainActivity extends AppCompatActivity
             nav_Menu.findItem(R.id.inventoryMenuItem).setVisible(false);
             nav_Menu.findItem(R.id.shop_payments).setVisible(false);
             nav_Menu.findItem(R.id.ic_cash_requests).setVisible(false);
-            clickedMenu=R.id.og_cash_requests;
-        } if (user.getUserType() == 1) {
+            clickedMenu = R.id.og_cash_requests;
+        }
+        if (user.getUserType() == 1) {
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             Menu nav_Menu = navigationView.getMenu();
-            clickedMenu=R.id.ic_cash_requests;
+            clickedMenu = R.id.ic_cash_requests;
         }
-        if(itemId !=0) {
-            clickedMenu=itemId;
+        if (itemId != 0) {
+            clickedMenu = itemId;
         }
         Fragment fragment = null;
         String fragmentName = "";
@@ -547,6 +543,46 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle bundle = null;
+        if (data != null) {
+            bundle = data.getExtras();
+            if (data != null) {
+                if (bundle != null)
+                    for (String key : bundle.keySet()) {
+                        if (bundle.getString(key) != null) {
+                            Log.d("MAINActivity", key + " : " + bundle.getString(key));
+                        }
+                    }
+            }
+
+
+            //Same request code for all payment APIs.
+            if (requestCode == CFPaymentService.REQ_CODE) {
+                PaymentFragment paymentFragment = (PaymentFragment) getSupportFragmentManager().findFragmentByTag("paymentFragment");
+                StorePlanFragment storePlanFragment = (StorePlanFragment) getSupportFragmentManager().findFragmentByTag("membership");
+                if (resultCode == -1) {
+                    if (paymentFragment != null && paymentFragment.isVisible()) {
+                        paymentFragment.onCashFreePaymentSuccess(bundle.getString("signature"), bundle.getString("referenceId"));
+                    } else if (storePlanFragment != null && storePlanFragment.isVisible()) {
+                          storePlanFragment.onCashFreePaymentSuccess(bundle.getString("signature"),bundle.getString("referenceId"));
+                    }
+                } else {
+                    if (paymentFragment != null && paymentFragment.isVisible()) {
+                        paymentFragment.onCashFreePaymentError(bundle.getString("signature"), bundle.getString("referenceId"));
+                    }else if (storePlanFragment != null && storePlanFragment.isVisible()) {
+                        storePlanFragment.onCashFreePaymentError(bundle.getString("signature"),bundle.getString("referenceId"));
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
 
     //////////////////////////////////////////////////////// FORCE UPDATE ///////////////////////////////////////////////////////////
     private void checkUpdate() {
@@ -609,22 +645,22 @@ public class MainActivity extends AppCompatActivity
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(actionView==null) return;
-            if(intent.getAction().equalsIgnoreCase("21")){
+            if (actionView == null) return;
+            if (intent.getAction().equalsIgnoreCase("21")) {
                 actionView.setText("Open");
                 actionView.setChecked(true);
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.colorPrimary)));
                 store.setOpenClose(1);
                 getStoreInfo();
             }
-            if(intent.getAction().equalsIgnoreCase("22")) {
+            if (intent.getAction().equalsIgnoreCase("22")) {
                 actionView.setText("Closed");
                 actionView.setChecked(false);
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getColor(R.color.atmOff)));
                 store.setOpenClose(0);
                 getStoreInfo();
             }
-            if(intent.getAction().equalsIgnoreCase("34")) {
+            if (intent.getAction().equalsIgnoreCase("34")) {
                 NewOrderFragment0 fragment = new NewOrderFragment0();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment).addToBackStack(null);

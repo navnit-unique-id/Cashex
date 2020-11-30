@@ -151,5 +151,6 @@
     <string name="extending_membership_msg">Updating membership details ..</string>
     <string name="getting_ledger_details">Getting account details ..</string>
 
+    <string name="creating_payment">Creating Payment ..</string>
 
 </resources>

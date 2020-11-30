@@ -12,6 +12,7 @@ public class Payment implements Serializable {
 	Date paymentDate;
 	String refNo;
 	int refType;
+	Long refId;
 	String comments;
 	int status; // 1 --> unsettled, 2 --> settled 11 --> cancelled
 	Long paymentsId;
@@ -24,6 +25,7 @@ public class Payment implements Serializable {
 	String extAttr3Name;
 	String extAttr3Value;
 	String orgChain;
+
 
 	public Long getId() {
 		return id;
@@ -47,6 +49,14 @@ public class Payment implements Serializable {
 
 	public void setCreationTriggerId(String creationTriggerId) {
 		this.creationTriggerId = creationTriggerId;
+	}
+
+	public Long getRefId() {
+		return refId;
+	}
+
+	public void setRefId(Long refId) {
+		this.refId = refId;
 	}
 
 	public String getOrgChain() {

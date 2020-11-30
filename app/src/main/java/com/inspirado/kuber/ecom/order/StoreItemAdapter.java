@@ -3,13 +3,12 @@ package com.inspirado.kuber.ecom.order;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -21,15 +20,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.inspirado.kuber.ecom.store.Store;
 import com.inspirado.kuber.R;
 import com.inspirado.kuber.User;
-import com.inspirado.kuber.util.Util;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +35,6 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemAdapter.RequestHolder> {
     private Context context;

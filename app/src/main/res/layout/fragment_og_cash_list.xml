@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/OGOuterLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
         app:maxImageSize="156dp"
         app:srcCompat="@mipmap/ic_add_new_fg" />-->
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addRequestBtn"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -100,7 +100,7 @@
         app:srcCompat="@mipmap/add_new_round"
         tools:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCashRequestBtn"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -115,7 +115,7 @@
         app:maxImageSize="40dp"
         app:srcCompat="@mipmap/new_cash_round" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addOrderRequestBtn"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -130,7 +130,7 @@
         app:maxImageSize="40dp"
         app:srcCompat="@mipmap/new_order_round" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/og_cash_requests"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -142,6 +142,6 @@
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="0dp">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
