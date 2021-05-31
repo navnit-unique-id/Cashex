@@ -19,8 +19,8 @@ android {
         applicationId "com.inspirado.kuber"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 59
-        versionName "59"
+        versionCode 60
+        versionName "60"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }

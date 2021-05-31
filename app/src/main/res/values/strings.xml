@@ -16,7 +16,7 @@
     <!--<string name="columbus_ms_url" >http://10.0.2.2:6111</string>-->
     <string name="columbus_ms_url" translatable="false">http://34.66.218.50:6111</string>
     <!--<string name="notification_ms_url" translatable="false">http://10.0.2.2:8090</string>-->
-    <!--<string name="notification_ms_url" translatable="false">http://34.74.60.4:8090</string>-->
+    <string name="notification_ms_url" translatable="false">http://34.66.218.50:8090</string>
 
     <string name="title_activity_replay">Map</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAXJjOZYCyg5VE4tacOue0x8RGcHlnf_qI</string>

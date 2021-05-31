@@ -6,14 +6,24 @@
         - 10:00 PM
     </string-array>
     <string-array name="store_category">
+        <item>Bakery</item>
         <item>Chicken Center</item>
+        <item>Cosmetic</item>
         <item>Dairy Solution</item>
         <item>Electricals</item>
+        <item>Electrical Services</item>
         <item>Electronics</item>
+        <item>Fashion Boutique</item>
+        <item>Footware</item>
         <item>Grocery / Kirana</item>
+        <item>Handloom</item>
         <item>Hardware</item>
         <item>Medical</item>
+        <item>Mobile Shop</item>
         <item>Puja Store</item>
+        <item>Plumbing Services</item>
+        <item>Salon Services</item>
         <item>Sweets and Bakery</item>
+        <item>Vegetable and Fruit Mall</item>
     </string-array>
 </resources>
